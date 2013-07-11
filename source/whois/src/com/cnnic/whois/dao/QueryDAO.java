@@ -742,6 +742,17 @@ public class QueryDAO {
 				map.remove("StartHighAddress");
 				map.remove("EndHighAddress");
 				
+				if (keyName.equals("$mul$nameServer")){
+					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
+					Object IPAddressArray = map.get("IPV4 Addresses");
+					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
+					IPAddressArray = map.get("IPV6 Addresses");
+					map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
+					map.put(WhoisUtil.IPPREFIX, map_IP);
+					map.remove("IPV4 Addresses");
+					map.remove("IPV6 Addresses");
+				}
+				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
 					list.add(WhoisUtil.toVCard(map));
