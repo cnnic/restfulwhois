@@ -59,12 +59,20 @@ function toTable(JsonObject){
 			tableStr += toSpecialTable(values, keyName, "Entity Names", "Handle", urlhead + "registrar" + "/");
 		}else if(keyName == "vCard"){
 			tableStr += toVcardTable(values) ;
-		}else if(keyName != "rdapConformance" && keyName != '0'){
+		}else if(keyName == "ipAddresses"){
+			tableStr += toIPAddresses(values, keyName, "v4", "v6");
+		}else if(keyName != "rdapConformance" && keyName != '0'){			
 			tableStr += "<tr><td width='20%'>"+keyName+"</td><td>"+values+"&nbsp;</td></tr>";
 		}
 	}
 	return tableStr;
 }
+function toIPAddresses(values, keyName, keyV4, keyV6){
+	var realValue = "v4: " + values["v4"] + "<br/> v6: " + values["v6"];
+	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
+	return tableStr;
+}
+
 function toCommonTable(urlhead, values, keyName, attrName) {
 	var tableStr = "";
 	
@@ -270,7 +278,7 @@ function processQuery() {
 	var urlContextPath = $("#pathUrl").val() + "/"; 
 	var url  = urlContextPath + queryType + "/" + queryInfo;
 	
-	//alert(formatType);
+//	alert(formatType);
 //	if(formatType == 'json'){
 //		$.ajax({
 //			type : "get",

@@ -29,6 +29,7 @@ public class ColumnCache {
 	private List<String> noticesKeyFileds = new ArrayList<String>();
 	private List<String> remarksKeyFileds = new ArrayList<String>();
 	private List<String> eventsKeyFileds = new ArrayList<String>();
+	private List<String> ErrorMessageKeyFileds = new ArrayList<String>();
 
 	/**
 	 * In the constructor to initialize the property value
@@ -50,6 +51,7 @@ public class ColumnCache {
 		noticesKeyFileds = getKeyList(WhoisUtil.NOTICES);
 		remarksKeyFileds = getKeyList(WhoisUtil.REMARKS);
 		eventsKeyFileds = getKeyList(WhoisUtil.EVENTS);
+		ErrorMessageKeyFileds = getKeyList(WhoisUtil.ERRORMESSAGE);
 	}
 
 	/**
@@ -75,6 +77,22 @@ public class ColumnCache {
 	 */
 	public void setIPKeyFileds() {
 		IPKeyFileds = getKeyList(WhoisUtil.IP);
+	}
+	
+	/**
+	 * Get ErrorMessageKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getErrorMessageKeyFileds() {
+		return ErrorMessageKeyFileds;
+	}
+
+	/**
+	 * Set ErrorMessageKeyFileds
+	 */
+	public void setErrorMessageKeyFileds() {
+		ErrorMessageKeyFileds = getKeyList(WhoisUtil.ERRORMESSAGE);
 	}
 
 	/**

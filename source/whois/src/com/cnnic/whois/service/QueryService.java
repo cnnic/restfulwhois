@@ -48,7 +48,7 @@ public class QueryService {
 		if (map == null) { //If the collection is empty, then go to redirect queries table
 			queryDAO.queryIPRedirection(ipLongs[0], ipLongs[1], ipLongs[2],
 					ipLongs[3]);
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		if (map.get("$mul$IP") instanceof Object[]) {
@@ -120,7 +120,7 @@ public class QueryService {
 
 		if (map == null) {
 			getRedirectionURL(WhoisUtil.AUTNUM, Integer.toString(asInfo));
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -139,7 +139,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryNameServer(ipInfo, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -165,7 +165,7 @@ public class QueryService {
 			if (rirMap == null)
 				queryType = WhoisUtil.RIRDOMAIN;
 			getRedirectionURL(queryType, ipInfo);
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
@@ -194,7 +194,7 @@ public class QueryService {
 		Map<String, Object> dnrMap = queryDAO.queryDNREntity(queryPara, role);
 		Map<String, Object> regMap = queryRegistrar(queryPara, role, false);
 		if (rirMap == null && dnrMap == null && regMap.get("errorCode") != null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
@@ -380,7 +380,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryLinks(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -399,7 +399,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryPhones(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -418,7 +418,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryPostalAddress(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -437,7 +437,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryVariants(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -456,7 +456,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryDelegationKeys(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -475,7 +475,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryNotices(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -494,7 +494,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryRegistrar(queryPara, role, isJoinTable);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -513,7 +513,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryRemarks(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -532,7 +532,7 @@ public class QueryService {
 		Map<String, Object> map = queryDAO.queryEvents(queryPara, role);
 
 		if (map == null) {
-			return queryError();
+			return queryError(WhoisUtil.ERRORCODE, role);
 		}
 
 		return map;
@@ -542,10 +542,15 @@ public class QueryService {
 	 * The processing Error
 	 * 
 	 * @return error map collection
+	 * @throws QueryException 
 	 */
-	private Map<String, Object> queryError() {
-		return WhoisUtil.getErrorMessage(WhoisUtil.ERRORCODE,
-				WhoisUtil.ERRORTITLE, WhoisUtil.ERRORDESCRIPTION);
+	private Map<String, Object> queryError(String errorCode, String role) throws QueryException {
+		Map<String, Object>ErrorMessageMap = null;
+		QueryDAO queryDAO = QueryDAO.getQueryDAO();
+		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role);
+		return ErrorMessageMap;
+		//return WhoisUtil.getErrorMessage(WhoisUtil.ERRORCODE,
+				//WhoisUtil.ERRORTITLE, WhoisUtil.ERRORDESCRIPTION);
 	}
 
 	/**

@@ -1,12 +1,18 @@
 package com.cnnic.whois.util;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.DataSource;
+
+import com.cnnic.whois.execption.QueryException;
 
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
@@ -35,6 +41,7 @@ public class WhoisUtil {
 	public static final String REMARKS = "remarks";
 	public static final String EVENTS = "events";
 	public static final String ENTITIES = "entities";
+	public static final String ERRORMESSAGE = "errormessage";
 
 	public static final String PRX = "/";
 	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
@@ -63,6 +70,7 @@ public class WhoisUtil {
 	public static final String SELECT_LIST_RIRDOMAIN = "select * from RIRDomain where LdhName=";
 	public static final String SELECT_LIST_DNRDOMAIN = "select * from DNRDomain where LdhName=";
 	public static final String SELECT_LIST_NAMESREVER = "select * from nameServer where LdhName=";
+	public static final String SELECT_LIST_ERRORMESSAGE = "select * from errormessage where errorCode=";
 
 	public static final String SELECT_LIST_AS1 = "select * from autnum where Start_Autnum <=";
 	public static final String SELECT_LIST_AS2 = " and ";
@@ -183,6 +191,9 @@ public class WhoisUtil {
 
 	public static String[] variantsKeyFileds = { ARRAYFILEDPRX + "Relation",
 			ARRAYFILEDPRX + "VariantNames", "variantsId" };
+	
+	public static String[] ErrorMessageKeyFileds = { "errorCode", "title",
+		ARRAYFILEDPRX + "description", JOINNANOTICES};
 
 	public static String[] linkKeyFileds = { "Value", "Rel", "Href", "linkId",
 			"$array$hreflang", "$array$title", "media", "type" };
@@ -212,16 +223,16 @@ public class WhoisUtil {
 			"phones", "postalAddress", "registrar", "remarks", "variants", "help" };
 
 	public static String[] extendColumnTableTypes = { "autnum",
-			"delegationkeys", "dnrdomain", "dnrentity", "events", "ip", "link",
+			"delegationkeys", "dnrdomain", "dnrentity", "errormessage", "events", "ip", "link",
 			"nameserver", "notices", "phones", "postaladdress", "registrar",
-			"remarks", "rirdomain", "rirentity", "variants" };
+			"remarks", "rirdomain", "rirentity", "variants"};
 
 	public static String[][] keyFiledsSet = { ASKeyFileds, delegationKeyFileds,
-			DNRDomainKeyFileds, DNREntityKeyFileds, eventsKeyFileds,
+			DNRDomainKeyFileds, DNREntityKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds,
 			IPKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
 			phonesKeyFileds, postalAddressKeyFileds, registrarKeyFileds,
 			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds,
-			variantsKeyFileds };
+			variantsKeyFileds};
 
 	public static long[] IPV4Array = { 0x80000000l, // 1000 0000 0000 0000 0000
 													// 0000 0000 0000,//1
@@ -421,7 +432,7 @@ public class WhoisUtil {
 	public static final String SELECT_PERMISSION = "select * from permissions where tableName = ?";
 
 	public static final String SELECT_PERMISSION_ISNULL = "select columnName from permissions where tableName = ? and columnName=?";
-
+	
 	public static final Map<String, Long> queryRemoteIPMap = new HashMap<String, Long>();
 
 	public static long[] parsingIp(String ipInfo, int ipLength) {
@@ -661,24 +672,7 @@ public class WhoisUtil {
 		longs[0] = high;
 		longs[1] = low;
 		return longs;
-	}
-
-	/**
-	 * Generate an error map collection
-	 * 
-	 * @param errorCode
-	 * @param title
-	 * @param description
-	 * @return map
-	 */
-	public static Map<String, Object> getErrorMessage(String errorCode,
-			String title, String [] description) {
-		Map<String, Object> errorMessageMap = new HashMap<String, Object>();
-		errorMessageMap.put("errorCode", errorCode);
-		errorMessageMap.put("title", title);
-		errorMessageMap.put("description", description);
-		return errorMessageMap;
-	}
+	}	
 
 	/**
 	 * Generated to store a collection of fields

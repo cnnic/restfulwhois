@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
@@ -60,7 +61,12 @@ public class QueryServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		processRequest(request, response);
+		try {
+			processRequest(request, response);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -110,7 +116,12 @@ public class QueryServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+		try {
+			processRequest(request, response);
+		} catch (QueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -124,9 +135,10 @@ public class QueryServlet extends HttpServlet {
 	 *             handles the request
 	 * @throws ServletException
 	 *             if the request could not be handled
+	 * @throws QueryException 
 	 */
 	private void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
+			HttpServletResponse response) throws IOException, ServletException, QueryException {
 
 		Map<String, Object> map = null;
 		char[] n = request.getRequestURI().toCharArray();
@@ -141,8 +153,10 @@ public class QueryServlet extends HttpServlet {
 		String queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 		String queryPara = queryInfo.substring(queryInfo.indexOf("/") + 1); //get the parameters from the request scope and parse
 		request.setAttribute("queryType", queryType);
+		String roleBackup = null;
 		try {
 			String role = getUserRole(request);
+			roleBackup = role;
 
 			int typeIndex = Arrays
 					.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
@@ -198,9 +212,7 @@ public class QueryServlet extends HttpServlet {
 				map = processQueryHelp();
 				break;
 			default:
-				map = WhoisUtil.getErrorMessage(WhoisUtil.UNCOMMENDRRORCODE,
-						WhoisUtil.UNOMMENDERRORTITLE,
-						WhoisUtil.UNOMMENDERRORDESCRIPTION);
+				map = processError(WhoisUtil.COMMENDRRORCODE, role);
 				break;
 			}
 			request.setAttribute("queryPara", queryPara);
@@ -225,7 +237,7 @@ public class QueryServlet extends HttpServlet {
 		} catch (QueryException e) {
 			e.printStackTrace();
 			this.log(e.getMessage(), e);
-			map = processError();
+			map = processError(WhoisUtil.COMMENDRRORCODE, roleBackup);
 		}
 		processRespone(request, response, map);
 	}
@@ -273,7 +285,7 @@ public class QueryServlet extends HttpServlet {
 		}
 
 		if (!verifyIP(strInfo, ipLength)) {
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 		}
 
 		QueryService queryService = QueryService.getQueryService();
@@ -318,7 +330,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryDomain(String queryPara, String role)
 			throws QueryException, RedirectExecption {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return nameToUnicode(queryService.queryDoamin(queryPara, role));
@@ -336,10 +348,10 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryAS(String queryPara, String role)
 			throws QueryException, RedirectExecption {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		if (!queryPara.matches("^[0-9]*$"))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		try {
 			int queryInfo = Integer.parseInt(queryPara);
@@ -364,7 +376,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryEntity(String queryPara, String role)
 			throws QueryException {
 //		if (!isBlankStr(queryPara))
-//			return processError();
+//			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEntity(queryPara, role);
@@ -381,7 +393,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNameServer(String queryPara,
 			String role) throws QueryException {
 		if (!verifyNameServer(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return nameToUnicode(queryService.queryNameServer(queryPara, role));
@@ -413,7 +425,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryLinks(String queryPara, String role)
 			throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryLinks(queryPara, role);
@@ -430,7 +442,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPhones(String queryPara, String role)
 			throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPhones(queryPara, role);
@@ -447,7 +459,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPostalAddress(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPostalAddress(queryPara, role);
@@ -464,7 +476,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryDelegationKeys(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryDelegationKeys(queryPara, role);
@@ -481,7 +493,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryVariants(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryVariants(queryPara, role);
@@ -498,7 +510,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNotices(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryNotices(queryPara, role);
@@ -515,7 +527,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryRegistrar(String queryPara,
 			String role) throws QueryException {
 //		if (!isBlankStr(queryPara))
-//			return processError();
+//			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryRegistrar(queryPara, role,true);
@@ -531,7 +543,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryRemarks(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryRemarks(queryPara, role);
@@ -548,7 +560,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryEvents(String queryPara,
 			String role) throws QueryException {
 		if (!isBlankStr(queryPara))
-			return processError();
+			return processError(WhoisUtil.COMMENDRRORCODE, role);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEvents(queryPara, role);
@@ -558,10 +570,15 @@ public class QueryServlet extends HttpServlet {
 	 * The processing Error
 	 * 
 	 * @return error map collection
+	 * @throws QueryException 
 	 */
-	private Map<String, Object> processError() {
-		return WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
-				WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
+	private Map<String, Object> processError(String errorCode, String role) throws QueryException {
+		Map<String, Object>ErrorMessageMap = null;
+		QueryDAO queryDAO = QueryDAO.getQueryDAO();
+		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role);
+		return ErrorMessageMap;
+		//return WhoisUtil.getErrorMessage(WhoisUtil.COMMENDRRORCODE,
+				//WhoisUtil.OMMENDERRORTITLE, WhoisUtil.OMMENDERRORDESCRIPTION);
 	}
 
 	/**

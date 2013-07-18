@@ -30,6 +30,7 @@ public class PermissionCache {
 	private Map<String, List<String>> noticesMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> eventsMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> remarksMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
 	
 	private ColumnCache columnCache = ColumnCache.getColumnCache();
 
@@ -64,8 +65,10 @@ public class PermissionCache {
 				columnCache.getNoticesKeyFileds());
 		remarksMap = getKeyMap(WhoisUtil.REMARKS,
 				columnCache.getRemarksKeyFileds());
-			eventsMap = getKeyMap(WhoisUtil.EVENTS,
-					columnCache.getEventsKeyFileds());
+		eventsMap = getKeyMap(WhoisUtil.EVENTS,
+				columnCache.getEventsKeyFileds());
+		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE,
+				columnCache.getErrorMessageKeyFileds());
 	}
 
 	/**
@@ -92,6 +95,23 @@ public class PermissionCache {
 	 */
 	public void setIPMap() {
 		IPMap = getKeyMap(WhoisUtil.IP, columnCache.getIPKeyFileds());
+	}
+	
+	/**
+	 * Get ErrorMessageKeyFileds
+	 * 
+	 * @param role
+	 * @return List
+	 */
+	public List<String> getErrorMessageKeyFileds(String role) {
+		return ErrorMessageMap.get(role);
+	}
+	
+	/**
+	 * Set ErrorMessageKeyFileds
+	 */
+	public void setErrorMessageMap() {
+		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE, columnCache.getIPKeyFileds());
 	}
 
 	/**
