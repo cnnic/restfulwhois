@@ -65,7 +65,7 @@ public class QueryServlet extends HttpServlet {
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
 
 	/**
@@ -549,8 +549,6 @@ public class QueryServlet extends HttpServlet {
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryEvents(queryPara, role, format);
 	}
-
-	
 
 	/**
 	 * Verifying the String parameters

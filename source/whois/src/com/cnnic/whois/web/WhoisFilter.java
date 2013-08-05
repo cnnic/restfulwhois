@@ -63,7 +63,13 @@ public class WhoisFilter implements Filter {
 				accessTime, role);
 		
 		
-		String userAgent = request.getHeader("user-agent").toLowerCase();
+		String userAgent = "";
+		try{
+			userAgent = request.getHeader("user-agent").toLowerCase();
+		}
+		catch(Exception e){
+			userAgent = "";
+		}
 		
 		String format = WhoisUtil.getFormatCookie(request);
 
@@ -77,6 +83,9 @@ public class WhoisFilter implements Filter {
 			format = "application/html";
 		if (format == null){
 			format = request.getHeader("Accept"); 
+			if (format == null){
+				format = "application/json";
+			}
 
 			CharSequence sqhtml = "html";			
 			if(format.contains(sqhtml))

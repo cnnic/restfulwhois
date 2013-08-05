@@ -122,18 +122,21 @@ public class AccessControlService {
 			permissionCache.setPostalAddressMap();
 			break;
 		case 12:
-			permissionCache.setRegistrarMap();
+			permissionCache.setPublicIdsMap();
 			break;
 		case 13:
-			permissionCache.setRemarksMap();
+			permissionCache.setRegistrarMap();
 			break;
 		case 14:
-			permissionCache.setRIRDomainMap();
+			permissionCache.setRemarksMap();
 			break;
 		case 15:
-			permissionCache.setRIREntityMap();
+			permissionCache.setRIRDomainMap();
 			break;
 		case 16:
+			permissionCache.setRIREntityMap();
+			break;
+		case 17:
 			permissionCache.setVariantsMap();
 			break;
 		}

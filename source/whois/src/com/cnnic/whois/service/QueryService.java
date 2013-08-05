@@ -3,7 +3,6 @@ package com.cnnic.whois.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.cnnic.whois.dao.QueryDAO;
 import com.cnnic.whois.execption.QueryException;
@@ -394,8 +393,6 @@ public class QueryService {
 		QueryDAO queryDAO = QueryDAO.getQueryDAO();
 		ErrorMessageMap = queryDAO.getErrorMessage(errorCode, role, format);
 		return ErrorMessageMap;
-		//return WhoisUtil.getErrorMessage(WhoisUtil.ERRORCODE,
-				//WhoisUtil.ERRORTITLE, WhoisUtil.ERRORDESCRIPTION);
 	}
 
 	/**

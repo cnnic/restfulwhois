@@ -28,6 +28,7 @@ public class PermissionCache {
 	private Map<String, List<String>> delegationMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> registrarMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> noticesMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> publicIdsMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> eventsMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> remarksMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
@@ -63,6 +64,8 @@ public class PermissionCache {
 				columnCache.getRegistrarKeyFileds());
 		noticesMap = getKeyMap(WhoisUtil.NOTICES,
 				columnCache.getNoticesKeyFileds());
+		publicIdsMap = getKeyMap(WhoisUtil.PUBLICIDS,
+				columnCache.getPublicIdsKeyFileds());
 		remarksMap = getKeyMap(WhoisUtil.REMARKS,
 				columnCache.getRemarksKeyFileds());
 		eventsMap = getKeyMap(WhoisUtil.EVENTS,
@@ -344,6 +347,24 @@ public class PermissionCache {
 	public void setNoticesMap() {
 		this.noticesMap = getKeyMap(WhoisUtil.NOTICES,
 				columnCache.getNoticesKeyFileds());
+	}
+	
+	/**
+	 * Get PublicIdsKeyFileds
+	 * 
+	 * @param role
+	 * @return List
+	 */
+	public List<String> getPublicIdsKeyFileds(String role) {
+		return publicIdsMap.get(role);
+	}
+
+	/**
+	 * Set PublicIdsKeyFileds
+	 */
+	public void setPublicIdsMap() {
+		this.publicIdsMap = getKeyMap(WhoisUtil.PUBLICIDS,
+				columnCache.getPublicIdsKeyFileds());
 	}
 	/**
 	 * Get EventsKeyFileds

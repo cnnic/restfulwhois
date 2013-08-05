@@ -226,7 +226,9 @@ public class DataFormat {
 				String[] keys = { "Street", "Street1", "Street2", "City", "SP",
 						"PostalCode", "CountyCode" };
 				int index = 0;
-				for (int j = i + 3; j < i + 10; j++) {
+				//Pay attention to ! The number in phrase "j < i + 9" is changed from 10 to 9 now, since if the number equals 10,
+				//there will be an error where the array index exceeds limit!
+				for (int j = i + 3; j < i + 9; j++) {
 					sb.append("<" + keys[index] + ">\n");
 					sb.append(vcard.get(j));
 					sb.append("</" + keys[index] + ">\n");

@@ -35,6 +35,7 @@ public class WhoisUtil {
 	public static final String VARIANTS = "variants";
 
 	public static final String NOTICES = "notices";
+	public static final String PUBLICIDS = "publicIds";
 	public static final String REGISTRAR = "registrar";
 	public static final String SPONSOREDBY = "SponsoredBy";
 	public static final String REMARKS = "remarks";
@@ -83,7 +84,8 @@ public class WhoisUtil {
 	public static final String SELECT_JOIN_LIST_NOTICES = "select * from notices join m2m_notices on m2m_notices.noticesId=notices.noticesId and  m2m_notices.Handle=";
 	public static final String SELECT_JOIN_LIST_REMARKS = "select * from remarks join m2m_remarks on m2m_remarks.remarksId=remarks.remarksId and  m2m_remarks.Handle=";
 	public static final String SELECT_JOIN_LIST_EVENTS = "select * from events join m2m_events on m2m_events.eventsId=events.eventsId and m2m_events.Handle=";
-
+	public static final String SELECT_JOIN_LIST_PUBLICIDS = "select * from publicIds join m2m_publicIds on m2m_publicIds.identifier=publicIds.identifier and  m2m_publicIds.Handle=";
+	
 	public static final String SELECT_JOIN_LIST_REGISTRAR = "select * from registrar join m2m_registrar on m2m_registrar.registrarHandle=registrar.Handle and  m2m_registrar.Handle=";
 	public static final String SELECT_JOIN_LIST_JOINNAMESERVER = "select * from nameserver join m2m_nameserver on m2m_nameserver.nameserverHandle=nameserver.Handle and m2m_nameserver.Handle=";
 	public static final String SELECT_JOIN_LIST_VARIANTS = "select * from variants join m2m_variants on m2m_variants.variantsId=variants.variantsId and m2m_variants.Handle=";
@@ -132,7 +134,7 @@ public class WhoisUtil {
 	public static final String JOINNANOTICES = JOINFILEDPRX + "notices";
 	public static final String JOINREMARKS = JOINFILEDPRX + "remarks";
 	public static final String JOINEVENTS = JOINFILEDPRX + "events";
-
+	public static final String JOINPUBLICIDS = JOINFILEDPRX + "publicIds";
 	public static final String JOINDALEGATIONKEYS = JOINFILEDPRX
 			+ "delegationKeys";
 	public static final String VALUEARRAYPRX = "'~'";
@@ -155,23 +157,23 @@ public class WhoisUtil {
 			ARRAYFILEDPRX + "Entity_Names", "Lang", JOINNANOTICES,
 			ARRAYFILEDPRX + "Status", ARRAYFILEDPRX + "Roles", JOINPOSTATLADDRESSFILED,
 			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
-			JOINLINKFILED, "Port43", JOINEVENTS, JOINNAREGISTRAR };
+			JOINLINKFILED, "Port43", JOINEVENTS, JOINNAREGISTRAR,JOINPUBLICIDS };
 
 	public static String[] RIREntityKeyFileds = { "Handle",
 			ARRAYFILEDPRX + "Entity_Names", "Lang", JOINNANOTICES,
 			ARRAYFILEDPRX + "Roles", JOINPOSTATLADDRESSFILED,
 			ARRAYFILEDPRX + "Emails", JOINPHONFILED, JOINREMARKS,
-			JOINLINKFILED, JOINEVENTS };
+			JOINLINKFILED, JOINEVENTS, JOINPUBLICIDS };
 
 	public static String[] DNRDomainKeyFileds = { "Handle", "LdhName",
 			"UnicodeName", "Lang", JOINNANOTICES, JOINVARIANTS,
 			ARRAYFILEDPRX + "Status", JOINNAMESERVER, JOINDALEGATIONKEYS,
 			"Port43", JOINEVENTS, JOINENTITESFILED, JOINNAREGISTRAR,
-			JOINLINKFILED, JOINREMARKS };
+			JOINLINKFILED, JOINREMARKS, JOINPUBLICIDS };
 
 	public static String[] RIRDomainKeyFileds = { "Handle", "LdhName", "Lang",
 			JOINNANOTICES, JOINNAMESERVER, JOINDALEGATIONKEYS, JOINREMARKS,
-			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED };
+			JOINLINKFILED, JOINEVENTS, JOINENTITESFILED, JOINPUBLICIDS };
 
 	public static String[] ASKeyFileds = { "Handle", "Start_Autnum",
 			"End_Autnum", "Name", "Lang", JOINNANOTICES,
@@ -210,6 +212,8 @@ public class WhoisUtil {
 
 	public static String[] noticesKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "noticesId", JOINLINKFILED };
+	
+	public static String[] publicIdsKeyFileds = { "type", "identifier"};
 
 	public static String[] remarksKeyFileds = { "Title",
 			ARRAYFILEDPRX + "Description", "remarksId", JOINLINKFILED };
@@ -223,13 +227,13 @@ public class WhoisUtil {
 
 	public static String[] extendColumnTableTypes = { "autnum",
 			"delegationkeys", "dnrdomain", "dnrentity", "errormessage", "events", "ip", "link",
-			"nameserver", "notices", "phones", "postaladdress", "registrar",
+			"nameserver", "notices", "phones", "postaladdress", "publicIds", "registrar",
 			"remarks", "rirdomain", "rirentity", "variants"};
 
 	public static String[][] keyFiledsSet = { ASKeyFileds, delegationKeyFileds,
 			DNRDomainKeyFileds, DNREntityKeyFileds, ErrorMessageKeyFileds, eventsKeyFileds,
 			IPKeyFileds, linkKeyFileds, nameServerKeyFileds, noticesKeyFileds,
-			phonesKeyFileds, postalAddressKeyFileds, registrarKeyFileds,
+			phonesKeyFileds, postalAddressKeyFileds, publicIdsKeyFileds, registrarKeyFileds,
 			remarksKeyFileds, RIRDomainKeyFileds, RIREntityKeyFileds,
 			variantsKeyFileds};
 

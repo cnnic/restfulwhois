@@ -61,10 +61,18 @@ function toTable(JsonObject){
 			tableStr += toVcardTable(values) ;
 		}else if(keyName == "ipAddresses"){
 			tableStr += toIPAddresses(values, keyName, "v4", "v6");
+		}else if(keyName == "publicIds"){
+			tableStr += toPublicIds(values, keyName);
 		}else if(keyName != "rdapConformance" && keyName != '0'){			
 			tableStr += "<tr><td width='20%'>"+keyName+"</td><td>"+values+"&nbsp;</td></tr>";
 		}
 	}
+	return tableStr;
+}
+
+function toPublicIds(values, keyName){
+	var realValue = "type: " + values["type"] + "<br/> identifier: " + values["identifier"];
+	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
 	return tableStr;
 }
 function toIPAddresses(values, keyName, keyV4, keyV6){

@@ -36,21 +36,30 @@ public class ErrorFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) arg0;
 		HttpServletResponse response = (HttpServletResponse) arg1;
 		
-		String userAgent = request.getHeader("user-agent").toLowerCase();
-		
-		String format = WhoisUtil.getFormatCookie(request);
+		String userAgent = "";
+		try{
+			userAgent = request.getHeader("user-agent").toLowerCase();
+		}
+		catch(Exception e){
+			userAgent = "";
+		}		
+
+		String format = WhoisUtil.getFormatCookie(request);		
 		String role = WhoisUtil.getUserRole(request);
 
 		CharSequence ie = "msie";
 		CharSequence firefox = "firefox";
 		CharSequence chrome = "chrome";
 		CharSequence safiri = "safiri";
-		CharSequence opera = "opera";
+		CharSequence opera = "opera";   
 		if (format == null && (userAgent.contains(ie) || userAgent.contains(firefox) ||
 				userAgent.contains(chrome) || userAgent.contains(safiri) || userAgent.contains(opera)))
 			format = "application/html";
 		if (format == null){
-			format = request.getHeader("Accept"); 
+			format = request.getHeader("Accept");	
+			if (format == null){
+				format = "application/json";
+			}
 
 			CharSequence sqhtml = "html";			
 			if(format.contains(sqhtml))

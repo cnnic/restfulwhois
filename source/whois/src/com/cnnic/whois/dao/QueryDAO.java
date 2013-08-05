@@ -5,11 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -772,7 +770,7 @@ public class QueryDAO {
 					} else {
 						resultsInfo = results.getString(keyFlieds.get(i)) == null ? "": results.getString(keyFlieds.get(i));
 						CharSequence id = "id";
-						if(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).contains(id) && !format.equals("application/html")){
+						if(!keyName.equals(WhoisUtil.JOINPUBLICIDS) && WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format).contains(id) && !format.equals("application/html")){
 							continue;
 						}else{
 							map.put(WhoisUtil.getDisplayKeyName(keyFlieds.get(i), format), resultsInfo);//a different format have different name;
@@ -902,6 +900,10 @@ public class QueryDAO {
 			return querySpecificJoinTable(key, handle,
 					WhoisUtil.SELECT_JOIN_LIST_REMARKS, role, connection,
 					permissionCache.getRemarksKeyFileds(role), format);
+		}else if (key.equals(WhoisUtil.JOINPUBLICIDS)) {
+			return querySpecificJoinTable(key, handle,
+					WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, role, connection,
+					permissionCache.getPublicIdsKeyFileds(role), format);
 		}
 
 		return null;

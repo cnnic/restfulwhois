@@ -27,6 +27,7 @@ public class ColumnCache {
 	private List<String> delegationKeyFileds = new ArrayList<String>();
 	private List<String> registrarKeyFileds = new ArrayList<String>();
 	private List<String> noticesKeyFileds = new ArrayList<String>();
+	private List<String> publicIdsKeyFileds = new ArrayList<String>();
 	private List<String> remarksKeyFileds = new ArrayList<String>();
 	private List<String> eventsKeyFileds = new ArrayList<String>();
 	private List<String> ErrorMessageKeyFileds = new ArrayList<String>();
@@ -49,6 +50,7 @@ public class ColumnCache {
 		delegationKeyFileds = getKeyList(WhoisUtil.DELEGATIONKEYS);
 		registrarKeyFileds = getKeyList(WhoisUtil.REGISTRAR);
 		noticesKeyFileds = getKeyList(WhoisUtil.NOTICES);
+		publicIdsKeyFileds = getKeyList(WhoisUtil.PUBLICIDS);
 		remarksKeyFileds = getKeyList(WhoisUtil.REMARKS);
 		eventsKeyFileds = getKeyList(WhoisUtil.EVENTS);
 		ErrorMessageKeyFileds = getKeyList(WhoisUtil.ERRORMESSAGE);
@@ -302,6 +304,22 @@ public class ColumnCache {
 	 */
 	public void setNoticesKeyFileds() {
 		this.noticesKeyFileds = getKeyList(WhoisUtil.NOTICES);
+	}
+	
+	/**
+	 * Get PublicIdsKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getPublicIdsKeyFileds() {
+		return publicIdsKeyFileds;
+	}
+	
+	/**
+	 * Set PublicIdsKeyFileds
+	 */
+	public void setPublicIdsKeyFileds() {
+		this.publicIdsKeyFileds = getKeyList(WhoisUtil.PUBLICIDS);
 	}
 
 	/**
