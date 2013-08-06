@@ -808,7 +808,8 @@ public class QueryDAO {
 					keyName.equals(WhoisUtil.JOINREMARKS) ||
 					keyName.equals(WhoisUtil.MULTIPRXLINK ) ||
 					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
-					keyName.equals(WhoisUtil.MULTIPRXREMARKS)) {
+					keyName.equals(WhoisUtil.MULTIPRXREMARKS) ||
+					keyName.equals(WhoisUtil.JOINPUBLICIDS)) {
 				mapInfo.put(keyName, list.toArray());
 			}else{
 				if (list.size() > 1) {
