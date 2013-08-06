@@ -790,6 +790,20 @@ public class QueryDAO {
 					map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 				}
 				
+				if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
+					if (map.containsKey("events")){
+						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
+						map_Events = (Map<String, Object>)map.get("events");
+						if (map_Events.containsKey("eventactor")){
+							map_Events.remove("eventactor");
+						}
+						List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
+						listEvents.add(map_Events);
+						map.put("asEventActor", listEvents.toArray());
+						map.remove("events");
+					}
+				}
+				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
 					list.add(WhoisUtil.toVCard(map, format));
@@ -809,7 +823,7 @@ public class QueryDAO {
 					keyName.equals(WhoisUtil.MULTIPRXLINK ) ||
 					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
 					keyName.equals(WhoisUtil.MULTIPRXREMARKS) ||
-					keyName.equals(WhoisUtil.JOINPUBLICIDS)) {
+					keyName.equals(WhoisUtil.JOINPUBLICIDS)){
 				mapInfo.put(keyName, list.toArray());
 			}else{
 				if (list.size() > 1) {
