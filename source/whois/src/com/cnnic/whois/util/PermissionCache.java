@@ -29,6 +29,9 @@ public class PermissionCache {
 	private Map<String, List<String>> registrarMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> noticesMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> publicIdsMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> secureDNSMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> dsDataMap = new HashMap<String, List<String>>();
+	private Map<String, List<String>> keyDataMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> eventsMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> remarksMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
@@ -66,6 +69,12 @@ public class PermissionCache {
 				columnCache.getNoticesKeyFileds());
 		publicIdsMap = getKeyMap(WhoisUtil.PUBLICIDS,
 				columnCache.getPublicIdsKeyFileds());
+		secureDNSMap = getKeyMap(WhoisUtil.SECUREDNS,
+				columnCache.getSecureDNSKeyFileds());
+		dsDataMap = getKeyMap(WhoisUtil.DSDATA,
+				columnCache.getDsDataKeyFileds());
+		keyDataMap = getKeyMap(WhoisUtil.KEYDATA,
+				columnCache.getKeyDataKeyFileds());
 		remarksMap = getKeyMap(WhoisUtil.REMARKS,
 				columnCache.getRemarksKeyFileds());
 		eventsMap = getKeyMap(WhoisUtil.EVENTS,
@@ -366,6 +375,61 @@ public class PermissionCache {
 		this.publicIdsMap = getKeyMap(WhoisUtil.PUBLICIDS,
 				columnCache.getPublicIdsKeyFileds());
 	}
+	
+	/**
+	 * Get SecureDNSMapKeyFileds
+	 * 
+	 * @param role
+	 * @return List
+	 */
+	public List<String> getSecureDNSMapKeyFileds(String role) {
+		return secureDNSMap.get(role);
+	}
+
+	/**
+	 * Set SecureDNSMapKeyFileds
+	 */
+	public void setSecureDNSMap() {
+		this.secureDNSMap = getKeyMap(WhoisUtil.SECUREDNS,
+				columnCache.getSecureDNSKeyFileds());
+	}
+	
+	/**
+	 * Get DsDataMapKeyFileds
+	 * 
+	 * @param role
+	 * @return List
+	 */
+	public List<String> getDsDataMapKeyFileds(String role) {
+		return dsDataMap.get(role);
+	}
+
+	/**
+	 * Set DsDataMapKeyFileds
+	 */
+	public void setDsDataMap() {
+		this.dsDataMap = getKeyMap(WhoisUtil.DSDATA,
+				columnCache.getDsDataKeyFileds());
+	}
+	
+	/**
+	 * Get KeyDataMapKeyFileds
+	 * 
+	 * @param role
+	 * @return List
+	 */
+	public List<String> getKeyDataMapKeyFileds(String role) {
+		return keyDataMap.get(role);
+	}
+
+	/**
+	 * Set DsDataMapKeyFileds
+	 */
+	public void setKeyDataMap() {
+		this.keyDataMap = getKeyMap(WhoisUtil.KEYDATA,
+				columnCache.getKeyDataKeyFileds());
+	}
+	
 	/**
 	 * Get EventsKeyFileds
 	 * 

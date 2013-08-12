@@ -28,6 +28,9 @@ public class ColumnCache {
 	private List<String> registrarKeyFileds = new ArrayList<String>();
 	private List<String> noticesKeyFileds = new ArrayList<String>();
 	private List<String> publicIdsKeyFileds = new ArrayList<String>();
+	private List<String> secureDNSKeyFileds = new ArrayList<String>();
+	private List<String> dsDataKeyFileds = new ArrayList<String>();
+	private List<String> keyDataKeyFileds = new ArrayList<String>();
 	private List<String> remarksKeyFileds = new ArrayList<String>();
 	private List<String> eventsKeyFileds = new ArrayList<String>();
 	private List<String> ErrorMessageKeyFileds = new ArrayList<String>();
@@ -51,6 +54,9 @@ public class ColumnCache {
 		registrarKeyFileds = getKeyList(WhoisUtil.REGISTRAR);
 		noticesKeyFileds = getKeyList(WhoisUtil.NOTICES);
 		publicIdsKeyFileds = getKeyList(WhoisUtil.PUBLICIDS);
+		secureDNSKeyFileds = getKeyList(WhoisUtil.SECUREDNS);
+		dsDataKeyFileds = getKeyList(WhoisUtil.DSDATA);
+		keyDataKeyFileds = getKeyList(WhoisUtil.KEYDATA);
 		remarksKeyFileds = getKeyList(WhoisUtil.REMARKS);
 		eventsKeyFileds = getKeyList(WhoisUtil.EVENTS);
 		ErrorMessageKeyFileds = getKeyList(WhoisUtil.ERRORMESSAGE);
@@ -320,6 +326,54 @@ public class ColumnCache {
 	 */
 	public void setPublicIdsKeyFileds() {
 		this.publicIdsKeyFileds = getKeyList(WhoisUtil.PUBLICIDS);
+	}
+	
+	/**
+	 * Get secureDNSKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getSecureDNSKeyFileds() {
+		return secureDNSKeyFileds;
+	}
+	
+	/**
+	 * Set secureDNSKeyFileds
+	 */
+	public void setSecureDNSKeyFileds() {
+		this.secureDNSKeyFileds = getKeyList(WhoisUtil.SECUREDNS);
+	}
+	
+	/**
+	 * Get dsDataKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getDsDataKeyFileds() {
+		return dsDataKeyFileds;
+	}
+	
+	/**
+	 * Set dsDataKeyFileds
+	 */
+	public void setDsDataKeyFileds() {
+		this.dsDataKeyFileds = getKeyList(WhoisUtil.DSDATA);
+	}
+	
+	/**
+	 * Get keyDataKeyFileds
+	 * 
+	 * @return List
+	 */
+	public List<String> getKeyDataKeyFileds() {
+		return keyDataKeyFileds;
+	}
+	
+	/**
+	 * Set keyDataKeyFileds
+	 */
+	public void setKeyDataKeyFileds() {
+		this.keyDataKeyFileds = getKeyList(WhoisUtil.KEYDATA);
 	}
 
 	/**
