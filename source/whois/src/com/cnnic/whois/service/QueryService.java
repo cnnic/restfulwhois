@@ -286,6 +286,63 @@ public class QueryService {
 
 		return map;
 	}
+	
+	/**
+	 * Query SecureDNS
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> querySecureDNS(String queryPara, String role, String format)
+			throws QueryException {
+		Map<String, Object> map = queryDAO.querySecureDNS(queryPara, role, format);
+
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+
+		return map;
+	}
+	
+	/**
+	 * Query DsData
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> queryDsData(String queryPara, String role, String format)
+			throws QueryException {
+		Map<String, Object> map = queryDAO.queryDsData(queryPara, role, format);
+
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+
+		return map;
+	}
+
+	/**
+	 * Query KeyData
+	 * 
+	 * @param queryPara
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 */
+	public Map<String, Object> queryKeyData(String queryPara, String role, String format)
+			throws QueryException {
+		Map<String, Object> map = queryDAO.queryKeyData(queryPara, role, format);
+
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+
+		return map;
+	}
 
 	/**
 	 * Query delegationKey type

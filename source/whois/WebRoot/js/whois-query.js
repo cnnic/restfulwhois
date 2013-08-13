@@ -48,6 +48,12 @@ function toTable(JsonObject){
 		} else if(keyName == "nameServer"){
 			
 			tableStr += toCommonTable(urlhead, values, "nameserver", "LdhName");
+		}else if(keyName == "secureDNS"){			
+			tableStr += toCommonTable(urlhead, values, "secureDNS", "SecureDNSID");
+		}else if(keyName == "dsData"){			
+			tableStr += toCommonTable(urlhead, values, "dsData", "DsDataID");
+		}else if(keyName == "keyData"){			
+			tableStr += toCommonTable(urlhead, values, "keyData", "KeyDataID");
 		}else if(keyName == "entities"){
 			
 			tableStr += toEntityTable(urlhead, values, "entity", "Roles", "Handle");
@@ -71,8 +77,11 @@ function toTable(JsonObject){
 }
 
 function toPublicIds(values, keyName){
-	var realValue = "type: " + values["type"] + "<br/> identifier: " + values["identifier"];
-	tableStr = "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
+	tableStr = "";
+	for(var i = 0; i < values.length; i++){
+		var realValue = "type: " + values[i]["type"] + "<br/> identifier: " + values[i]["identifier"];
+		tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
+	}
 	return tableStr;
 }
 function toIPAddresses(values, keyName, keyV4, keyV6){

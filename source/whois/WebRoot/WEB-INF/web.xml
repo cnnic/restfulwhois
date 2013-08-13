@@ -43,7 +43,7 @@
 		<url-pattern>/registrar/*</url-pattern>
 		<url-pattern>/variants/*</url-pattern>
 		<url-pattern>/events/*</url-pattern>
-		<url-pattern>/remarks/*</url-pattern>
+		<url-pattern>/remarks/*</url-pattern>		
 	</filter-mapping>
 	
 	<servlet>
@@ -68,6 +68,9 @@
 		<url-pattern>/events/*</url-pattern>
 		<url-pattern>/remarks/*</url-pattern>
 		<url-pattern>/help/*</url-pattern>
+		<url-pattern>/secureDNS/*</url-pattern>
+		<url-pattern>/dsData/*</url-pattern>
+		<url-pattern>/keyData/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthOpenIDServlet</servlet-name>
