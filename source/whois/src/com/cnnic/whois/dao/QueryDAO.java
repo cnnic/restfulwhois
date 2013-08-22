@@ -785,6 +785,7 @@ public class QueryDAO {
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
+		String entityHandle = null;
 
 		try {
 			stmt = connection.prepareStatement(sql);
@@ -869,6 +870,11 @@ public class QueryDAO {
 						}else {
 							fliedName = WhoisUtil.HANDLE;
 						}
+						
+						if (keyName.equals(WhoisUtil.JOINENTITESFILED))
+						{
+							entityHandle = results.getString(fliedName);
+						}
 
 						Object value = queryJoinTable(keyFlieds.get(i),
 								results.getString(fliedName), sql, role,
@@ -906,12 +912,17 @@ public class QueryDAO {
 						Map<String, Object> map_Events = new LinkedHashMap<String, Object>();
 						map_Events = (Map<String, Object>)map.get("events");
 						if (map_Events.containsKey("eventactor")){
-							map_Events.remove("eventactor");
+							String eventactor = (String)map_Events.get("eventactor");
+							if (entityHandle.equals(eventactor))
+							{
+								map_Events.remove("eventactor");
+								List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
+								listEvents.add(map_Events);
+								map.put("asEventActor", listEvents.toArray());
+								map.remove("events");
+							}														
 						}
-						List<Map<String, Object>> listEvents = new ArrayList<Map<String, Object>>();
-						listEvents.add(map_Events);
-						map.put("asEventActor", listEvents.toArray());
-						map.remove("events");
+						
 					}
 				}
 				

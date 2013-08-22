@@ -95,6 +95,10 @@ public class DataFormat {
 
 		while (iterr.hasNext()) {
 			String key = (String) iterr.next();
+			if (key.equals("vcardArray")){
+				sb.append(getXMLFromVcard(map.get(key)));
+				continue;
+			}
 
 			if (map.get(key) instanceof Map) {
 				sb.append("<" + delTrim(key) + ">\n");
@@ -110,7 +114,7 @@ public class DataFormat {
 						sb.append(getXMLFromMap((Map<String, Object>) obj,
 								iMode + 2));
 					} else if (obj instanceof List) {
-						sb.append(toVCardXml((List<String>) obj));
+						//sb.append(toVCardXml((List<String>) obj));
 					} else {
 						if(obj != null && !obj.toString().trim().equals("")){
 							sb.append(obj);
@@ -138,6 +142,30 @@ public class DataFormat {
 		}
 		if (0 == iMode)
 			sb.append("</root>\n");
+		return sb.toString();
+	}
+	
+	/**
+	 * Get XmlString
+	 * 
+	 * @param map
+	 * @param iMode
+	 * @return xmlString
+	 */
+	@SuppressWarnings("unchecked")
+	private static String getXMLFromVcard(Object VcardData) {
+		StringBuffer sb = new StringBuffer();
+		Object [] VcardValueArray = (Object [])VcardData;
+		List<Object> VcardValueList = (List<Object>)VcardValueArray[1];
+
+		sb.append("<" + delTrim("vcardArray") + ">\n");
+		sb.append("<" + "vcard" + ">\n");
+
+		for (int i = 0; i < VcardValueList.size(); i++){
+			sb.append(toVCardXml((List<String>)VcardValueList.get(i)));
+		}
+		sb.append("</" + "vcard" + ">\n");
+		sb.append("</" + delTrim("vcardArray") + ">\n");
 		return sb.toString();
 	}
 
@@ -217,27 +245,114 @@ public class DataFormat {
 	 * @return stringBuffer
 	 */
 	private static StringBuffer toVCardXml(List<String> vcard) {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer sb = new StringBuffer();		
 		for (int i = 0; i < vcard.size(); i++) {
 			String keyName = "";
 			if (vcard.get(i).equals("version")) {
 				keyName = "Version";
 			} else if (vcard.get(i).equals("fn")) {
-				keyName = "EntityName";
-			} else if (vcard.get(i).equals("label")) {
-				String[] keys = { "Street", "Street1", "Street2", "City", "SP",
-						"PostalCode", "CountyCode" };
-				int index = 0;
-				//Pay attention to ! The number in phrase "j < i + 9" is changed from 10 to 9 now, since if the number equals 10,
-				//there will be an error where the array index exceeds limit!
-				for (int j = i + 3; j < i + 9; j++) {
-					sb.append("<" + keys[index] + ">\n");
-					sb.append(vcard.get(j));
-					sb.append("</" + keys[index] + ">\n");
-					index++;
-				}
-				i = i + 9;
+				keyName = "Fn";
+			} else if (vcard.get(i).equals("bday")) {
+				keyName = "Bday";
+			} else if (vcard.get(i).equals("anniversary")) {
+				keyName = "Anniversary";
+			} else if (vcard.get(i).equals("gender")) {
+				keyName = "Gender";
+			} else if (vcard.get(i).equals("kind")) {
+				keyName = "Kind";
+			} else if (vcard.get(i).equals("lang")) {
+				keyName = "Lang";
+				String keyNameFront = "";
+				String Attribute = vcard.get(1);
+				String [] AttributeList;
+				Attribute = Attribute.replace("{", "");
+				Attribute = Attribute.replace("}", "");
+				AttributeList = Attribute.split(":");
+				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+				i = i + 3;
+				sb.append("<" + keyNameFront + ">\n");
+				sb.append("<" + vcard.get(2)+ ">\n");
+				sb.append(vcard.get(i));
+				sb.append("</" + vcard.get(2)+ ">\n");
+				sb.append("</" + keyName + ">\n");
+				continue;		
+			} else if (vcard.get(i).equals("org")) {
+				keyName = "Org";
+				String keyNameFront = "";
+				String Attribute = vcard.get(1);
+				String [] AttributeList;
+				Attribute = Attribute.replace("{", "");
+				Attribute = Attribute.replace("}", "");
+				AttributeList = Attribute.split(":");
+				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+				i = i + 3;
+				sb.append("<" + keyNameFront + ">\n");
+				sb.append("<" + vcard.get(2)+ ">\n");
+				sb.append(vcard.get(i));
+				sb.append("</" + vcard.get(2)+ ">\n");
+				sb.append("</" + keyName + ">\n");
 				continue;
+			} else if (vcard.get(i).equals("title")) {
+				keyName = "Title";
+			} else if (vcard.get(i).equals("role")) {
+				keyName = "Role";
+			} else if (vcard.get(i).equals("adr")) {
+				keyName = "Adr";
+				String keyNameFront = "";
+				String Attribute = vcard.get(1);
+				String [] AttributeList;
+				Attribute = Attribute.replace("{", "");
+				Attribute = Attribute.replace("}", "");
+				AttributeList = Attribute.split(":");
+				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+				i = i + 3;
+				
+				Object Value = vcard.get(3);
+				List<String> ValueList = (List<String>)Value; 
+				for (int k = 0; k < ValueList.size(); k++){
+					sb.append("<" + keyNameFront + ">\n");					
+					sb.append("<" + vcard.get(2)+ ">\n");
+					sb.append(ValueList.get(k));
+					sb.append("</" + vcard.get(2)+ ">\n");
+					sb.append("</" + keyName + ">\n");
+				}
+				continue;				
+			} else if (vcard.get(i).equals("geo")) {
+				keyName = "Geo";
+				String keyNameFront = "";
+				String Attribute = vcard.get(1);
+				String [] AttributeList;
+				Attribute = Attribute.replace("{", "");
+				Attribute = Attribute.replace("}", "");
+				AttributeList = Attribute.split(":");
+				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+				i = i + 3;
+				sb.append("<" + keyNameFront + ">\n");
+				sb.append("<" + vcard.get(2)+ ">\n");
+				sb.append(vcard.get(i));
+				sb.append("</" + vcard.get(2)+ ">\n");
+				sb.append("</" + keyName + ">\n");
+				continue;
+			}  else if (vcard.get(i).equals("key")) {
+				keyName = "Key";
+				String keyNameFront = "";
+				String Attribute = vcard.get(1);
+				String [] AttributeList;
+				Attribute = Attribute.replace("{", "");
+				Attribute = Attribute.replace("}", "");
+				AttributeList = Attribute.split(":");
+				keyNameFront = keyName + " " + AttributeList[0].replace("\"", "") + "=" + AttributeList[1];
+				i = i + 3;
+				sb.append("<" + keyNameFront + ">\n");
+				sb.append("<" + vcard.get(2)+ ">\n");
+				sb.append(vcard.get(i));
+				sb.append("</" + vcard.get(2)+ ">\n");
+				sb.append("</" + keyName + ">\n");
+				continue;
+			} else if (vcard.get(i).equals("tz")) {
+				keyName = "Tz";
+			} else if (vcard.get(i).equals("url")) {
+				keyName = "Url";
 			} else if (vcard.get(i).equals("email")) {
 				keyName = "Email";
 			} else if (vcard.get(i).equals("tel")) {
@@ -254,7 +369,9 @@ public class DataFormat {
 			}
 			i = i + 3;
 			sb.append("<" + keyName + ">\n");
+			sb.append("<" + vcard.get(2)+ ">\n");
 			sb.append(vcard.get(i));
+			sb.append("</" + vcard.get(2)+ ">\n");
 			sb.append("</" + keyName + ">\n");
 		}
 		return sb;

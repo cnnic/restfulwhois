@@ -63,7 +63,7 @@ function toTable(JsonObject){
 		}else if(keyName == "registrar"){
 			
 			tableStr += toSpecialTable(values, keyName, "Entity Names", "Handle", urlhead + "registrar" + "/");
-		}else if(keyName == "vCard"){
+		}else if(keyName == "vcardArray"){
 			tableStr += toVcardTable(values) ;
 		}else if(keyName == "ipAddresses"){
 			tableStr += toIPAddresses(values, keyName, "v4", "v6");
@@ -79,7 +79,7 @@ function toTable(JsonObject){
 function toPublicIds(values, keyName){
 	tableStr = "";
 	for(var i = 0; i < values.length; i++){
-		var realValue = "type: " + values[i]["type"] + "<br/> identifier: " + values[i]["identifier"];
+		var realValue = "Type: " + values[i]["type"] + "<br/> Identifier: " + values[i]["identifier"];
 		tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "</td></tr>";
 	}
 	return tableStr;
@@ -129,44 +129,71 @@ function toCommonTable(urlhead, values, keyName, attrName) {
 }
 function toVcardTable(values) {
 	var tableStr = "";
-	var value = (values+"").split(",");
-	var keyName = "";
-	for(var i = 0; i < value.length; i++){
-		
-		if(value[i] == "version"){
+	var valueList = values[1];
+	for (var k = 0; k < valueList.length; k++){
+		var element = valueList[k];
+		var keyName = element[0];
+		var value = element[3];
+		if(keyName == "version"){
 			keyName = "Version";
-		}else if(value[i] == "fn"){
-			keyName = "Entity Name";
-		}else if(value[i] == "label"){
-			var keys = new Array("Street", "Street1",
-					"Street2", "City", "SP", "Postal Code", "County Code");
-			var index = 0;
-			for(var j = i + 3; j < i + 10; j++){
-				tableStr += "<tr><td width='20%'>" + keys[index] + "</td><td>" + value[j] + "&nbsp;</td></tr>"
-				index++;
-			}
-			i = i + 9;
+		}else if(keyName == "fn"){
+			keyName = "Fn";
+		}else if(keyName == "bday"){
+			keyName = "Bday";
+		}else if(keyName == "anniversary"){
+			keyName = "Anniversary";
+		}else if(keyName == "gender"){
+			keyName = "Gender";
+		}else if(keyName == "kind"){
+			keyName = "Kind";
+		}else if(keyName == "lang"){
+			keyName = "Lang";
+		}else if(keyName == "org"){
+			keyName = "Org";
+		}else if(keyName == "title"){
+			keyName = "Title";
+		}else if(keyName == "role"){
+			keyName = "Role";
+		}else if(keyName == "geo"){
+			keyName = "Geo";
+		}else if(keyName == "key"){
+			keyName = "Key";
+		}else if(keyName == "tz"){
+			keyName = "Tz";
+		}else if(keyName == "url"){
+			keyName = "Url";
+		}else if(keyName == "adr"){
+			keyName = "Adr";
+			var realValue = "";
+			realValue = "Post Office Box: " + value[0] + "<br/>";
+			realValue += "Extended Address: " + value[1] + "<br/>";			
+			realValue += "Street Address: " + value[2] + "<br/>";			
+			realValue += "Locality: " + value[3] + "<br/>";			
+			realValue += "Region: " + value[4] + "<br/>";			
+			realValue += "Postal Code: " + value[5] + "<br/>";
+			realValue += "Country Name: " + value[6];		
+			tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + realValue + "&nbsp;</td></tr>";
 			continue;
-		}else if(value[i] == "email"){
+		}
+		else if(keyName == "email"){
 			keyName = "Email";
-		}else if(value[i] == "tel"){
-			if(value[i+1].indexOf("work") != -1){
+		}else if(keyName == "tel"){
+			if(element[1].indexOf("work") != -1){
 				keyName = "Office";
-			}else if(value[i+1].indexOf("fax") != -1){
+			}else if(element[1].indexOf("fax") != -1){
 				keyName = "Fax";
-			}else if(value[i+1].indexOf("cell") != -1){
+			}else if(element[1].indexOf("cell") != -1){
 				keyName = "Moblie";
 			}else{
 				keyName = "phonesId";
 			}
+		}else{
+			continue;
 		}
-		i = i + 3;
 		if(keyName != "phonesId"){
-			tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + value[i] + "&nbsp;</td></tr>"
-		}
-		
-	}
-	
+			tableStr += "<tr><td width='20%'>" + keyName + "</td><td>" + value + "&nbsp;</td></tr>"
+		}		
+	}	
 	return tableStr;
 }
 function toSpecialTable(values, keyName, dispAttrName, realAttrName, prefix) {
