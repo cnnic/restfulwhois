@@ -13,10 +13,13 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.index.DomainIndex;
+import com.cnnic.whois.bean.index.Index;
+import com.cnnic.whois.bean.index.NameServerIndex;
 import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-import com.cnnic.whois.service.IndexService;
+import com.cnnic.whois.service.DomainIndexService;
+import com.cnnic.whois.service.NameServerIndexService;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.PermissionCache;
@@ -27,7 +30,8 @@ public class QueryDAO {
 	private DataSource ds;
 	private PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
-	private IndexService indexService = IndexService.getIndexService();
+	private DomainIndexService domainIndexService = DomainIndexService.getIndexService();
+	private NameServerIndexService nameServerIndexService = NameServerIndexService.getIndexService();
 	/**
 	 * Connect to the datasource in the constructor
 	 * 
@@ -120,22 +124,25 @@ public class QueryDAO {
 		}
 		return map;
 	}
-
-	public Map<String, Object> fuzzyQueryDoamin(String queryInfo, String role, String format)
+	
+	public Map<String, Object> fuzzyQueryNameServer(String queryInfo, String role, String format)
 			throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		SearchCondition searchCondition = new SearchCondition(queryInfo);
 		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
-		SearchResult<DomainIndex> result = indexService.queryDomains(searchCondition);
+		SearchResult<NameServerIndex> result = nameServerIndexService.queryNameServers(searchCondition);
 		try {
 			connection = ds.getConnection();
-			Map<String, Object> domainMap = this.fuzzyQuery(connection, result,
-					permissionCache.getDNRDomainKeyFileds(role), "$mul$domains",
-					role, format);
-			if(domainMap != null){
-				map =  rdapConformance(map);
-				map.putAll(domainMap);
+			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
+					+ queryInfo + "'";
+			Map<String, Object> nsMap = fuzzyQuery(connection, result,selectSql,
+					permissionCache.getNameServerKeyFileds(role),
+					"$mul$nameServer", role, format);
+			if(nsMap != null){
+				map = rdapConformance(map);
+				map.putAll(nsMap);
+				addTruncatedParamToMap(map, result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -150,12 +157,58 @@ public class QueryDAO {
 		}
 		return map;
 	}
+
+	public Map<String, Object> fuzzyQueryDoamin(String domain, String domainPuny, String role, String format)
+			throws QueryException {
+		Connection connection = null;
+		Map<String, Object> map = null;
+		SearchCondition searchCondition = new SearchCondition("ldhName:"+domainPuny + " OR unicodeName:"+domain);
+		searchCondition.setRow(QueryService.MAX_SIZE_FUZZY_QUERY);
+		SearchResult<DomainIndex> result = domainIndexService.queryDomains(searchCondition);
+		if(result.getResultList().size()==0){
+			return map;
+		}
+		try {
+			connection = ds.getConnection();
+			String sql = WhoisUtil.SELECT_LIST_DNRDOMAIN;
+			DomainIndex domainIndex = result.getResultList().get(0);
+			if("rirDomain".equals(domainIndex.getDocType())){
+				sql = WhoisUtil.SELECT_LIST_RIRDOMAIN;
+			}
+			Map<String, Object> domainMap = this.fuzzyQuery(connection, result,sql,
+					permissionCache.getDNRDomainKeyFileds(role), "$mul$domains",
+					role, format);
+			if(domainMap != null){
+				map =  rdapConformance(map);
+				map.putAll(domainMap);
+				addTruncatedParamToMap(map, result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new QueryException(e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return map;
+	}
+
+	private void addTruncatedParamToMap(Map<String, Object> map,
+			SearchResult<? extends Index> result) {
+		if(result.getTotalResults()>QueryService.MAX_SIZE_FUZZY_QUERY){
+			map.put(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY, true);
+		}
+	}
 	
-	private Map<String, Object> fuzzyQuery(Connection connection, SearchResult<DomainIndex> domains,
-			List<String> keyFlieds, String keyName, String role, String format)
+	private Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
+			String selectSql,List<String> keyFlieds, String keyName, String role, String format)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			for(DomainIndex domain:domains.getResultList()){
+			for(Index domain:domains.getResultList()){
 				domain.initPropValueMap();
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {

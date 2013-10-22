@@ -2,8 +2,10 @@ package com.cnnic.whois.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +16,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
@@ -163,17 +167,22 @@ public class QueryServlet extends HttpServlet {
 			queryType = queryInfo;
 			//map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
+		if(this.isFuzzyQueryType(queryType)){
+			queryType = convertFuzzyQueryType(queryType);
+			queryPara = getFuzzyQueryString(request);
+		}
 		request.setAttribute("queryType", queryType);
-
+		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 		try {
-			int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 			switch (typeIndex) {
 			case 0:
 				map = processQueryAS(queryPara, role, format);
 				break;
 			case 1:
-				map = processQueryDomain(
-						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format);
+				String queryParaDecode = WhoisUtil.toChineseUrl(queryPara);
+				queryParaDecode = StringUtils.trim(queryParaDecode);
+				String queryParaPuny = IDN.toASCII(queryParaDecode);
+				map = processQueryDomain(queryParaDecode,queryParaPuny, role, format);
 				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
 				break;
 			case 2:
@@ -236,7 +245,7 @@ public class QueryServlet extends HttpServlet {
 			
 			response.setStatus(301);
 			
-			response.setHeader("Accecpt", format);
+			response.setHeader("Accept", format);
 			response.setHeader("Location", redirectUrl + queryPara);
 			response.setHeader("Connection", "close");
 			return;	
@@ -245,8 +254,110 @@ public class QueryServlet extends HttpServlet {
 			this.log(e.getMessage(), e);
 			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
 		}
+		if(isFuzzyQueryType(typeIndex) && isFuzzyQuery(queryPara) && isJsonOrXmlFormat(request)){
+			processFuzzyQueryJsonOrXmlRespone(request, response, map, typeIndex);
+		}else{
+			processRespone(request, response, map);
+		}
+	}
+	 
+	private boolean isFuzzyQueryType(String queryType) {
+		if("domains".equals(queryType)||"nameservers".equals(queryType)
+				||"entities".equals(queryType)){
+			return true;
+		}
+		return false;
+	}
+	
+	private String convertFuzzyQueryType(String queryType) {
+		if("domains".equals(queryType)){
+			return "domain";
+		}
+		if("nameservers".equals(queryType)){
+			return "nameserver";
+		}
+		if("entities".equals(queryType)){
+			return "entity";
+		}
+		return null;
+	}
+	
+	private String getFuzzyQueryString(HttpServletRequest request) {
+		Map<String, String> paramsMap = parseQueryParameter(request.getQueryString());
+		return paramsMap.get("name");
+	}
+
+	private boolean isJsonOrXmlFormat(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		if (format.equals("application/json") || format.equals("application/rdap+json") 
+				|| format.equals("application/rdap+json;application/json") || format.equals("application/xml")) {
+			return true;
+		}
+		return false;
+	}
+
+	private void processFuzzyQueryJsonOrXmlRespone(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> map,int queryType)
+			throws IOException, ServletException {
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		
-		processRespone(request, response, map);
+		String format = getFormatCookie(request);
+		PrintWriter out = response.getWriter();
+		String errorCode = "200"; 
+		
+		request.setAttribute("queryFormat", format);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
+		//set response status
+		if(map.containsKey("errorCode") || map.containsKey("Error Code")){
+			if(map.containsKey("errorCode"))
+				errorCode = map.get("errorCode").toString();
+			if (map.containsKey("Error Code"))
+				errorCode = map.get("Error Code").toString();
+			if (errorCode.equals(WhoisUtil.ERRORCODE)){
+				response.setStatus(404);
+			}
+			if (errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
+				response.setStatus(400);
+			}
+		}
+		Iterator<String> iterr = map.keySet().iterator();
+		String multiKey = null;
+		while(iterr.hasNext()){
+			String key =  iterr.next();
+			if(key.startsWith(WhoisUtil.MULTIPRX)){
+				multiKey = key;
+			}
+		}
+		if(multiKey != null){
+			Object jsonObj = map.get(multiKey);
+			map.remove(multiKey);
+			switch (queryType) {
+			case 1:
+				map.put("domainSearchResults", jsonObj);
+				break;
+			case 3:
+				map.put("entitySearchResults", jsonObj);
+				break;
+			case 9:
+				map.put("nameserverSearchResults", jsonObj);
+				break;
+			}
+		}
+		if (format.equals("application/json") || format.equals("application/rdap+json") || format.equals("application/rdap+json;application/json")) { // depending on the return type of the response corresponding data
+			response.setHeader("Content-Type", "application/json");
+			out.print(DataFormat.getJsonObject(map));
+		} else if (format.equals("application/xml")) {
+			response.setHeader("Content-Type", "application/xml");
+			out.write(DataFormat.getXmlString(map));
+		} 
+	}
+	private boolean isFuzzyQueryType(int typeIndex){
+		if(typeIndex == 1 ||typeIndex == 3 ||typeIndex == 9){
+			return true;
+		}
+		return false;
 	}
 	
 	private Map<String, Object> processQueryHelp(String queryPara, String role, String format) throws QueryException {
@@ -323,17 +434,19 @@ public class QueryServlet extends HttpServlet {
 	 * @return map collection
 	 * @throws QueryException
 	 * @throws RedirectExecption
+	 * @throws UnsupportedEncodingException 
 	 */
-	private Map<String, Object> processQueryDomain(String queryPara, String role, String format)
-			throws QueryException, RedirectExecption {
-		if(!validateDomainName(queryPara)){
+	private Map<String, Object> processQueryDomain(String queryPara, String queryParaPuny,
+			String role, String format)
+			throws QueryException, RedirectExecption, UnsupportedEncodingException {
+		if(!validateDomainName(queryParaPuny)){
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
 		QueryService queryService = QueryService.getQueryService();
 		if(isFuzzyQuery(queryPara)){
-			return queryService.fuzzyQueryDomain(queryPara, role, format);
+			return queryService.fuzzyQueryDomain(queryPara,queryParaPuny, role, format);
 		}
-		return queryService.queryDoamin(queryPara, role, format);
+		return queryService.queryDoamin(queryParaPuny, role, format);
 	}
 	
 	private boolean isFuzzyQuery(String domainName){
@@ -405,13 +518,17 @@ public class QueryServlet extends HttpServlet {
 	 * @param role
 	 * @return map collection
 	 * @throws QueryException
+	 * @throws RedirectExecption 
 	 */
 	private Map<String, Object> processQueryNameServer(String queryPara,
-			String role, String format) throws QueryException {
+			String role, String format) throws QueryException, RedirectExecption {
 		if (!verifyNameServer(queryPara))
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 
 		QueryService queryService = QueryService.getQueryService();
+		if(isFuzzyQuery(queryPara)){
+			return queryService.fuzzyQueryNameServer(queryPara, role, format);
+		}
 		return queryService.queryNameServer(queryPara, role, format);
 	}
 
@@ -424,7 +541,7 @@ public class QueryServlet extends HttpServlet {
 	private boolean verifyNameServer(String queryPara) {
 		if (!isBlankStr(queryPara))
 			return false;
-		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[0-9a-zA-Z][0-9a-zA-Z-]{0,62}(\\*)?\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62})?$";
+		String fuzzyReg = "^(?!-.)(?!.*?-$)((\\*)?[0-9a-zA-Z][0-9a-zA-Z-]{0,62}(\\*)?\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62}\\*?)?$";
 		if (queryPara.matches(fuzzyReg))
 			return true;
 		return false;
@@ -693,6 +810,8 @@ public class QueryServlet extends HttpServlet {
 			if(!errorCode.equals(WhoisUtil.ERRORCODE) && !errorCode.equals(WhoisUtil.COMMENDRRORCODE)){
 				if(htmlMap.containsKey(WhoisUtil.RDAPCONFORMANCEKEY))
 					htmlMap.remove(WhoisUtil.RDAPCONFORMANCEKEY);
+				if(htmlMap.containsKey(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY))
+					htmlMap.remove(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY);
 				request.setAttribute("JsonObject", DataFormat.getJsonObject(htmlMap));
 				RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
 				response.setContentType("application/html");
@@ -776,6 +895,25 @@ public class QueryServlet extends HttpServlet {
 			}
 		}
 		return result;
+	}
+	
+	public static Map<String, String> parseQueryParameter(String queryParameter) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (StringUtils.isEmpty(queryParameter)) {
+			return map;
+		}
+		int index = queryParameter.lastIndexOf("=");
+		int pos = queryParameter.length();
+		while (index != -1) {
+			String value = queryParameter.substring(index + 1, pos);
+			pos = index;
+			index = queryParameter.lastIndexOf("&", index);
+			String keyName = queryParameter.substring(index + 1, pos);
+			pos = index;
+			index = queryParameter.lastIndexOf("=", pos);
+			map.put(keyName, value);
+		}
+		return map;
 	}
 
 	/**

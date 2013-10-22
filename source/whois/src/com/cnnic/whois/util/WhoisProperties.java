@@ -61,8 +61,16 @@ public class WhoisProperties {
 		return Long.parseLong(resource.getProperty(EXPIRE_TIME));
 	}
 	
-	public static String getSolrUrl() {
-		return resource.getProperty("solr.url");
+	public static String getDomainSolrUrl() {
+		return resource.getProperty("solr.url.domain");
+	}
+	
+	public static String getNameServerSolrUrl() {
+		return resource.getProperty("solr.url.nameserver");
+	}
+	
+	public static String getEntitySolrUrl() {
+		return resource.getProperty("solr.url.entity");
 	}
 	
 	public static int getMaxSizeFuzzyQuery() {

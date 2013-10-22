@@ -17,6 +17,9 @@ import com.cnnic.whois.service.QueryService;
 public class WhoisUtil {
 	public static final String BLANKSPACE = "    ";
 	
+	public static final String FUZZY_DOMAINS = "domains";
+	public static final String FUZZY_NAMESERVER = "nameservers";
+	public static final String FUZZY_ENTITIES = "entities";
 	public static final String IP = "ip";
 	public static final String DMOAIN = "domain";
 	public static final String ENTITY = "entity";
@@ -46,6 +49,7 @@ public class WhoisUtil {
 	public static final String ENTITIES = "entities";
 	public static final String ERRORMESSAGE = "errormessage";
 	public static final String HELP = "help";
+	public static final String SEARCH_RESULTS_TRUNCATED_EKEY = "searchResultsTruncated";
 	public static final String RDAPCONFORMANCEKEY = "rdapConformance";
 	public static final String RDAPCONFORMANCE = "rdap_level_0";
 

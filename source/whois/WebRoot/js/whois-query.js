@@ -47,7 +47,7 @@ function toTable(JsonObject){
 			tableStr += toCommonTable(urlhead, values, keyName, keyName + "Id");
 		} else if(keyName == "nameServer"){
 			
-			tableStr += toCommonTable(urlhead, values, "nameserver", "LdhName");
+			tableStr += toCommonTable(urlhead, values, "nameserver", "Ldh Name");
 		}else if(keyName == "secureDNS"){			
 			tableStr += toCommonTable(urlhead, values, "secureDNS", "SecureDNSID");
 		}else if(keyName == "dsData"){			
@@ -282,11 +282,39 @@ function toStandaloneTable() {
 	return tableStr;
 }
 
-function processQuery() {
+function isFuzzyQuery(){
 	var queryInfo = $("#queryInfo").val();
 	var queryType = $('input:radio[name="optionType"]:checked').val();
 	var formatType = $('input:radio[name="showType"]:checked').val();
-	var matchStr =  /^(\w+)|([\u0391-\uFFE5]+)([\w\-\.]*)$/g;
+	var matchStr =  "*";
+	if(queryInfo.indexOf(matchStr) != -1){
+		console.log("contains");
+		return true;
+	}
+	return false;
+}
+
+function getFuzzyQueryPath(){
+	var queryType = $('input:radio[name="optionType"]:checked').val();
+	var queryParam = "?name=";
+	if(queryType == "domain"){
+		return "domains" + queryParam;
+	}
+	if(queryType == "nameserver"){
+		return "nameservers" + queryParam;
+	}
+	if(queryType == "entity"){
+		var queryInfo = $("#queryInfo").val();
+		queryParam = queryInfo.substring(0,queryInfo.indexOf(":"));
+		return "entities?" + queryParam +"=";
+	}
+}
+
+function processQuery() {
+	var queryInfo = $.trim($("#queryInfo").val());
+	var queryType = $('input:radio[name="optionType"]:checked').val();
+	var formatType = $('input:radio[name="showType"]:checked').val();
+	var matchStr =  /^(\*)?(\w+)|([\u0391-\uFFE5]+)([\w\-\.]*)$/g;
 	
 	if (queryInfo == "") {
 		alert("Please enter a query data");
@@ -311,6 +339,14 @@ function processQuery() {
 		alert("Please input correct param");
 		return false;
 	}
+	if (queryType == "entity") {
+		if(queryInfo.indexOf("*") != -1){
+			if(queryInfo.indexOf("fn:") != 0 && queryInfo.indexOf("handle:") != 0){
+				alert("Please input correct entity name or handle");
+				return false;
+			}
+		}
+	}
 	
 	if(formatType == undefined){
 		alert("Please select the retrun type");
@@ -322,7 +358,10 @@ function processQuery() {
 	document.cookie="Format=application/"+formatType+";path=/"; 
 	var urlContextPath = $("#pathUrl").val() + "/"; 
 	var url  = urlContextPath + queryType + "/" + queryInfo;
-	
+	if(isFuzzyQuery()){
+		var fuzzyQueryType = getFuzzyQueryPath();
+		url  = urlContextPath + fuzzyQueryType + removeFuzzyPrefixIfHas(queryInfo);
+	}
 //	alert(formatType);
 //	if(formatType == 'json'){
 //		$.ajax({
@@ -336,6 +375,14 @@ function processQuery() {
 //	} else {
 		window.location.href = url;
 //	}
+}
+function removeFuzzyPrefixIfHas(queryInfo){
+	if(queryInfo.indexOf("fn:")==0){
+		queryInfo = queryInfo.substring("fn:".length);
+	}else if(queryInfo.indexOf("handle:")==0){
+		queryInfo = queryInfo.substring("handle:".length);
+	}
+	return queryInfo;
 }
 function getJSON(data){
 	//var str = JSON.parse(data);

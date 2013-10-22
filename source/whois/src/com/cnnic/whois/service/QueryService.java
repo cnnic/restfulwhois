@@ -146,10 +146,25 @@ public class QueryService {
 
 		return map;
 	}
-
-	public Map<String, Object> fuzzyQueryDomain(String domain, String role, String format)
+	
+	public Map<String, Object> fuzzyQueryNameServer(String nameServer, String role, String format)
 			throws QueryException, RedirectExecption {
-		Map<String, Object> dnrMap = queryDAO.fuzzyQueryDoamin(domain, role, format);
+		Map<String, Object> dnrMap = queryDAO.fuzzyQueryNameServer(nameServer, role, format);
+		if (dnrMap == null) {
+			String queryType = WhoisUtil.DNRDOMAIN;
+			getRedirectionURL(queryType, nameServer);
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
+		if (dnrMap != null) {
+			wholeMap.putAll(dnrMap);
+		}
+		return wholeMap;
+	}
+
+	public Map<String, Object> fuzzyQueryDomain(String domain, String domainPuny, String role, String format)
+			throws QueryException, RedirectExecption {
+		Map<String, Object> dnrMap = queryDAO.fuzzyQueryDoamin(domain,domainPuny, role, format);
 		if (dnrMap == null) {
 			String queryType = WhoisUtil.DNRDOMAIN;
 			getRedirectionURL(queryType, domain);

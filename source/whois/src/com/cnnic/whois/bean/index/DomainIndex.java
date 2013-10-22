@@ -9,7 +9,7 @@ import org.apache.solr.client.solrj.beans.Field;
 
 import com.cnnic.whois.bean.Domain;
 
-public class DomainIndex {
+public class DomainIndex implements Index{
 
 	@Field("id")
 	private String id;

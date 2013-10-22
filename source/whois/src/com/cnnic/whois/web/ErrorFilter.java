@@ -84,9 +84,7 @@ public class ErrorFilter implements Filter {
 			if(queryInfo.indexOf("/") != -1){				
 				queryType = queryInfo.substring(0, queryInfo.indexOf("/"));
 			}else{
-				if(queryInfo.equals(WhoisUtil.HELP)){
-					queryType = queryInfo;
-				}
+				queryType = queryInfo;//domains?name=a*.cn ->domains
 			}
 		}
 		
@@ -101,7 +99,10 @@ public class ErrorFilter implements Filter {
 	
 	
 	private boolean isLegalType(String queryType){
-		if(queryType.equals(WhoisUtil.IP) ||
+		if(queryType.equals(WhoisUtil.FUZZY_DOMAINS) ||
+				queryType.equals(WhoisUtil.FUZZY_NAMESERVER) ||
+				queryType.equals(WhoisUtil.FUZZY_ENTITIES) ||
+				queryType.equals(WhoisUtil.IP) ||
 				queryType.equals(WhoisUtil.DMOAIN) ||
 				queryType.equals(WhoisUtil.ENTITY) ||
 				queryType.equals(WhoisUtil.AUTNUM) ||

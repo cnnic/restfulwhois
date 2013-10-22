@@ -16,14 +16,14 @@ import com.cnnic.whois.bean.index.SearchCondition;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisProperties;
 
-public class IndexService {
-	private static IndexService indexService = new IndexService(
-			WhoisProperties.getSolrUrl());
+public class DomainIndexService {
+	private static DomainIndexService indexService = new DomainIndexService(
+			WhoisProperties.getDomainSolrUrl());
 	private CommonsHttpSolrServer server;
 	private static String DNRDOMAIN_TYPE = "dnrDomain";
 	private static String RIRDOMAIN_TYPE = "rirDomain";
 
-	public static IndexService getIndexService() {
+	public static DomainIndexService getIndexService() {
 		return indexService;
 	}
 
@@ -74,7 +74,7 @@ public class IndexService {
 		searchResult.setResultList(indexes);
 	}
 
-	public IndexService(String url) {
+	public DomainIndexService(String url) {
 		try {
 			server = new CommonsHttpSolrServer(url);
 
