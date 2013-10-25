@@ -1,6 +1,8 @@
 package com.cnnic.whois.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +11,6 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
-
-import java.util.LinkedHashMap;
 
 public class QueryService {
 
@@ -186,7 +186,7 @@ public class QueryService {
 	 * @throws QueryException
 	 * @throws RedirectExecption
 	 */
-	public Map<String, Object> queryDoamin(String ipInfo, String role, String format)
+	public Map<String, Object> queryDomain(String ipInfo, String role, String format)
 			throws QueryException, RedirectExecption {
 		Map<String, Object> rirMap = queryDAO.queryRIRDoamin(ipInfo, role, format);
 		Map<String, Object> dnrMap = queryDAO.queryDNRDoamin(ipInfo, role, format);
@@ -211,16 +211,8 @@ public class QueryService {
 
 		return wholeMap;
 	}
-
-	/**
-	 * Query entity type
-	 * 
-	 * @param ipInfo
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	public Map<String, Object> queryEntity(String queryPara, String role, String format)
+	
+	public Map<String, Object> queryEntityOld(String queryPara, String role, String format)
 			throws QueryException {
 		Map<String, Object> rirMap = queryDAO.queryRIREntity(queryPara, role, format);
 		Map<String, Object> dnrMap = queryDAO.queryDNREntity(queryPara, role, format);
@@ -242,6 +234,34 @@ public class QueryService {
 			wholeMap.putAll(regMap);
 		}
 		return wholeMap;
+	}
+
+	/**
+	 * Query entity type
+	 * 
+	 * @param ipInfo
+	 * @param role
+	 * @return map collection
+	 * @throws QueryException
+	 * @throws SQLException 
+	 */
+	public Map<String, Object> queryEntity(String queryPara, String role, String format)
+			throws QueryException, SQLException {
+		Map<String, Object> map = queryDAO.queryEntity(queryPara, role, format);
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+		return map;
+	}
+	
+	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName, String queryPara, 
+			String role, String format)
+			throws QueryException, SQLException {
+		Map<String, Object> map = queryDAO.fuzzyQueryEntity(fuzzyQueryParamName,queryPara, role, format);
+		if (map == null) {
+			return queryError(WhoisUtil.ERRORCODE, role, format);
+		}
+		return map;
 	}
 
 	/**
