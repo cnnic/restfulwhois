@@ -11,6 +11,10 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import com.cnnic.whois.bean.index.DomainIndex;
+import com.cnnic.whois.bean.index.EntityIndex;
+import com.cnnic.whois.bean.index.NameServerIndex;
+
 public class PermissionCache {
 	private static PermissionCache permissionCache = new PermissionCache();
 
@@ -36,7 +40,7 @@ public class PermissionCache {
 	private Map<String, List<String>> remarksMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> helpMap = new HashMap<String, List<String>>();
-	
+
 	private ColumnCache columnCache = ColumnCache.getColumnCache();
 
 	/**
@@ -62,8 +66,8 @@ public class PermissionCache {
 		LinkMap = getKeyMap(WhoisUtil.LINKS, columnCache.getLinkKeyFileds());
 		postalAddressMap = getKeyMap(WhoisUtil.POSTALASSDESS,
 				columnCache.getPostalAddressKeyFileds());
-		//delegationMap = getKeyMap(WhoisUtil.DELEGATIONKEYS,
-				//columnCache.getDelegationKeyFileds());
+		// delegationMap = getKeyMap(WhoisUtil.DELEGATIONKEYS,
+		// columnCache.getDelegationKeyFileds());
 		registrarMap = getKeyMap(WhoisUtil.REGISTRAR,
 				columnCache.getRegistrarKeyFileds());
 		noticesMap = getKeyMap(WhoisUtil.NOTICES,
@@ -82,8 +86,7 @@ public class PermissionCache {
 				columnCache.getEventsKeyFileds());
 		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE,
 				columnCache.getErrorMessageKeyFileds());
-		helpMap = getKeyMap(WhoisUtil.HELP,
-				columnCache.getHelpKeyFields());
+		helpMap = getKeyMap(WhoisUtil.HELP, columnCache.getHelpKeyFields());
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class PermissionCache {
 	public void setIPMap() {
 		IPMap = getKeyMap(WhoisUtil.IP, columnCache.getIPKeyFileds());
 	}
-	
+
 	/**
 	 * Get ErrorMessageKeyFileds
 	 * 
@@ -121,12 +124,13 @@ public class PermissionCache {
 	public List<String> getErrorMessageKeyFileds(String role) {
 		return ErrorMessageMap.get(role);
 	}
-	
+
 	/**
 	 * Set ErrorMessageKeyFileds
 	 */
 	public void setErrorMessageMap() {
-		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE, columnCache.getIPKeyFileds());
+		ErrorMessageMap = getKeyMap(WhoisUtil.ERRORMESSAGE,
+				columnCache.getIPKeyFileds());
 	}
 
 	/**
@@ -226,6 +230,26 @@ public class PermissionCache {
 	 */
 	public List<String> getNameServerKeyFileds(String role) {
 		return NameServerMap.get(role);
+	}
+
+	public List<String> getKeyFiledsByClass(Object o, String role) {
+		if (o instanceof DomainIndex) {
+			if (((DomainIndex) o).isDnrDomain()) {
+				return getDNRDomainKeyFileds(role);
+			} else {
+				return getRIRDomainKeyFileds(role);
+			}
+		}
+		if (o instanceof NameServerIndex) {
+			return getNameServerKeyFileds(role);
+		}
+		if ((o instanceof EntityIndex)) {
+			if (((EntityIndex) o).isDnrEntity()) {
+				return getDNREntityKeyFileds(role);
+			}
+			return getRIREntityKeyFileds(role);
+		}
+		return new ArrayList<String>();
 	}
 
 	/**
@@ -360,7 +384,7 @@ public class PermissionCache {
 		this.noticesMap = getKeyMap(WhoisUtil.NOTICES,
 				columnCache.getNoticesKeyFileds());
 	}
-	
+
 	/**
 	 * Get PublicIdsKeyFileds
 	 * 
@@ -378,7 +402,7 @@ public class PermissionCache {
 		this.publicIdsMap = getKeyMap(WhoisUtil.PUBLICIDS,
 				columnCache.getPublicIdsKeyFileds());
 	}
-	
+
 	/**
 	 * Get SecureDNSMapKeyFileds
 	 * 
@@ -396,7 +420,7 @@ public class PermissionCache {
 		this.secureDNSMap = getKeyMap(WhoisUtil.SECUREDNS,
 				columnCache.getSecureDNSKeyFileds());
 	}
-	
+
 	/**
 	 * Get DsDataMapKeyFileds
 	 * 
@@ -414,7 +438,7 @@ public class PermissionCache {
 		this.dsDataMap = getKeyMap(WhoisUtil.DSDATA,
 				columnCache.getDsDataKeyFileds());
 	}
-	
+
 	/**
 	 * Get KeyDataMapKeyFileds
 	 * 
@@ -432,7 +456,7 @@ public class PermissionCache {
 		this.keyDataMap = getKeyMap(WhoisUtil.KEYDATA,
 				columnCache.getKeyDataKeyFileds());
 	}
-	
+
 	/**
 	 * Get EventsKeyFileds
 	 * 
@@ -442,6 +466,7 @@ public class PermissionCache {
 	public List<String> getEventsKeyFileds(String role) {
 		return eventsMap.get(role);
 	}
+
 	/**
 	 * Set EventsKeyFileds
 	 */
@@ -449,6 +474,7 @@ public class PermissionCache {
 		this.eventsMap = getKeyMap(WhoisUtil.EVENTS,
 				columnCache.getEventsKeyFileds());
 	}
+
 	/**
 	 * Get RemarksKeyFileds
 	 * 
@@ -458,6 +484,7 @@ public class PermissionCache {
 	public List<String> getRemarksKeyFileds(String role) {
 		return remarksMap.get(role);
 	}
+
 	/**
 	 * Set RemarksKeyFileds
 	 */
@@ -467,7 +494,8 @@ public class PermissionCache {
 	}
 
 	/**
-	 * Collection to obtain the proper permission and the field that map collection
+	 * Collection to obtain the proper permission and the field that map
+	 * collection
 	 * 
 	 * @param tableName
 	 * @param coulumNameList
@@ -479,7 +507,7 @@ public class PermissionCache {
 		List<String> anonymousDataList = new ArrayList<String>();
 		List<String> authenticatedDataList = new ArrayList<String>();
 		List<String> rootDataList = new ArrayList<String>();
-		
+
 		try {
 			InitialContext ctx = new InitialContext();
 			DataSource ds = (DataSource) ctx.lookup(WhoisUtil.JNDI_NAME);
@@ -533,7 +561,7 @@ public class PermissionCache {
 			keyMap.put("anonymous", anonymousList);
 			keyMap.put("authenticated", authenticatedList);
 			keyMap.put("root", rootList);
-			
+
 			return keyMap;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -545,9 +573,8 @@ public class PermissionCache {
 	public List<String> getHelpKeyFileds(String role) {
 		return helpMap.get(role);
 	}
-	
+
 	public void setHelpMap() {
-		this.helpMap = getKeyMap(WhoisUtil.HELP,
-				columnCache.getHelpKeyFields());
+		this.helpMap = getKeyMap(WhoisUtil.HELP, columnCache.getHelpKeyFields());
 	}
 }
