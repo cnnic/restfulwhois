@@ -9,27 +9,29 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.QueryJoinType;
-import com.cnnic.whois.service.DomainIndexService;
+import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.service.EntityIndexService;
-import com.cnnic.whois.service.NameServerIndexService;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
-public abstract class DbQueryDAO implements QueryDao {
+public abstract class AbstractDbQueryDAO implements QueryDao {
 	protected DataSource ds;
-	List<QueryDao> queryDaos;
+	List<AbstractDbQueryDAO> queryDaos;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
-	protected DomainIndexService domainIndexService = DomainIndexService
-			.getIndexService();
-	protected NameServerIndexService nameServerIndexService = NameServerIndexService
-			.getIndexService();
 	protected EntityIndexService entityIndexService = EntityIndexService
 			.getIndexService();
 
-	protected void handleField(String keyName, String role, String format,
-			ResultSet results, Map<String, Object> map, String field)
-			throws SQLException {
+	protected abstract boolean supportJoinType(QueryType queryType,
+			QueryJoinType queryJoinType);
+
+	protected abstract String getJoinFieldIdColumnName();
+
+	protected abstract Map<String, Object> queryJoins(String handle,
+			String role, String format);
+
+	protected void handleField(String role, String format, ResultSet results,
+			Map<String, Object> map, String field) throws SQLException {
 		Object resultsInfo;
 		if (field.startsWith(WhoisUtil.ARRAYFILEDPRX)) {
 			String key = field.substring(WhoisUtil.ARRAYFILEDPRX.length());
@@ -45,16 +47,11 @@ public abstract class DbQueryDAO implements QueryDao {
 		} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 			String joinFieldIdColumnName = getJoinFieldIdColumnName();
 			String joinFieldValue = results.getString(joinFieldIdColumnName);
-			QueryJoinType queryJoinType = getQueryJoinType();
-			queryJoinEntity(queryJoinType, joinFieldValue, keyName, role,
-					format, map, field);
+			QueryType queryType = getQueryType();
+			queryJoinEntity(queryType, joinFieldValue, role, format, map, field);
 		} else {
 			queryNormalField(format, results, map, field);
 		}
-	}
-
-	public QueryJoinType getQueryJoinType() {
-		return null;
 	}
 
 	protected void queryNormalField(String format, ResultSet results,
@@ -73,14 +70,14 @@ public abstract class DbQueryDAO implements QueryDao {
 		}
 	}
 
-	public void queryJoinEntity(QueryJoinType queryJoinType, String handle,
-			String keyName, String role, String format,
-			Map<String, Object> map, String field) throws SQLException {
+	public void queryJoinEntity(QueryType queryType, String handle,
+			String role, String format, Map<String, Object> map, String field) {
 		String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
-		for (QueryDao queryDao : queryDaos) {
-			if (queryDao.supportJoinType(queryJoinType)) {
+		QueryJoinType joinType = QueryJoinType.getQueryJoinType(key);
+		for (AbstractDbQueryDAO queryDao : queryDaos) {
+			if (queryDao.supportJoinType(queryType, joinType)) {
 				Object value = queryDao.queryJoins(handle, role, format);
-				if (value != null){
+				if (value != null) {
 					map.put(key, value);
 				}
 				break;

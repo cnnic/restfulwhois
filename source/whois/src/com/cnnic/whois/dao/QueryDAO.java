@@ -311,12 +311,12 @@ public class QueryDAO {
 						}
 					}
 				}
+				handleIpWhenQueryNs(keyName, format, map);
 				//vcard format
 				if(keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					list.add(WhoisUtil.toVCard(map, format));
-				}else{
-					list.add(map);
+					map = WhoisUtil.toVCard(map, format);
 				}
+				list.add(map);
 			}
 			if (list.size() == 0){
 				return null;
@@ -1127,16 +1127,7 @@ public class QueryDAO {
 				}
 				
 				//v4v6 addresses
-				if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
-					Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
-					Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-					map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
-					IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-					map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
-					map.put(WhoisUtil.IPPREFIX, map_IP);
-					map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
-					map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
-				}
+				handleIpWhenQueryNs(keyName, format, map);
 				
 				//asevent
 				if (keyName.equals(WhoisUtil.JOINENTITESFILED)){
@@ -1161,10 +1152,9 @@ public class QueryDAO {
 				
 				//vcard format
 				if(keyName.equals(WhoisUtil.JOINENTITESFILED) || keyName.equals(WhoisUtil.MULTIPRXENTITY)){
-					list.add(WhoisUtil.toVCard(map, format));
-				}else{
-					list.add(map);
+					map = WhoisUtil.toVCard(map, format);
 				}
+				list.add(map);
 			}
 
 			if (list.size() == 0)
@@ -1204,6 +1194,20 @@ public class QueryDAO {
 				} catch (SQLException se) {
 				}
 			}
+		}
+	}
+
+	private void handleIpWhenQueryNs(String keyName, String format,
+			Map<String, Object> map) {
+		if (keyName.equals("$mul$nameServer") || keyName.equals("$join$nameServer")){
+			Map<String, Object> map_IP = new LinkedHashMap<String, Object>();
+			Object IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+			map_IP.put(WhoisUtil.IPV4PREFIX, IPAddressArray);
+			IPAddressArray = map.get(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
+			map_IP.put(WhoisUtil.IPV6PREFIX, IPAddressArray);
+			map.put(WhoisUtil.IPPREFIX, map_IP);
+			map.remove(WhoisUtil.getDisplayKeyName("IPV4_Addresses", format));
+			map.remove(WhoisUtil.getDisplayKeyName("IPV6_Addresses", format));
 		}
 	}
 	
