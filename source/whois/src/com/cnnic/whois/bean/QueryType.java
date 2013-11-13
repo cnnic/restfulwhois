@@ -5,7 +5,9 @@ public enum QueryType {
 			"autnum"), DSDATA("dsData"), EVENTS("events"), HELP("help"), IP(
 			"ip"), KEYDATA("keyData"), LINKS("links"), NOTICES("notices"), PHONES(
 			"phones"), POSTALADDRESS("postalAddress"), REMARKS("remarks"), SECUREDNS(
-			"secureDNS"), VARIANTS("variants");
+			"secureDNS"), VARIANTS("variants"), DNRDOMAIN("dnrDomain"), RIRDOMAIN(
+			"rirDomain"), DNRENTITY("dnrEntity"), RIRENTITY("rirEntity"), ENTITYSEARCH(
+			"entitySearch");
 	private String name;
 
 	private QueryType(String name) {

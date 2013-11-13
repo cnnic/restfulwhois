@@ -8,6 +8,16 @@ public enum QueryJoinType {
 			"variants");
 	private String name;
 
+	public static QueryJoinType getQueryJoinType(String name) {
+		QueryJoinType[] queryJoinTypes = QueryJoinType.values();
+		for (QueryJoinType joinType : queryJoinTypes) {
+			if (joinType.getName().equals(name)) {
+				return joinType;
+			}
+		}
+		return null;
+	}
+
 	private QueryJoinType(String name) {
 		this.setName(name);
 	}
