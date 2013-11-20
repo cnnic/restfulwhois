@@ -2,11 +2,8 @@ package com.cnnic.whois.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.IDN;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,116 +20,34 @@ import org.apache.commons.lang.StringUtils;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-import com.cnnic.whois.service.QueryService;
+import com.cnnic.whois.service.index.QueryServiceExecutor;
+import com.cnnic.whois.service.index.QueryServiceHelper;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
 
 
 public class QueryServlet extends HttpServlet {
-	private static Long MIN_AS_NUM = 0L;
-	private static Long MAX_AS_NUM = 4294967295L;
-	
-	/**
-	 * Called by the server (via the service method) to allow a servlet to
-	 * handle a POST request. The HTTP POST method allows the client to send
-	 * data of unlimited length to the Web server a single time and is useful
-	 * when posting information such as credit card numbers. When overriding
-	 * this method, read the request data, write the response headers, get the
-	 * response's writer or output stream object, and finally, write the
-	 * response data. It's best to include content type and encoding. When using
-	 * a PrintWriter object to return the response, set the content type before
-	 * accessing the PrintWriter object.
-	 * 
-	 * The servlet container must write the headers before committing the
-	 * response, because in HTTP the headers must be sent before the response
-	 * body.
-	 * 
-	 * Where possible, set the Content-Length header (with the
-	 * ServletResponse.setContentLength(int) method), to allow the servlet
-	 * container to use a persistent connection to return its response to the
-	 * client, improving performance. The content length is automatically set if
-	 * the entire response fits inside the response buffer.
-	 * 
-	 * When using HTTP 1.1 chunked encoding (which means that the response has a
-	 * Transfer-Encoding header), do not set the Content-Length header.
-	 * 
-	 * This method does not need to be either safe or idempotent. Operations
-	 * requested through POST can have side effects for which the user can be
-	 * held accountable, for example, updating stored data or buying items
-	 * online.
-	 * 
-	 * If the HTTP POST request is incorrectly formatted, doPost returns an HTTP
-	 * "Bad Request" message.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
-	 */
+
+	private static final long serialVersionUID = 1L;
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		try {
 			processRequest(request, response);
 		} catch (QueryException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}		
 	}
 
-	/**
-	 * Called by the server (via the service method) to allow a servlet to
-	 * handle a GET request. Overriding this method to support a GET request
-	 * also automatically supports an HTTP HEAD request. A HEAD request is a GET
-	 * request that returns no body in the response, only the request header
-	 * fields.
-	 * 
-	 * When overriding this method, read the request data, write the response
-	 * headers, get the response's writer or output stream object, and finally,
-	 * write the response data. It's best to include content type and encoding.
-	 * When using a PrintWriter object to return the response, set the content
-	 * type before accessing the PrintWriter object.
-	 * 
-	 * The servlet container must write the headers before committing the
-	 * response, because in HTTP the headers must be sent before the response
-	 * body.
-	 * 
-	 * Where possible, set the Content-Length header (with the
-	 * ServletResponse.setContentLength(int) method), to allow the servlet
-	 * container to use a persistent connection to return its response to the
-	 * client, improving performance. The content length is automatically set if
-	 * the entire response fits inside the response buffer.
-	 * 
-	 * When using HTTP 1.1 chunked encoding (which means that the response has a
-	 * Transfer-Encoding header), do not set the Content-Length header.
-	 * 
-	 * The GET method should be safe, that is, without any side effects for
-	 * which users are held responsible. For example, most form queries have no
-	 * side effects. If a client request is intended to change stored data, the
-	 * request should use some other HTTP method.
-	 * 
-	 * The GET method should also be idempotent, meaning that it can be safely
-	 * repeated. Sometimes making a method safe also makes it idempotent. For
-	 * example, repeating queries is both safe and idempotent, but buying a
-	 * product online or modifying data is neither safe nor idempotent.
-	 * 
-	 * If the request is incorrectly formatted, doGet returns an HTTP
-	 * "Bad Request" message.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServletException
-	 */
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		try {
 			processRequest(request, response);
 		} catch (QueryException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -157,12 +72,13 @@ public class QueryServlet extends HttpServlet {
 			HttpServletResponse response) throws IOException, ServletException, QueryException, SQLException {
 
 		Map<String, Object> map = null;
-		char[] n = request.getRequestURI().toCharArray();
-		byte[] b = new byte[n.length];
-        for (int i = 0; i < n.length; i++) {
-            b[i] = (byte)n[i];
-        }
-        String str = new String(b, "UTF-8"); 
+//		char[] n = request.getRequestURI().toCharArray();
+//		byte[] b = new byte[n.length];
+//        for (int i = 0; i < n.length; i++) {
+//            b[i] = (byte)n[i];
+//        }
+//        String str = new String(b, "UTF-8"); 
+        String str = new String(request.getRequestURI().trim().getBytes("ISO8859-1"), "UTF-8");
 		String queryInfo = str.substring(request.getContextPath().length() + 1);
 		String queryType = "";
 		String queryPara = "";
@@ -183,88 +99,20 @@ public class QueryServlet extends HttpServlet {
 			//map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
 		}
 		boolean isFuzzyQuery = ValidateUtils.isFuzzyQueryType(queryType);
-		if(isFuzzyQuery){
-			queryPara = getFuzzyQueryString(request,queryType);
-			queryType = ValidateUtils.convertFuzzyQueryType(queryType);
-		}
+//		if(isFuzzyQuery){
+//			queryPara = getFuzzyQueryString(request,queryType);
+//			queryType = ValidateUtils.convertFuzzyQueryType(queryType);
+//		}
 		request.setAttribute("queryType", queryType);
 		int typeIndex = Arrays.binarySearch(WhoisUtil.queryTypes, queryType); //according to the type of the parameter type query
 		PageBean page = getPageParam(request);
-		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
-			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
-		}
+//		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
+//			page.setMaxRecords(QueryService.MAX_SIZE_FUZZY_QUERY);//json/xml set max size
+//		}
 		try {
-			switch (typeIndex) {
-			case 0:
-				map = processQueryAS(queryPara, role, format);
-				break;
-			case 1:
-				String queryParaDecode = WhoisUtil.toChineseUrl(queryPara);
-				String queryParaPuny = "";
-				try{
-					queryParaDecode = StringUtils.trim(queryParaDecode);
-					queryParaPuny = IDN.toASCII(queryParaDecode);//long lable exception
-				}catch(Exception e){
-					map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-					processRespone(request, response, map);
-					return;
-				}
-				map = processQueryDomain(isFuzzyQuery,queryParaDecode,queryParaPuny, role, format,page,request);
-				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
-				break;
-			case 2:
-				map = processQueryDsData(queryPara, role, format);
-				break;
-			case 3:
-				String queryParaWithoutPrefix = removeFuzzyPrefixIfHas(isFuzzyQuery,queryPara);
-				map = processQueryEntity(isFuzzyQuery,WhoisUtil.toChineseUrl(queryParaWithoutPrefix), role,
-						format,request,page);
-				break;
-			case 4:
-				map = processQueryEvents(queryPara, role, format);
-				break;
-			case 5:
-				map = processQueryHelp(queryPara, role, format);
-				break;
-			case 6:
-				map = processQueryIP(queryPara, role, format);
-				break;
-			case 7:
-				map = processQueryKeyData(queryPara, role, format);
-				break;
-			case 8:
-				map = processQueryLinks(queryPara, role, format);
-				break;
-			case 9:
-				map = processQueryNameServer(isFuzzyQuery,
-						IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)), role, format,page,request);
-				queryPara = IDN.toUnicode(IDN.toASCII(WhoisUtil.toChineseUrl(queryPara)));
-				break;
-			case 10:
-				map = processQueryNotices(queryPara, role, format);
-				break;
-			case 11:
-				map = processQueryPhones(queryPara, role, format);
-				break;
-			case 12:
-				map = processQueryPostalAddress(queryPara, role, format);
-				break;
-			case 13:
-				map = processQueryRegistrar(queryPara, role, format);
-				break;
-			case 14:
-				map = processQueryRemarks(queryPara, role, format);
-				break;			
-			case 15:
-				map = processQuerySecureDNS(queryPara, role, format);
-				break;
-			case 16:
-				map = processQueryVariants(queryPara, role, format);
-				break;
-			default:
-				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-				break;
-			}
+			QueryServiceExecutor queryServiceExecutor = QueryServiceExecutor.getServletQueryServiceExecutor();
+			map = queryServiceExecutor.query(queryType, queryPara, role, format, isFuzzyQuery, page, request);
+			
 			String queryParaInput = queryPara;
 			queryParaInput = addPrefixBeforeParaIfEntityFuzzy(isFuzzyQuery,request, queryPara,typeIndex);;
 			request.setAttribute("queryPara", WhoisUtil.toChineseUrl(queryParaInput));
@@ -313,59 +161,11 @@ public class QueryServlet extends HttpServlet {
 		if(StringUtils.isBlank(queryPara)){
 			return queryPara;
 		}
-		String fuzzyQueryParamName = getEntityFuzzyQueryParamName(request);
+		String fuzzyQueryParamName = QueryServiceHelper.getEntityFuzzyQueryParamName(request.getQueryString());
 		if(!queryPara.startsWith(fuzzyQueryParamName + ":")){
 			queryPara = fuzzyQueryParamName + ":" + queryPara;
 		}
 		return queryPara;
-	}
-	 
-	private String removeFuzzyPrefixIfHas(boolean isFuzzyQuery,String queryPara) {
-		if(StringUtils.isBlank(queryPara)){
-			return queryPara;
-		}
-		if(!isFuzzyQuery){
-			return queryPara;
-		}
-		return queryPara.replaceFirst("fn:", "").replaceFirst("handle:", "");
-	}
-	
-	private String getFuzzyQueryString(HttpServletRequest request, String queryType) 
-			throws UnsupportedEncodingException {
-		String queryString = request.getQueryString();
-		if(StringUtils.isBlank(queryString)){
-			return StringUtils.EMPTY;
-		}
-		byte[] bytesQ = queryString.getBytes("iso8859-1");
-		String queryStringDecode = new String(bytesQ,"UTF-8");
-		Map<String, String> paramsMap = parseQueryParameter(queryStringDecode);
-		if("entities".equals(queryType)){
-			String fnParamValue = paramsMap.get("fn");
-			if(StringUtils.isBlank(fnParamValue)){
-				fnParamValue = paramsMap.get("handle");
-			}
-			return fnParamValue;
-		}else{
-			String nameParamValue = paramsMap.get("name");
-			return nameParamValue==null?"":nameParamValue;
-		}
-	}
-	
-	private String getEntityFuzzyQueryParamName(HttpServletRequest request) {
-		Map<String, String> paramsMap = parseQueryParameter(request.getQueryString());
-		if(paramsMap.containsKey("fn")){
-			return "fn";
-		}
-		return "handle";
-	}
-
-	private boolean isJsonOrXmlFormat(HttpServletRequest request) {
-		String format = getFormatCookie(request);
-		if (format.equals("application/json") || format.equals("application/rdap+json") 
-				|| format.equals("application/rdap+json;application/json") || format.equals("application/xml")) {
-			return true;
-		}
-		return false;
 	}
 
 	private void processFuzzyQueryJsonOrXmlRespone(HttpServletRequest request,
@@ -426,362 +226,7 @@ public class QueryServlet extends HttpServlet {
 		} 
 	}
 	
-	private Map<String, Object> processQueryHelp(String queryPara, String role, String format) throws QueryException {
-		QueryService queryService = QueryService.getQueryService();
-		if(!queryPara.equals("")){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		}
-		return queryService.queryHelp("helpID", role, format);
-	}
-
 	
-	/**
-	 * Query ip type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 * @throws NumberFormatException
-	 * @throws RedirectExecption
-	 */
-	private Map<String, Object> processQueryIP(String queryPara, String role, String format)
-			throws QueryException, NumberFormatException, RedirectExecption {
-		String ipLength = "0";
-		String strInfo = queryPara;
-
-		if (queryPara.indexOf(WhoisUtil.PRX) >= 0) {
-			String[] infoArray = queryPara.split(WhoisUtil.PRX);
-			if(infoArray.length > 2){//1.1.1.1//32
-				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-			}
-			if(infoArray.length > 1){
-				strInfo = infoArray[0];
-				ipLength = infoArray[1];
-			}
-		}
-
-		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		}
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryIP(strInfo, Integer.parseInt(ipLength), role, format);
-	}
-
-	/**
-	 * Query domain type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @param page 
-	 * @param request 
-	 * @return map collection
-	 * @throws QueryException
-	 * @throws RedirectExecption
-	 * @throws UnsupportedEncodingException 
-	 */
-	private Map<String, Object> processQueryDomain(boolean isFuzzyQuery,String queryPara, String queryParaPuny,
-			String role, String format, PageBean page, HttpServletRequest request)
-			throws QueryException, RedirectExecption, UnsupportedEncodingException {
-		if(!ValidateUtils.validateDomainName(queryParaPuny)){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		}
-		
-		QueryService queryService = QueryService.getQueryService();
-		if(isFuzzyQuery){
-			request.setAttribute("pageBean", page);
-			request.setAttribute("queryPath", "domains");
-			return queryService.fuzzyQueryDomain(queryPara,queryParaPuny, role, format,page);
-		}
-		return queryService.queryDomain(queryParaPuny, role, format);
-	}
-
-	/**
-	 * Query as type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 * @throws RedirectExecption
-	 */
-	private Map<String, Object> processQueryAS(String queryPara, String role, String format)
-			throws QueryException, RedirectExecption {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		if (!queryPara.matches("^[1-9][0-9]{0,9}$"))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		Long longValue = Long.valueOf(queryPara);
-		if(longValue<=MIN_AS_NUM || longValue>=MAX_AS_NUM){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-		}
-		
-		try {
-			int queryInfo = Integer.parseInt(queryPara);
-			QueryService queryService = QueryService.getQueryService();
-			return queryService.queryAS(queryInfo, role, format);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			this.log(e.getMessage(), e);
-			throw new QueryException(e);
-		}
-
-	}
-
-	/**
-	 * Query entity type
-	 * 
-	 * @param queryParaValue
-	 * @param role
-	 * @param request 
-	 * @param page 
-	 * @return map collection
-	 * @throws QueryException
-	 * @throws SQLException 
-	 */
-	private Map<String, Object> processQueryEntity(boolean isFuzzyQuery,String queryParaValue, 
-			String role, String format, HttpServletRequest request, PageBean page)
-			throws QueryException, SQLException {
-		if (!isInvalidEntityStr(queryParaValue))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		if(isFuzzyQuery){
-			String fuzzyQueryParamName = getEntityFuzzyQueryParamName(request);
-			String fuzzyQuerySolrPropName = convertEntityFuzzyQueryParamNameToSolrPropName(fuzzyQueryParamName);
-			Map<String, Object> result = queryService.fuzzyQueryEntity(fuzzyQuerySolrPropName,
-					queryParaValue, role, format,page);
-			request.setAttribute("pageBean", page);
-			request.setAttribute("queryPath", "entities");
-			return result;
-		}
-		return queryService.queryEntity(queryParaValue, role, format);
-	}
-
-	private String convertEntityFuzzyQueryParamNameToSolrPropName(
-			String fuzzyQueryParamName) {
-		if("fn".equals(fuzzyQueryParamName)){
-			return "entityNames";
-		}
-		return fuzzyQueryParamName;
-	}
-
-	/**
-	 * Query nameServer type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @param page 
-	 * @param request 
-	 * @return map collection
-	 * @throws QueryException
-	 * @throws RedirectExecption 
-	 */
-	private Map<String, Object> processQueryNameServer(boolean isFuzzyQuery,String queryPara,
-			String role, String format, PageBean page, HttpServletRequest request) throws QueryException, RedirectExecption {
-		if (!ValidateUtils.verifyNameServer(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		if(isFuzzyQuery){
-			request.setAttribute("pageBean", page);
-			request.setAttribute("queryPath", "nameservers");
-			return queryService.fuzzyQueryNameServer(queryPara, role, format,page);
-		}
-		return queryService.queryNameServer(queryPara, role, format);
-	}
-	
-	/**
-	 * Query link type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryLinks(String queryPara, String role, String format)
-			throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryLinks(queryPara, role, format);
-	}
-
-	/**
-	 * Query phone type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryPhones(String queryPara, String role, String format)
-			throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryPhones(queryPara, role, format);
-	}
-
-	/**
-	 * Query postalAddress type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryPostalAddress(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryPostalAddress(queryPara, role, format);
-	}
-
-	/**
-	 * Query variants type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryVariants(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryVariants(queryPara, role, format);
-	}
-	
-	/**
-	 * Query SecureDNS
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQuerySecureDNS(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.querySecureDNS(queryPara, role, format);
-	}
-	
-	/**
-	 * Query DsData
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryDsData(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryDsData(queryPara, role, format);
-	}
-	
-	/**
-	 * Query KeyData
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryKeyData(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryKeyData(queryPara, role, format);
-	}
-
-	/**
-	 * Query notices type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryNotices(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryNotices(queryPara, role, format);
-	}
-
-	/**
-	 * Query registrar type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryRegistrar(String queryPara,
-			String role, String format) throws QueryException {
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryRegistrar(queryPara, role, true, format);
-	}
-	/**
-	 * Query Remarks type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryRemarks(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryRemarks(queryPara, role, format);
-	}
-	
-	/**
-	 * Query Events type
-	 * 
-	 * @param queryPara
-	 * @param role
-	 * @return map collection
-	 * @throws QueryException
-	 */
-	private Map<String, Object> processQueryEvents(String queryPara,
-			String role, String format) throws QueryException {
-		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
-
-		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryEvents(queryPara, role, format);
-	}
-	
-	private boolean isInvalidEntityStr(String parm) {
-//		String strReg = "^[@\\w\\-\\.\\_\\* \u4E00-\u9FFF]*$";
-//		if (parm.equals("") || parm == null)
-//			return false;
-//		return parm.matches(strReg);
-		return StringUtils.isNotBlank(parm);
-	}
 
 	/**
 	 * Returned in response to the corresponding data according to the type of
@@ -863,6 +308,15 @@ public class QueryServlet extends HttpServlet {
 		}
 	}
 
+	private boolean isJsonOrXmlFormat(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		if (format.equals("application/json") || format.equals("application/rdap+json") 
+				|| format.equals("application/rdap+json;application/json") || format.equals("application/xml")) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Get cookies format parameters
 	 * 
@@ -893,27 +347,6 @@ public class QueryServlet extends HttpServlet {
 			format = "application/json";
 		
 		return format;
-	}
-
-	
-	
-	public static Map<String, String> parseQueryParameter(String queryParameter) {
-		Map<String, String> map = new HashMap<String, String>();
-		if (StringUtils.isEmpty(queryParameter)) {
-			return map;
-		}
-		int index = queryParameter.lastIndexOf("=");
-		int pos = queryParameter.length();
-		while (index != -1) {
-			String value = queryParameter.substring(index + 1, pos);
-			pos = index;
-			index = queryParameter.lastIndexOf("&", index);
-			String keyName = queryParameter.substring(index + 1, pos);
-			pos = index;
-			index = queryParameter.lastIndexOf("=", pos);
-			map.put(keyName, value);
-		}
-		return map;
 	}
 
 	/**
