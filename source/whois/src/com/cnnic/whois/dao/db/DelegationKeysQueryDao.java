@@ -18,7 +18,7 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,8 +28,8 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DELEGATIONKEYS + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getDelegationKeyFileds(role),
-					"$mul$delegationKeys", role);
+					permissionCache.getDelegationKeyFileds(param.getRole()),
+					"$mul$delegationKeys", param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,9 +62,9 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, role, connection,
-				permissionCache.getDelegationKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS, param, connection,
+				permissionCache.getDelegationKeyFileds(param.getRole()));
 	}
 }

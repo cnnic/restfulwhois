@@ -6,9 +6,9 @@ public class IpQueryParam extends QueryParam {
 	private long startLowAddr;
 	private long endLowAddr;
 
-	public IpQueryParam(String q, long startHighAddr, long endHighAddr,
+	public IpQueryParam(String q, String role, long startHighAddr, long endHighAddr,
 			long startLowAddr, long endLowAddr) {
-		super(q);
+		super(q, role);
 		this.startHighAddr = startHighAddr;
 		this.endHighAddr = endHighAddr;
 		this.startLowAddr = startLowAddr;

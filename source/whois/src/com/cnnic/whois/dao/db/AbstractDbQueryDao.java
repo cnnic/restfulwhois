@@ -13,6 +13,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.DomainIndexService;
@@ -33,10 +34,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
 	public abstract Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection)
+			QueryParam param, Connection connection)
 			throws SQLException ;
 	@Override
-	public Map<String, Object> getAll(String role)
+	public Map<String, Object> getAll(QueryParam param)
 			throws QueryException {
 		throw new UnsupportedOperationException();
 	}
@@ -79,13 +80,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFields, String keyName, String role,String format)
+			List<String> keyFields, String keyName, QueryParam param, String format)
 			throws SQLException {
-		Map<String, Object> result = query(connection,sql,keyFields,keyName, role);
+		Map<String, Object> result = query(connection,sql,keyFields,keyName, param);
 		return result;
 	}
 	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFlieds, String keyName, String role)
+			List<String> keyFlieds, String keyName, QueryParam param)
 			throws SQLException {
 		PreparedStatement stmt = null; 
 		ResultSet results = null;
@@ -113,7 +114,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								results.getString(fliedName), sql, role,
+								results.getString(fliedName), sql, param,
 								connection);
 						if (value != null)
 							map.put(key, value);
@@ -191,13 +192,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	public Object queryJoinTable(String key, String handle, String sql,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				return dbQueryDao.querySpecificJoinTable(key, handle, role,
+				return dbQueryDao.querySpecificJoinTable(key, handle, param,
 						connection);
 			}
 		}
@@ -217,11 +218,11 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @throws SQLException
 	 */
 	public Object querySpecificJoinTable(String key, String handle, String sql,
-			String role, Connection connection, List<String> keyFlieds)
+			QueryParam param, Connection connection, List<String> keyFlieds)
 			throws SQLException {
 
 		Map<String, Object> map = query(connection, sql + "'" + handle + "'",
-				keyFlieds, key, role);
+				keyFlieds, key, param);
 		if (map != null) {
 			if (null == map.get(key)) {
 				return map;

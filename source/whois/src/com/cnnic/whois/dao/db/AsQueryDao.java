@@ -18,7 +18,7 @@ public class AsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -29,7 +29,7 @@ public class AsQueryDao extends AbstractDbQueryDao {
 					+ WhoisUtil.SELECT_LIST_AS2 + param.getQ()
 					+ WhoisUtil.SELECT_LIST_AS3;
 			Map<String, Object> asMap = query(connection, selectSql,
-					permissionCache.getASKeyFileds(role), "$mul$autnum", role);
+					permissionCache.getASKeyFileds(param.getRole()), "$mul$autnum", param);
 			if (asMap != null) {
 				map = rdapConformance(map);
 				map.putAll(asMap);
@@ -66,7 +66,7 @@ public class AsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

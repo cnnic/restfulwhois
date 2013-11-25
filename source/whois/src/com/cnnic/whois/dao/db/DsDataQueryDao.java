@@ -21,7 +21,7 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -31,8 +31,8 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getDsDataMapKeyFileds(role), "$mul$dsData",
-					role);
+					permissionCache.getDsDataMapKeyFileds(param.getRole()), "$mul$dsData",
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -60,14 +60,14 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			map = query(connection, GET_ALL_DSDATA,
-					permissionCache.getDsDataMapKeyFileds(role), QUERY_KEY,
-					role);
+					permissionCache.getDsDataMapKeyFileds(param.getRole()), QUERY_KEY,
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -100,9 +100,9 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DSDATA, role, connection,
-				permissionCache.getDsDataMapKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_DSDATA, param, connection,
+				permissionCache.getDsDataMapKeyFileds(param.getRole()));
 	}
 }

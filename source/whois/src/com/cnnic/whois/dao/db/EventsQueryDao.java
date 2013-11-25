@@ -20,7 +20,7 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -30,8 +30,8 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getEventsKeyFileds(role), "$mul$events",
-					role);
+					permissionCache.getEventsKeyFileds(param.getRole()), "$mul$events",
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -47,14 +47,14 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
+	public Map<String, Object> getAll(QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			map = query(connection, GET_ALL_EVENTS,
-					permissionCache.getEventsKeyFileds(role), "$mul$events",
-					role);
+					permissionCache.getEventsKeyFileds(param.getRole()), "$mul$events",
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -87,9 +87,9 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_EVENTS, role, connection,
-				permissionCache.getEventsKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_EVENTS, param, connection,
+				permissionCache.getEventsKeyFileds(param.getRole()));
 	}
 }

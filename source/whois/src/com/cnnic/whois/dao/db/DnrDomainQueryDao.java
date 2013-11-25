@@ -18,7 +18,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -26,10 +26,10 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 		try {
 			connection = ds.getConnection();
 			List<String> keyFields = permissionCache
-					.getDNRDomainKeyFileds(role);
+					.getDNRDomainKeyFileds(param.getRole());
 			Map<String, Object> domainMap = query(
 					WhoisUtil.SELECT_LIST_DNRDOMAIN, keyFields, param.getQ(),
-					role);
+					param);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);

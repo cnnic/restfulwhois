@@ -29,7 +29,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		SearchResult<EntityIndex> result = entityIndexService
 				.preciseQueryEntitiesByHandleOrName(param.getQ());
@@ -38,7 +38,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result, selectSql, "$mul$entity", role);
+			map = fuzzyQuery(connection, result, selectSql, "$mul$entity", param);
 			map = rdapConformance(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -55,7 +55,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@SuppressWarnings("unused")
-	private Map<String, Object> queryDNREntity(String queryInfo, String role,
+	private Map<String, Object> queryDNREntity(String queryInfo, QueryParam param,
 			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -65,8 +65,8 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DNRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(connection, selectSql,
-					permissionCache.getDNREntityKeyFileds(role), "$mul$entity",
-					role, format);
+					permissionCache.getDNREntityKeyFileds(param.getRole()), "$mul$entity",
+					param, format);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -86,7 +86,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@SuppressWarnings("unused")
-	private Map<String, Object> queryRIREntity(String queryInfo, String role,
+	private Map<String, Object> queryRIREntity(String queryInfo, QueryParam param,
 			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -96,8 +96,8 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(connection, selectSql,
-					permissionCache.getRIREntityKeyFileds(role), "$mul$entity",
-					role, format);
+					permissionCache.getRIREntityKeyFileds(param.getRole()), "$mul$entity",
+					param, format);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -145,28 +145,28 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		return map;
 	}
 
-	private Map<String, Object> getAllDNREntity(String role)
+	private Map<String, Object> getAllDNREntity(QueryParam param)
 			throws QueryException {
 		String sql = GET_ALL_DNRENTITY;
-		List<String> keyFields = permissionCache.getDNREntityKeyFileds(role);
-		return getAllEntity(role, sql, keyFields);
+		List<String> keyFields = permissionCache.getDNREntityKeyFileds(param.getRole());
+		return getAllEntity(param, sql, keyFields);
 	}
 
-	private Map<String, Object> getAllRIREntity(String role)
+	private Map<String, Object> getAllRIREntity(QueryParam param)
 			throws QueryException {
 		String sql = GET_ALL_RIRENTITY;
-		List<String> keyFields = permissionCache.getRIREntityKeyFileds(role);
-		return getAllEntity(role, sql, keyFields);
+		List<String> keyFields = permissionCache.getRIREntityKeyFileds(param.getRole());
+		return getAllEntity(param, sql, keyFields);
 	}
 
-	private Map<String, Object> getAllEntity(String role, String sql,
+	private Map<String, Object> getAllEntity(QueryParam param, String sql,
 			List<String> keyFields) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> entityMap = query(connection, sql, keyFields,
-					"$mul$entity", role);
+					"$mul$entity", param);
 			if (entityMap != null) {
 				map = rdapConformance(map);
 				map.putAll(entityMap);
@@ -186,9 +186,9 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		Map<String, Object> allDnrEntity = getAllDNREntity(role);
-		Map<String, Object> allRirEntity = this.getAllRIREntity(role);
+	public Map<String, Object> getAll(QueryParam param) throws QueryException {
+		Map<String, Object> allDnrEntity = getAllDNREntity(param);
+		Map<String, Object> allRirEntity = this.getAllRIREntity(param);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.putAll(allDnrEntity);
 		result.putAll(allRirEntity);
@@ -203,5 +203,11 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.ENTITY.equals(queryType);
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			QueryParam param, Connection connection) throws SQLException {
+		return null;
 	}
 }

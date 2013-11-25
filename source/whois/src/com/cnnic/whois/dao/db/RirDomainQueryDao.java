@@ -17,7 +17,7 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		super(dbQueryDaos);
 	}
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -25,10 +25,10 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		try {
 			connection = ds.getConnection();
 			List<String> keyFields = permissionCache
-					.getRIRDomainKeyFileds(role);
+					.getRIRDomainKeyFileds(param.getRole());
 			Map<String, Object> domainMap = query(
 					WhoisUtil.SELECT_LIST_RIRDOMAIN, keyFields, param.getQ(),
-					role);
+					param);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);

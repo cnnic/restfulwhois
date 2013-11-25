@@ -18,7 +18,7 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,8 +28,8 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_SECUREDNS + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getSecureDNSMapKeyFileds(role),
-					"$mul$secureDNS", role);
+					permissionCache.getSecureDNSMapKeyFileds(param.getRole()),
+					"$mul$secureDNS", param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -74,9 +74,9 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, role, connection,
-				permissionCache.getSecureDNSMapKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, param, connection,
+				permissionCache.getSecureDNSMapKeyFileds(param.getRole()));
 	}
 }

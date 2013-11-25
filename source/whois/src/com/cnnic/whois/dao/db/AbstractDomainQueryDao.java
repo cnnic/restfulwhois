@@ -23,26 +23,26 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException, RedirectExecption {
 		throw new UnsupportedOperationException();
 	}
 
 	public Map<String, Object> query(String listSql, List<String> keyFields,
-			String q, String role) throws QueryException {
+			String q, QueryParam param) throws QueryException {
 		String sql = listSql + "'" + q + "'";
-		return this.queryBySql(sql, keyFields, role);
+		return this.queryBySql(sql, keyFields, param);
 	}
 
 	protected Map<String, Object> queryBySql(String sql,
-			List<String> keyFields, String role) throws QueryException {
+			List<String> keyFields, QueryParam param) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> domainMap = query(connection, sql, keyFields,
-					QUERY_KEY, role);
+					QUERY_KEY, param);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -62,13 +62,13 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> getAll(String role) throws QueryException {
-		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(role);
+	public Map<String, Object> getAll(QueryParam param) throws QueryException {
+		List<String> dnrKeyFields = permissionCache.getDNRDomainKeyFileds(param.getRole());
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
-				dnrKeyFields, role);
-		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(role);
+				dnrKeyFields, param);
+		List<String> rirKeyFields = permissionCache.getRIRDomainKeyFileds(param.getRole());
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
-				rirKeyFields, role);
+				rirKeyFields, param);
 		Map<String, Object> result = new HashMap<String, Object>();
 		// TODO:handle size 1
 		result.putAll(dnrDomains);
@@ -94,7 +94,7 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

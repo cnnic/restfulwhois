@@ -3,8 +3,8 @@ package com.cnnic.whois.bean;
 public class EntityQueryParam extends QueryParam {
 	private String fuzzyQueryParamName;
 
-	public EntityQueryParam(String q, String fuzzyQueryParamName) {
-		super(q);
+	public EntityQueryParam(String q, String role, String fuzzyQueryParamName) {
+		super(q, role);
 		this.fuzzyQueryParamName = fuzzyQueryParamName;
 	}
 

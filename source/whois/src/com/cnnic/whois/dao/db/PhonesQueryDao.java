@@ -18,7 +18,7 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,8 +28,8 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_PHONE + "'" + param.getQ()
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getPhonesKeyFileds(role), "$mul$phones",
-					role);
+					permissionCache.getPhonesKeyFileds(param.getRole()), "$mul$phones",
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -62,9 +62,9 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PHONE, role, connection,
-				permissionCache.getPhonesKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_PHONE, param, connection,
+				permissionCache.getPhonesKeyFileds(param.getRole()));
 	}
 }

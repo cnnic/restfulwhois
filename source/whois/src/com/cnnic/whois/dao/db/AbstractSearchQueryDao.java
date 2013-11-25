@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.QueryJoinType;
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.service.QueryService;
@@ -40,12 +41,12 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	}
 	
 	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
-			String selectSql,String keyName, String role)
+			String selectSql,String keyName, QueryParam param)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for(Index index:domains.getResultList()){
 				index.initPropValueMap();
-				List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index, role);
+				List<String> keyFlieds = permissionCache.getKeyFiledsByClass(index, param.getRole());
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				for (int i = 0; i < keyFlieds.size(); i++) {
 					Object resultsInfo = null;
@@ -64,7 +65,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								index.getHandle(), selectSql, role,
+								index.getHandle(), selectSql, param,
 								connection);
 						if (value != null)
 							map.put(key, value);

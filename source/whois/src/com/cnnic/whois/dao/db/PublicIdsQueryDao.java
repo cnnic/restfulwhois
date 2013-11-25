@@ -29,7 +29,7 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		return null;
 	}
@@ -42,9 +42,9 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, role, connection,
-				permissionCache.getPublicIdsKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, param, connection,
+				permissionCache.getPublicIdsKeyFileds(param.getRole()));
 	}
 }

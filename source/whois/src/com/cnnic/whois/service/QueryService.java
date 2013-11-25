@@ -36,12 +36,12 @@ public class QueryService {
 			String role, String format) throws QueryException,
 			RedirectExecption {
 		long[] ipLongs = WhoisUtil.parsingIp(ipInfo, ipLength);
-		Map map = queryEngine.query(QueryType.IP, new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],
-				ipLongs[3]), role, format);
+		Map map = queryEngine.query(QueryType.IP, new IpQueryParam("", role,ipLongs[0], ipLongs[1], ipLongs[2],
+				ipLongs[3]), format);
 
 		if (map == null) {
 			queryEngine.query(QueryType.IPREDIRECTION, 
-					new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]), role, format);
+					new IpQueryParam("", role,ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]), format);
 			return queryError("404", role, format);
 		}
 
@@ -92,7 +92,7 @@ public class QueryService {
 
 	public Map<String, Object> queryAS(int asInfo, String role, String format)
 			throws QueryException, RedirectExecption {
-		Map map = queryEngine.query(QueryType.AUTNUM, new QueryParam(asInfo+""), role, format);
+		Map map = queryEngine.query(QueryType.AUTNUM, new QueryParam(asInfo+"", role), format);
 		if (map == null) {
 			getRedirectionURL("autnum", Integer.toString(asInfo));
 			return queryError("404", role, format);
@@ -103,7 +103,7 @@ public class QueryService {
 
 	public Map<String, Object> queryNameServer(String ipInfo, String role,
 			String format) throws QueryException, RedirectExecption {
-		Map map = queryEngine.query(QueryType.NAMESERVER, new QueryParam(ipInfo), role, format);
+		Map map = queryEngine.query(QueryType.NAMESERVER, new QueryParam(ipInfo, role), format);
 		if (map == null) {
 			return queryError("404", role, format);
 		}
@@ -114,7 +114,7 @@ public class QueryService {
 			String role, String format, PageBean page) throws QueryException,
 			RedirectExecption {
 		Map dnrMap = queryEngine.query(QueryType.SEARCHNS,
-				new QueryParam(nameServer), role, format,page);
+				new QueryParam(nameServer, role), format,page);
 		if (dnrMap == null) {
 			return queryError("404", role, format);
 		}
@@ -125,7 +125,7 @@ public class QueryService {
 			String domainPuny, String role, String format, PageBean page)
 			throws QueryException, RedirectExecption {
 		Map dnrMap = queryEngine.query(QueryType.SEARCHDOMAIN, 
-				new DomainQueryParam(domain,domainPuny), role, format,page);
+				new DomainQueryParam(domain, role, domainPuny), format,page);
 		if (dnrMap == null) {
 			return queryError("404", role, format);
 		}
@@ -134,9 +134,9 @@ public class QueryService {
 
 	public Map<String, Object> queryDomain(String ipInfo, String role,
 			String format) throws QueryException, RedirectExecption {
-		Map rirMap = queryEngine.query(QueryType.RIRDOMAIN, new QueryParam(ipInfo), role, format);
+		Map rirMap = queryEngine.query(QueryType.RIRDOMAIN, new QueryParam(ipInfo, role), format);
 		//cache.queryDoamin("", role, format);
-		Map dnrMap = queryEngine.query(QueryType.DNRDOMAIN, new QueryParam(ipInfo), role, format);
+		Map dnrMap = queryEngine.query(QueryType.DNRDOMAIN, new QueryParam(ipInfo, role), format);
 		//this.queryDAO.queryDNRDoamin(ipInfo, role, format);
 
 		if ((rirMap == null) && (dnrMap == null)) {
@@ -163,7 +163,7 @@ public class QueryService {
 	public Map<String, Object> queryEntity(String queryPara, String role,
 			String format) throws QueryException, SQLException {
 		try {
-			Map map = queryEngine.query(QueryType.ENTITY, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.ENTITY, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -178,7 +178,7 @@ public class QueryService {
 			throws QueryException, SQLException {
 		try {
 			Map map = queryEngine.query(QueryType.SEARCHDOMAIN, 
-					new EntityQueryParam(queryPara,fuzzyQueryParamName), role, format,page);
+					new EntityQueryParam(queryPara, role,fuzzyQueryParamName), format,page);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -191,7 +191,7 @@ public class QueryService {
 	public Map<String, Object> queryLinks(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.LINKS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.LINKS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -204,7 +204,7 @@ public class QueryService {
 	public Map<String, Object> queryPhones(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.PHONES, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.PHONES, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -217,7 +217,7 @@ public class QueryService {
 	public Map<String, Object> queryPostalAddress(String queryPara,
 			String role, String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.POSTALADDRESS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.POSTALADDRESS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -230,7 +230,7 @@ public class QueryService {
 	public Map<String, Object> queryVariants(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.VARIANTS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.VARIANTS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -243,7 +243,7 @@ public class QueryService {
 	public Map<String, Object> querySecureDNS(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.SECUREDNS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.SECUREDNS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -256,7 +256,7 @@ public class QueryService {
 	public Map<String, Object> queryDsData(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.DSDATA, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.DSDATA, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -269,7 +269,7 @@ public class QueryService {
 	public Map<String, Object> queryKeyData(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.KEYDATA, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.KEYDATA, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -282,7 +282,7 @@ public class QueryService {
 	public Map<String, Object> queryDelegationKeys(String queryPara,
 			String role, String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.DELETATIONKEY, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.DELETATIONKEY, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -295,7 +295,7 @@ public class QueryService {
 	public Map<String, Object> queryNotices(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.NOTICES, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.NOTICES, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -320,7 +320,7 @@ public class QueryService {
 	public Map<String, Object> queryRemarks(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.REMARKS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.REMARKS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -333,7 +333,7 @@ public class QueryService {
 	public Map<String, Object> queryEvents(String queryPara, String role,
 			String format) throws QueryException {
 		try {
-			Map map = queryEngine.query(QueryType.EVENTS, new QueryParam(queryPara), role, format);
+			Map map = queryEngine.query(QueryType.EVENTS, new QueryParam(queryPara, role), format);
 			if (map == null) {
 				return queryError("404", role, format);
 			}
@@ -347,7 +347,7 @@ public class QueryService {
 			String format) throws QueryException {
 		try {
 			Map ErrorMessageMap = null;
-			ErrorMessageMap = queryEngine.query(QueryType.ERRORMSG, new QueryParam(errorCode), role, format);
+			ErrorMessageMap = queryEngine.query(QueryType.ERRORMSG, new QueryParam(errorCode, role), format);
 			return ErrorMessageMap;
 		} catch (RedirectExecption e) {
 			throw new QueryException(e);
@@ -358,7 +358,7 @@ public class QueryService {
 			String format) throws QueryException {
 		try {
 			Map helpMap = null;
-			helpMap = queryEngine.query(QueryType.HELP, new QueryParam(helpCode), role, format);
+			helpMap = queryEngine.query(QueryType.HELP, new QueryParam(helpCode, role), format);
 			return helpMap;
 		} catch (RedirectExecption e) {
 			throw new QueryException(e);

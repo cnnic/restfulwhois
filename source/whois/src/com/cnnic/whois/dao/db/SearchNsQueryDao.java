@@ -22,7 +22,7 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... pageParam) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -41,7 +41,7 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,
-					selectSql, "$mul$nameServer", role);
+					selectSql, "$mul$nameServer", param);
 			if (nsMap != null) {
 				map = rdapConformance(map);
 				map.putAll(nsMap);
@@ -83,5 +83,11 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.SEARCHNS.equals(queryType);
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			QueryParam param, Connection connection) throws SQLException {
+		return null;
 	}
 }

@@ -25,7 +25,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	 * @return map collection
 	 * @throws QueryException
 	 */
-	public Map<String, Object> queryVariants(String queryInfo, String role,
+	public Map<String, Object> queryVariants(String queryInfo, QueryParam param,
 			String format) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -35,8 +35,8 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + queryInfo
 					+ "'";
 			map = query(connection, selectSql,
-					permissionCache.getVariantsKeyFileds(role),
-					"$mul$variants", role, format);
+					permissionCache.getVariantsKeyFileds(param.getRole()),
+					"$mul$variants", param, format);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -64,7 +64,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		// TODO Auto-generated method stub
 		return null;
@@ -79,9 +79,9 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, role, connection,
-				permissionCache.getRegistrarKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, param, connection,
+				permissionCache.getRegistrarKeyFileds(param.getRole()));
 	}
 }

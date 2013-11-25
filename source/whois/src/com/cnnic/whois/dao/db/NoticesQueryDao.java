@@ -18,7 +18,7 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... page) throws QueryException {
 		Connection connection = null;
 		Map<String, Object> map = null;
@@ -28,8 +28,8 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_NOTICES + "'"
 					+ param.getQ() + "'";
 			map = query(connection, selectSql,
-					permissionCache.getNoticesKeyFileds(role), "$mul$notices",
-					role);
+					permissionCache.getNoticesKeyFileds(param.getRole()), "$mul$notices",
+					param);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -76,9 +76,9 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Object querySpecificJoinTable(String key, String handle,
-			String role, Connection connection) throws SQLException {
+			QueryParam param, Connection connection) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_NOTICES, role, connection,
-				permissionCache.getNoticesKeyFileds(role));
+				WhoisUtil.SELECT_JOIN_LIST_NOTICES, param, connection,
+				permissionCache.getNoticesKeyFileds(param.getRole()));
 	}
 }

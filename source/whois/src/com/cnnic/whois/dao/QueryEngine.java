@@ -28,9 +28,9 @@ public class QueryEngine {
 	}
 
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
-			String role, String format,PageBean... pageParam) throws QueryException,
+			String format,PageBean... pageParam) throws QueryException,
 			RedirectExecption {
-		Map<String, Object> result = queryExecutor.query(queryType, param, role, pageParam);
+		Map<String, Object> result = queryExecutor.query(queryType, param, pageParam);
 		result = viewResolver.format(result, FormatType.getFormatType(format));
 		return result;
 	}

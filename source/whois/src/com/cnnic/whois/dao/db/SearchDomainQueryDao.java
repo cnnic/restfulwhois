@@ -22,7 +22,7 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 	}
 
 	@Override
-	public Map<String, Object> query(QueryParam param, String role,
+	public Map<String, Object> query(QueryParam param,
 			PageBean... pageParam) throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
 		Connection connection = null;
@@ -50,7 +50,7 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 				sql = WhoisUtil.SELECT_LIST_RIRDOMAIN;
 			}
 			Map<String, Object> domainMap = super.fuzzyQuery(connection,
-					result, sql, "$mul$domains", role);
+					result, sql, "$mul$domains", param);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -78,5 +78,11 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 	@Override
 	public boolean supportType(QueryType queryType) {
 		return QueryType.SEARCHDOMAIN.equals(queryType);
+	}
+
+	@Override
+	public Object querySpecificJoinTable(String key, String handle,
+			QueryParam param, Connection connection) throws SQLException {
+		return null;
 	}
 }
