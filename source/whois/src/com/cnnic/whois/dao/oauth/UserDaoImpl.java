@@ -45,5 +45,14 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 		JdbcUtils.free(null, null, conn);
 		return users;
 	}
+	
+	public User findByUserIdAndPassword(String userId, String password) {
+		Connection conn = JdbcUtils.getConnection();
+		User user = this.getObject(conn, "select id, user_name, pwd from users where user_name = ? and pwd = ? ", 
+				new Object[]{userId, password }, "Query user information failed !", User.class);
+		JdbcUtils.free(null, null, conn);
+		return user;
+	}
+	
 
 }

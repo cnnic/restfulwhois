@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.bean.User;
+import com.cnnic.whois.dao.oauth.UserDao;
+import com.cnnic.whois.util.BeanFactory;
 import com.cnnic.whois.util.OAuthProvider;
 
 import net.oauth.OAuth;
@@ -39,6 +42,8 @@ import net.oauth.server.OAuthServlet;
  */
 public class AuthorizationServlet extends HttpServlet {
     
+	private UserDao userDao = (UserDao) BeanFactory.getBean("userDao");
+	
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -79,9 +84,13 @@ public class AuthorizationServlet extends HttpServlet {
             OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
             
             String userId = request.getParameter("userId");
-            if(userId == null){
-                sendToAuthorizePage(request, response, accessor);
+            String password = request.getParameter("password");
+            User user = userDao.findByUserIdAndPassword(userId, password);
+            if (user == null || "".equals(user)){
+            	request.setAttribute("error_value", "UserName or Password is wrong ! ");
+            	sendToAuthorizePage(request, response, accessor);
             }
+            
             // set userId in accessor and mark it as authorized
             OAuthProvider.markAsAuthorized(accessor, userId);
             
@@ -104,8 +113,7 @@ public class AuthorizationServlet extends HttpServlet {
         request.setAttribute("CALLBACK", callback);
         request.setAttribute("TOKEN", accessor.requestToken);
         request.getRequestDispatcher //
-                    ("/authorize.jsp").forward(request,
-                        response);
+                    ("/authorize.jsp").forward(request, response);
         
     }
     
