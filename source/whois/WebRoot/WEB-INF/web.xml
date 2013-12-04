@@ -23,7 +23,8 @@
 		<filter-name>ErrorFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+ -->
+
 	<filter>
 		<filter-name>WhoisFilter</filter-name>
 		<filter-class>com.cnnic.whois.web.WhoisFilter</filter-class>
@@ -51,7 +52,7 @@
 		<url-pattern>/nameservers</url-pattern>
 		<url-pattern>/entities</url-pattern>	
 	</filter-mapping>
- -->
+
 	<servlet>
 		<servlet-name>queryServlet</servlet-name>
 		<servlet-class>com.cnnic.whois.controller.QueryServlet</servlet-class>

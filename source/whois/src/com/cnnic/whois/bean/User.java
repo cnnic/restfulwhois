@@ -7,6 +7,8 @@ public class User {
 	private String user_name;
 	
 	private String pwd;
+	
+	private String user_role;
 
 	public User(){}
 
@@ -14,7 +16,6 @@ public class User {
 		this.user_name = user_name;
 		this.pwd = pwd;
 	}
-
 
 	public int getId() {
 		return id;
@@ -40,4 +41,11 @@ public class User {
 		this.pwd = pwd;
 	}
 
+	public String getUser_role() {
+		return user_role;
+	}
+
+	public void setUser_role(String user_role) {
+		this.user_role = user_role;
+	}
 }

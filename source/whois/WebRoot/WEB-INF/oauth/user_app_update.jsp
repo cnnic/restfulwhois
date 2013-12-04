@@ -27,7 +27,7 @@
 					</td>
 					
 					<td style="width: 100px;height: 60px;">
-						<input type="submit" value="提交"/>
+						<input type="submit" value="submit"/>
 					</td>
 					
 				</tr>

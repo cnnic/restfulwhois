@@ -32,7 +32,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
 	public User getUserById(int id) {
 		Connection conn = JdbcUtils.getConnection();
-		User user = this.getObject(JdbcUtils.getConnection(), "select id, user_name, pwd from users where id = ?", 
+		User user = this.getObject(JdbcUtils.getConnection(), "select id, user_name, pwd, user_role from users where id = ?", 
 				new Object[]{id}, "Query user information failed !", User.class);
 		JdbcUtils.free(null, null, conn);
 		return user;
@@ -40,7 +40,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
 	public List<User> getUsers() {
 		Connection conn = JdbcUtils.getConnection();
-		List<User> users = this.getAllObject(JdbcUtils.getConnection(), "select id, user_name, pwd from users", null, 
+		List<User> users = this.getAllObject(JdbcUtils.getConnection(), "select id, user_name, pwd, user_role from users", null, 
 				"Query user information list failed !", User.class);
 		JdbcUtils.free(null, null, conn);
 		return users;
@@ -48,7 +48,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 	
 	public User findByUserIdAndPassword(String userId, String password) {
 		Connection conn = JdbcUtils.getConnection();
-		User user = this.getObject(conn, "select id, user_name, pwd from users where user_name = ? and pwd = ? ", 
+		User user = this.getObject(conn, "select id, user_name, pwd, user_role from users where user_name = ? and pwd = ? ", 
 				new Object[]{userId, password }, "Query user information failed !", User.class);
 		JdbcUtils.free(null, null, conn);
 		return user;
