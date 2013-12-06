@@ -4,7 +4,6 @@
 <%@page import="net.oauth.server.OAuthServlet"%>
 <HTML>
 <body>
-<jsp:include page="/banner.jsp" />
 OAuthProblemException:<br/>
 <form>
 <table>
