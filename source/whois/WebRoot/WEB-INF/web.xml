@@ -14,7 +14,7 @@
 		<filter-name>struts2</filter-name>
 		<url-pattern>/admin/*</url-pattern>
 	</filter-mapping>
-	
+<!--
 	<filter>
 		<filter-name>ErrorFilter</filter-name>
 		<filter-class>com.cnnic.whois.web.ErrorFilter</filter-class>
@@ -23,7 +23,8 @@
 		<filter-name>ErrorFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+ -->
+
 	<filter>
 		<filter-name>WhoisFilter</filter-name>
 		<filter-class>com.cnnic.whois.web.WhoisFilter</filter-class>
@@ -53,7 +54,7 @@
 		<url-pattern>/nameservers</url-pattern>
 		<url-pattern>/entities</url-pattern>  -->	
 	</filter-mapping>
-	
+
 	<servlet>
 		<servlet-name>queryServlet</servlet-name>
 		<servlet-class>com.cnnic.whois.controller.QueryServlet</servlet-class>
@@ -114,6 +115,62 @@
 		<servlet-name>AuthOpenIdClientServlet</servlet-name>
 		<url-pattern>/authOpenIdClientServlet.do</url-pattern>
 	</servlet-mapping>
+	
+	
+	<!-- begin oauth -->
+	
+	<servlet>
+        <servlet-name>RequestTokenServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.RequestTokenServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.AuthorizationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.AccessTokenServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EchoServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.EchoServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>UserManageServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.UserManageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserManageServlet</servlet-name>
+        <url-pattern>/UserManageServlet.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AppServlet</servlet-name>
+        <servlet-class>com.cnnic.whois.controller.oauth.AppServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AppServlet</servlet-name>
+        <url-pattern>/AppServlet.do</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>RequestTokenServlet</servlet-name>
+        <url-pattern>/request_token.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthorizationServlet</servlet-name>
+        <url-pattern>/authorize.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <url-pattern>/access_token.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EchoServlet</servlet-name>
+        <url-pattern>/echo.do</url-pattern>
+    </servlet-mapping>
+	
+	<!-- end oauth -->
 
 	<security-constraint>
 		<display-name>welcome whois</display-name>
