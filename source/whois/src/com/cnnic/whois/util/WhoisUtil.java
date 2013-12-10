@@ -1343,10 +1343,10 @@ public class WhoisUtil {
 	 * @return error map collection
 	 * @throws QueryException 
 	 */
-	public static Map<String, Object> processError(String errorCode, String role, String format) throws QueryException {
+	public static Map<String, Object> processError(String errorCode) throws QueryException {
 		Map<String, Object>ErrorMessageMap = null;
 		QueryService queryService = QueryService.getQueryService();
-		ErrorMessageMap = queryService.queryError(errorCode, role, format);
+		ErrorMessageMap = queryService.queryError(errorCode);
 		return ErrorMessageMap;
 	}
 }

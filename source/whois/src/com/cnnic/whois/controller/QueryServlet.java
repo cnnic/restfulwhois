@@ -206,7 +206,7 @@ public class QueryServlet extends HttpServlet {
 					queryParaDecode = StringUtils.trim(queryParaDecode);
 					queryParaPuny = IDN.toASCII(queryParaDecode);//long lable exception
 				}catch(Exception e){
-					map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+					map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 					processRespone(request, response, map, -1);
 					return;
 				}
@@ -263,7 +263,7 @@ public class QueryServlet extends HttpServlet {
 				map = processQueryVariants(queryPara, role, format);
 				break;
 			default:
-				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+				map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 				break;
 			}
 			String queryParaInput = queryPara;
@@ -282,7 +282,7 @@ public class QueryServlet extends HttpServlet {
 		} catch (QueryException e) {
 			e.printStackTrace();
 			this.log(e.getMessage(), e);
-			map = WhoisUtil.processError(WhoisUtil.ERRORCODE, role, format);
+			map = WhoisUtil.processError(WhoisUtil.ERRORCODE);
 		}
 		
 		if(isFuzzyQuery && isJsonOrXmlFormat(request)){
@@ -433,7 +433,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryHelp(String queryPara, String role, String format) throws QueryException {
 		QueryService queryService = QueryService.getQueryService();
 		if(!queryPara.equals("")){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		}
 		return queryService.queryHelp("helpID", role, format);
 	}
@@ -456,7 +456,7 @@ public class QueryServlet extends HttpServlet {
 		if (queryPara.indexOf(WhoisUtil.PRX) >= 0) {
 			String[] infoArray = queryPara.split(WhoisUtil.PRX);
 			if(infoArray.length > 2){//1.1.1.1//32
-				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+				return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			}
 			if(infoArray.length > 1){
 				strInfo = infoArray[0];
@@ -465,11 +465,11 @@ public class QueryServlet extends HttpServlet {
 		}
 
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		}
 
 		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryIP(strInfo, Integer.parseInt(ipLength), role, format);
+		return queryService.queryIP(strInfo, Integer.parseInt(ipLength));
 	}
 
 	/**
@@ -488,7 +488,7 @@ public class QueryServlet extends HttpServlet {
 			String role, String format, PageBean page, HttpServletRequest request)
 			throws QueryException, RedirectExecption, UnsupportedEncodingException {
 		if(!ValidateUtils.validateDomainName(queryParaPuny)){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		}
 		
 		QueryService queryService = QueryService.getQueryService();
@@ -512,12 +512,12 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryAS(String queryPara, String role, String format)
 			throws QueryException, RedirectExecption {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		if (!queryPara.matches("^[1-9][0-9]{0,9}$"))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		Long longValue = Long.valueOf(queryPara);
 		if(longValue<=MIN_AS_NUM || longValue>=MAX_AS_NUM){
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		}
 		
 		try {
@@ -547,7 +547,7 @@ public class QueryServlet extends HttpServlet {
 			String role, String format, HttpServletRequest request, PageBean page)
 			throws QueryException, SQLException {
 		if (!isInvalidEntityStr(queryParaValue))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		if(isFuzzyQuery){
@@ -592,7 +592,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNameServer(boolean isFuzzyQuery,String queryPara,
 			String role, String format, PageBean page, HttpServletRequest request) throws QueryException, RedirectExecption {
 		if (!ValidateUtils.verifyNameServer(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		if(isFuzzyQuery){
@@ -614,7 +614,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryLinks(String queryPara, String role, String format)
 			throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryLinks(queryPara, role, format);
@@ -631,7 +631,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPhones(String queryPara, String role, String format)
 			throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPhones(queryPara, role, format);
@@ -648,7 +648,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryPostalAddress(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryPostalAddress(queryPara, role, format);
@@ -665,7 +665,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryVariants(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryVariants(queryPara, role, format);
@@ -682,7 +682,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQuerySecureDNS(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.querySecureDNS(queryPara, role, format);
@@ -699,7 +699,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryDsData(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryDsData(queryPara, role, format);
@@ -716,7 +716,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryKeyData(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryKeyData(queryPara, role, format);
@@ -733,7 +733,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryNotices(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryNotices(queryPara, role, format);
@@ -764,7 +764,7 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryRemarks(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
 		return queryService.queryRemarks(queryPara, role, format);
@@ -781,10 +781,10 @@ public class QueryServlet extends HttpServlet {
 	private Map<String, Object> processQueryEvents(String queryPara,
 			String role, String format) throws QueryException {
 		if (!ValidateUtils.isCommonInvalidStr(queryPara))
-			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 
 		QueryService queryService = QueryService.getQueryService();
-		return queryService.queryEvents(queryPara, role, format);
+		return queryService.queryEvents(queryPara);
 	}
 
 	/**

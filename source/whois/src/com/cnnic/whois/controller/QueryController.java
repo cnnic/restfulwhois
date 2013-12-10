@@ -1,9 +1,12 @@
 package com.cnnic.whois.controller;
 
+import java.io.IOException;
 import java.net.IDN;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,30 +20,37 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
+import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
+import com.cnnic.whois.view.ViewResolver;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/well-known/rdap")
 public class QueryController extends BaseController {
 	@Autowired
 	private QueryService queryService;
+	@Autowired
+	private ViewResolver viewResolver;
 
 	@RequestMapping(value = "/domain/{domainName}", method = RequestMethod.GET)
 	@ResponseBody
-	public String queryDomain(@PathVariable String domainName,
-			HttpServletRequest request) throws QueryException,
-			RedirectExecption {
+	public void queryDomain(@PathVariable String domainName,
+			HttpServletRequest request, HttpServletResponse response)
+			throws QueryException, RedirectExecption, IOException,
+			ServletException {
 		domainName = StringUtils.trim(domainName);
 		String queryParaPuny = IDN.toASCII(domainName);
-		if (!ValidateUtils.validateDomainName(queryParaPuny)) {
-			// return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role,
-			// format);
-		}
+		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
-		queryParam.setQ(domainName);
-		Map<String, Object> result = queryService.queryDomain(queryParam);
-		System.err.println(result);
-		return null;
+		if (!ValidateUtils.validateDomainName(queryParaPuny)) {
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+		}else{
+			queryParam.setQ(domainName);
+			resultMap = queryService.queryDomain(queryParam);
+			System.err.println(resultMap);
+		}	
+		viewResolver.writeResponse(queryParam.getFormat(), request, response,
+				resultMap, 0);
 	}
 
 	@RequestMapping(value = "/entity/{entityName}", method = RequestMethod.GET)

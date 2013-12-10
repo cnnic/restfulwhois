@@ -33,8 +33,7 @@ public class QueryService {
 		return queryService;
 	}
 
-	public Map<String, Object> queryIP(String ipInfo, int ipLength,
-			String role, String format) throws QueryException,
+	public Map<String, Object> queryIP(String ipInfo, int ipLength) throws QueryException,
 			RedirectExecption {
 		long[] ipLongs = WhoisUtil.parsingIp(ipInfo, ipLength);
 		Map map = queryEngine.query(QueryType.IP, new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],
@@ -42,7 +41,7 @@ public class QueryService {
 		if (map == null) {
 			queryEngine.query(QueryType.IPREDIRECTION, 
 					new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]));
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 
 		if ((map.get("$mul$IP") instanceof Object[])) {
@@ -94,7 +93,7 @@ public class QueryService {
 		Map map = queryEngine.query(QueryType.AUTNUM, new QueryParam(asInfo+""));
 		if (map == null) {
 			getRedirectionURL("autnum", Integer.toString(asInfo));
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 
 		return map;
@@ -104,7 +103,7 @@ public class QueryService {
 			String format) throws QueryException, RedirectExecption {
 		Map map = queryEngine.query(QueryType.NAMESERVER, new QueryParam(ipInfo));
 		if (map == null) {
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 		return map;
 	}
@@ -115,7 +114,7 @@ public class QueryService {
 		Map dnrMap = queryEngine.query(QueryType.SEARCHNS,
 				new QueryParam(nameServer));
 		if (dnrMap == null) {
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 		return dnrMap;
 	}
@@ -126,16 +125,16 @@ public class QueryService {
 		Map dnrMap = queryEngine.query(QueryType.SEARCHDOMAIN, 
 				new DomainQueryParam(domain,domainPuny));
 		if (dnrMap == null) {
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 		return dnrMap;
 	}
 
 	public Map<String, Object> queryDomain(QueryParam queryParam) throws QueryException, RedirectExecption {
 		Map rirMap = queryEngine.query(QueryType.RIRDOMAIN, queryParam);
-		//cache.queryDoamin("", role, format);
+		//cache.queryDoamin("");
 		Map dnrMap = queryEngine.query(QueryType.DNRDOMAIN, queryParam);
-		//this.queryDAO.queryDNRDoamin(ipInfo, role, format);
+		//this.queryDAO.queryDNRDoamin(ipInfo);
 
 		if ((rirMap == null) && (dnrMap == null)) {
 			String queryType = "dnrdomain";
@@ -143,7 +142,7 @@ public class QueryService {
 			if (rirMap == null)
 				queryType = "rirdomain";
 			getRedirectionURL(queryType, queryParam.getQ());
-			return queryError("404", "role", queryParam.getFormat().getName());
+			return queryError("404");
 		}
 
 		Map wholeMap = new LinkedHashMap();
@@ -171,7 +170,7 @@ public class QueryService {
 			if (rirMap == null)
 				queryType = "rirdomain";
 			getRedirectionURL(queryType, ipInfo);
-			return queryError("404", role, format);
+			return queryError("404");
 		}
 
 		Map<String, Object> wholeMap = new LinkedHashMap<String, Object>();
@@ -191,7 +190,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.ENTITY, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -206,7 +205,7 @@ public class QueryService {
 			Map map = queryEngine.query(QueryType.SEARCHENTITY, 
 					new EntityQueryParam(queryPara,fuzzyQueryParamName));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -219,7 +218,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.LINKS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -232,7 +231,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.PHONES, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -245,7 +244,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.POSTALADDRESS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -258,7 +257,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.VARIANTS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -271,7 +270,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.SECUREDNS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -284,7 +283,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.DSDATA, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -297,7 +296,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.KEYDATA, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -310,7 +309,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.DELETATIONKEY, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -323,7 +322,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.NOTICES, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -338,7 +337,7 @@ public class QueryService {
 //				format);
 //
 //		if (map == null) {
-//			return queryError("404", role, format);
+//			return queryError("404");
 //		}
 
 		return null;
@@ -349,7 +348,7 @@ public class QueryService {
 		try {
 			Map map = queryEngine.query(QueryType.REMARKS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -357,12 +356,11 @@ public class QueryService {
 		}
 	}
 
-	public Map<String, Object> queryEvents(String queryPara, String role,
-			String format) throws QueryException {
+	public Map<String, Object> queryEvents(String queryPara) throws QueryException {
 		try {
 			Map map = queryEngine.query(QueryType.EVENTS, new QueryParam(queryPara));
 			if (map == null) {
-				return queryError("404", role, format);
+				return queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -370,8 +368,7 @@ public class QueryService {
 		}
 	}
 
-	public Map<String, Object> queryError(String errorCode, String role,
-			String format) throws QueryException {
+	public Map<String, Object> queryError(String errorCode) throws QueryException {
 		try {
 			Map ErrorMessageMap = null;
 			ErrorMessageMap = queryEngine.query(QueryType.ERRORMSG, new QueryParam(errorCode));
