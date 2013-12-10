@@ -30,7 +30,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, String format, int queryType)
+			HttpServletResponse response, Map<String, Object> map, int queryType)
 		throws IOException, ServletException {
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
@@ -40,7 +40,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 		
 		String errorCode = "200"; 
 		
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.HTML .getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		//set response status
@@ -79,7 +79,7 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 				htmlMap.remove(WhoisUtil.SEARCH_RESULTS_TRUNCATED_EKEY);
 			request.setAttribute("JsonObject", DataFormat.getJsonObject(htmlMap));
 			RequestDispatcher rdsp = request.getRequestDispatcher("/index.jsp");
-			response.setContentType(format);
+			response.setContentType(FormatType.HTML.getName());
 			rdsp.forward(request, response); 
 		}else{
 			response.sendError(Integer.parseInt(errorCode));
@@ -87,16 +87,16 @@ public class HtmlResponseWriter extends AbstractResponseWriter {
 	}
 
 	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String format, String queryType, String role) throws IOException, ServletException{
+			String queryType, String role) throws IOException, ServletException{
 		chain.doFilter(request, response);
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String format, String role) throws IOException, ServletException{
+			String role) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.HTML.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setStatus(429);
 		response.sendError(429);

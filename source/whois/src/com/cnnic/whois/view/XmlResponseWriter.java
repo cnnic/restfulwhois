@@ -12,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+
 import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.execption.QueryException;
@@ -31,7 +33,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 
 	@Override
 	public void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, String format, int queryType)
+			HttpServletResponse response, Map<String, Object> map, int queryType)
 		throws IOException, ServletException {
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
@@ -39,7 +41,7 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 		PrintWriter out = response.getWriter();
 		String errorCode = "200"; 
 		
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.XML.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		//set response status
@@ -83,54 +85,54 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 			}
 		}
 		
-		response.setHeader("Content-Type", format);
+		response.setHeader("Content-Type", FormatType.XML.getName());
 		out.write(getXMLFromMap(map, 0));
 	}
 
 	public void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, FilterChain chain, 
-			String format, String queryType, String role) throws IOException, ServletException{
+			String queryType, String role) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		
 		try {
-			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, format);
+			map = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE, role, FormatType.XML.getName());
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.XML.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		
 		if(isLegalType(queryType)){
 			chain.doFilter(request, response);
 		}else{
-			response.setHeader("Content-Type", format);
+			response.setHeader("Content-Type", FormatType.XML.getName());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			out.write(getXMLFromMap(map, 0));
 		}
 	}
 	
 	public void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String format, String role) throws IOException, ServletException{
+			String role) throws IOException, ServletException{
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		
 		try {
-			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, format);
+			map = WhoisUtil.processError(WhoisUtil.RATELIMITECODE, role, FormatType.XML.getName());
 		} catch (QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		PrintWriter out = response.getWriter();
-		request.setAttribute("queryFormat", format);
+		request.setAttribute("queryFormat", FormatType.XML.getName());
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setStatus(429);
-		response.setHeader("Content-Type", format);
+		response.setHeader("Content-Type", FormatType.XML.getName());
 		out.write(getXMLFromMap(map, 0));
 	}
 	
@@ -186,9 +188,17 @@ public class XmlResponseWriter extends AbstractResponseWriter {
 				}
 				sb.append("</" + delTrim(key) + ">\n");
 			}else if (map.get(key) instanceof List) {
-				System.out.println("list: " + map.get(key).getClass());
-				System.out.println("list: " + map.get(key));
-				String[] values = ((List<String>) map.get(key)).get(0).split(",");
+				String[] values;
+				if(map.get(key) instanceof JSONArray){
+					JSONArray jsonArray = (JSONArray) map.get(key);
+					String[] result = new String[jsonArray.size()];
+					//for(int i=0;i<jsonArray.size();i++){
+					//	result[i] = (String)jsonArray.get(i);
+					//}
+					values = ((String)jsonArray.get(0)).split(",");
+				}else {
+					values = ((List<String>) map.get(key)).get(0).split(",");
+				}
 				for (String value : values) {
 					sb.append("<" + delTrim(key) + ">\n");
 					sb.append(value);

@@ -14,14 +14,14 @@ public interface ResponseWriter {
 	Map<String, Object> format(Map<String, Object> map);
 
 	void writeResponse(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> map, String format, int queryType)
+			HttpServletResponse response, Map<String, Object> map, int queryType)
 		throws IOException, ServletException;
 	
 	void displayErrorMessage(HttpServletRequest request, HttpServletResponse response, 
-			FilterChain chain, String format, String queryType, String role) 
+			FilterChain chain, String queryType, String role) 
 					throws IOException, ServletException;
 	
 	void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String format, String role) 
+			String role) 
 					throws IOException, ServletException;
 }

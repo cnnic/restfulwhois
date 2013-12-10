@@ -1,6 +1,7 @@
 package com.cnnic.whois.view;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,20 @@ public class ViewResolver {
 	}
 
 	@Autowired
-	private List<ResponseWriter> responseWriters;
+	private List<ResponseWriter> responseWriters  = new ArrayList<ResponseWriter>();
 
+	public ViewResolver() {
+		super();
+		init();
+	}
+
+	private void init() {
+		responseWriters.add(new JsonResponseWriter());
+		responseWriters.add(new HtmlResponseWriter());
+		responseWriters.add(new XmlResponseWriter());
+		responseWriters.add(new TextResponseWriter());
+	}
+	
 	public Map<String, Object> format(Map<String, Object> map,
 			FormatType formatType) {
 		for (ResponseWriter writer : responseWriters) {
@@ -38,8 +51,7 @@ public class ViewResolver {
 			ServletException {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
-				writer.writeResponse(request, response, map,
-						formatType.getName(), queryType);
+				writer.writeResponse(request, response, map, queryType);
 			}
 		}
 	}
@@ -50,8 +62,7 @@ public class ViewResolver {
 			throws IOException, ServletException {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
-				writer.displayErrorMessage(request, response, chain,
-						formatType.getName(), queryType, role);
+				writer.displayErrorMessage(request, response, chain, queryType, role);
 			}
 		}
 	}
@@ -61,8 +72,7 @@ public class ViewResolver {
 			throws IOException, ServletException {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
-				writer.displayOverTimeMessage(request, response,
-						formatType.getName(), role);
+				writer.displayOverTimeMessage(request, response, role);
 			}
 		}
 	}
