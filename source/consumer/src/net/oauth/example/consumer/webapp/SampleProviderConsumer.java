@@ -56,7 +56,6 @@ public class SampleProviderConsumer extends HttpServlet {
             }
             response.setContentType("text/plain");
             PrintWriter out = response.getWriter();
-            out.println("Sample Provider said:");
             // Try it twice:
             out.println(invoke(accessor, parameters));
 //            out.println(invoke(accessor, parameters));

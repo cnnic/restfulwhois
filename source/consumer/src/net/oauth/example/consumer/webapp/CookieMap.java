@@ -62,6 +62,7 @@ public class CookieMap {
         } else if (!value.equals(name2value.get(name))) {
             Cookie c = new Cookie(name, value);
             c.setPath(path);
+            c.setMaxAge(3 * 24 * 60 * 60);
             response.addCookie(c);
             name2value.put(name, value);
         }

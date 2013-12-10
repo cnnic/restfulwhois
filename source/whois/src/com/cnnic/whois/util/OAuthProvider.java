@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
 import com.cnnic.whois.dao.oauth.UserAppDao;
 
 import net.oauth.OAuthAccessor;
@@ -37,7 +38,8 @@ import net.oauth.server.OAuthServlet;
 public class OAuthProvider {
 
 	private static UserAppDao userAppDao = (UserAppDao) BeanFactory.getBean("userAppDao");
-
+	private static OAuthAccessorDao oauthAccessorDao = (OAuthAccessorDao) BeanFactory.getBean("oauthAccessorDao");
+	
 	public static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
 
 	private static final Map<String, OAuthConsumer> ALL_CONSUMERS = Collections
@@ -45,6 +47,25 @@ public class OAuthProvider {
 
 	private static final Collection<OAuthAccessor> ALL_TOKENS = new HashSet<OAuthAccessor>();
 
+//	static {
+//		OAuthAccessor oauth1 = new OAuthAccessor(
+//				"efcb3f6e5b108317fe48fa948ff76671", "14a0c060e0881ea64db1ec573d3af971", 
+//				"b7db316a1902eb58bb0e669ea0deb1b1", 
+//				new OAuthConsumer("/OAuth/Callback", "key1385973838215", "secret1385973838215", 
+//				new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
+//		));
+//		
+//		OAuthAccessor oauth2 = new OAuthAccessor(
+//				"efcb3f6e5b108317fe48fa948ff76672", "14a0c060e0881ea64db1ec573d3af972", 
+//				"b7db316a1902eb58bb0e669ea0deb1b2", 
+//				new OAuthConsumer("/OAuth/Callback", "key1385973838212", "secret1385973838212", 
+//				new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
+//		));
+//		
+//		ALL_TOKENS.add(oauth1);
+//		ALL_TOKENS.add(oauth2);
+//	}
+	
 	private static Properties consumerProperties = null;
 
 	public static synchronized void loadConsumers(ServletConfig config)
@@ -172,6 +193,8 @@ public class OAuthProvider {
 		accessor.requestToken = token;
 		accessor.tokenSecret = secret;
 		accessor.accessToken = null;
+		
+//		oauthAccessorDao.save(new OAuthAccessorBean(accessor.requestToken, accessor.tokenSecret, accessor.accessToken));
 
 		// add to the local cache
 		ALL_TOKENS.add(accessor);

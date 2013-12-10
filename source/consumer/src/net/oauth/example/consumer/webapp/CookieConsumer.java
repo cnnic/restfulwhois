@@ -124,6 +124,11 @@ public abstract class CookieConsumer {
         accessor.requestToken = cookies.get(consumerName + ".requestToken");
         accessor.accessToken = cookies.get(consumerName + ".accessToken");
         accessor.tokenSecret = cookies.get(consumerName + ".tokenSecret");
+        
+//      accessor.requestToken = "efcb3f6e5b108317fe48fa948ff76671";
+//      accessor.accessToken = "14a0c060e0881ea64db1ec573d3af971";
+//      accessor.tokenSecret = "b7db316a1902eb58bb0e669ea0deb1b1";
+        
         return accessor;
     }
 
