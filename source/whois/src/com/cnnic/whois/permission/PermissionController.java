@@ -54,8 +54,8 @@ public class PermissionController {
 		keyFieldsWithoutPrefix.add(WhoisUtil.RDAPCONFORMANCEKEY);
 		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_TYPE);
 		keyFieldsWithoutPrefix.add(WhoisUtil.QUERY_JOIN_TYPE);
-		for (Iterator<Entry<String, Object>> it = map.entrySet().iterator(); it
-				.hasNext();) {
+		Iterator<Entry<String, Object>> it = map.entrySet().iterator();
+		while ( it.hasNext()) {
 			Entry<String, Object> entry = it.next();
 			if (keyFieldsWithoutPrefix.contains(entry.getKey())) {
 				resultMap.put(entry.getKey(), entry.getValue());
