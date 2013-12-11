@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cnnic.whois.bean.DomainQueryParam;
+import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -131,7 +132,7 @@ public class QueryController extends BaseController {
 	public void queryEntity(@PathVariable String entityName,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException {
-		QueryParam queryParam = super.praseQueryParams(request);
+		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
 		queryParam.setQ(entityName);
 		Map<String, Object> resultMap = queryService.queryEntity(queryParam);
 		renderResponse(request, response, resultMap, queryParam);

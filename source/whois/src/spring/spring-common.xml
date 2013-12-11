@@ -10,10 +10,10 @@
 		<constructor-arg value="${solr.url.domain}" />
 	</bean>
 	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.search.EntityQueryDao">
-		<constructor-arg value="${solr.url.nameserver}" />
+		<constructor-arg value="${solr.url.entity}" />
 	</bean>
 	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.search.NsQueryDao">
-		<constructor-arg value="${solr.url.entity}" />
+		<constructor-arg value="${solr.url.nameserver}" />
 	</bean>
 	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">
 		<constructor-arg>

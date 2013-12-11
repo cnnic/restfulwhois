@@ -37,8 +37,9 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 		return result;
 	}
 
-	private SearchResult<EntityIndex> preciseQueryEntitiesByHandleOrName(
-			String handleOrName) {
+	public SearchResult<EntityIndex> preciseQueryEntitiesByHandleOrName(
+			QueryParam param) {
+		String handleOrName = param.getQ();
 		handleOrName = handleOrName.replace(" ", "\\ ").replace(":", "\\:");
 		String entityNamePrefix = "entityNames:";
 		String entityNamesQ = entityNamePrefix + handleOrName;

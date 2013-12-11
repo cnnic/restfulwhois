@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryParam;
@@ -21,12 +22,15 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	private static final String MAP_KEY = "$mul$entity";
 	public static final String GET_ALL_DNRENTITY = "select * from DNREntity ";
 	public static final String GET_ALL_RIRENTITY = "select * from RIREntity ";
+	
+	@Autowired
+	private com.cnnic.whois.dao.search.EntityQueryDao searchEntityQueryDao;
 
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
-		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.SEARCHENTITY, param);
+		SearchResult<? extends Index> result = 
+				searchEntityQueryDao.preciseQueryEntitiesByHandleOrName(param);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cnnic.whois.bean.DomainQueryParam;
+import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
@@ -26,6 +27,13 @@ public class BaseController {
 		FormatType formatType = FormatType.getFormatType(format);
 		PageBean page = getPageParam(request);
 		return new DomainQueryParam(formatType, page);
+	}
+	
+	protected EntityQueryParam praseEntityQueryParams(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		FormatType formatType = FormatType.getFormatType(format);
+		PageBean page = getPageParam(request);
+		return new EntityQueryParam(formatType, page);
 	}
 	
 	protected QueryParam praseQueryParams(HttpServletRequest request) {
