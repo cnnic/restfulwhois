@@ -3,7 +3,8 @@ package com.cnnic.whois.dao.cache;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.cnnic.whois.bean.PageBean;
@@ -22,13 +23,13 @@ public class CacheQueryExecutor implements QueryExecutor {
 		return executor;
 	}
 
-	@Autowired
-	private List<QueryDao> queryDaos;
+	@Resource(name = "cacheQueryDaos")
+	private List<QueryDao> cacheQueryDaos;
 
 	@Override
 	public Map<String, Object> query(QueryType queryType, QueryParam param,
 			PageBean... pageParam) throws QueryException, RedirectExecption {
-		for (QueryDao queryDao : queryDaos) {
+		for (QueryDao queryDao : cacheQueryDaos) {
 			if (queryDao.supportType(queryType)) {
 				return queryDao.query(param);
 			}
@@ -37,7 +38,7 @@ public class CacheQueryExecutor implements QueryExecutor {
 	}
 
 	public Map<String, Object> initCache() {
-		for (QueryDao queryDao : queryDaos) {
+		for (QueryDao queryDao : cacheQueryDaos) {
 			if (queryDao instanceof AbstractCacheQueryDao) {
 				AbstractCacheQueryDao cacheQueryDao = (AbstractCacheQueryDao) queryDao;
 				if (cacheQueryDao.needInitCache()) {
@@ -46,13 +47,5 @@ public class CacheQueryExecutor implements QueryExecutor {
 			}
 		}
 		return null;
-	}
-
-	public List<QueryDao> getDbQueryDaos() {
-		return queryDaos;
-	}
-
-	public void setDbQueryDaos(List<QueryDao> queryDaos) {
-		this.queryDaos = queryDaos;
 	}
 }

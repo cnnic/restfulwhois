@@ -8,7 +8,7 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
-//@Repository("cacheSearchNsQueryDao")
+@Repository("cache.searchNsQueryDao")
 public class SearchNsQueryDao extends AbstractCacheQueryDao {
 
 	@Override

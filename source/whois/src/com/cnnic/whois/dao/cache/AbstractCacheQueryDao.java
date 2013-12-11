@@ -7,6 +7,8 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import redis.clients.jedis.Jedis;
 
@@ -21,8 +23,9 @@ import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
-	protected static DbQueryExecutor dbQueryExecutor = DbQueryExecutor
-			.getExecutor();
+	@Autowired
+	@Qualifier("dbQueryExecutor")
+	protected DbQueryExecutor dbQueryExecutor;
 	private static Jedis cache = new Jedis(WhoisProperties.getCacheIp(),
 			Integer.valueOf(WhoisProperties.getCachePort()));
 

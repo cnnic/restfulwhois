@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-@Component
+@Component("htmlResponseWriter")
 public class HtmlResponseWriter extends AbstractResponseWriter {
 	private static HtmlResponseWriter writer = new HtmlResponseWriter();
 

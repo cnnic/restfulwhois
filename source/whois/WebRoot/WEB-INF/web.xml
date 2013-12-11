@@ -94,15 +94,6 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>cacheServlet</servlet-name>
-		<servlet-class>com.cnnic.whois.controller.CacheServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>cacheServlet</servlet-name>
-		<url-pattern>/cache/init</url-pattern>
-	</servlet-mapping>
-	<servlet>
 		<servlet-name>AuthOpenIDServlet</servlet-name>
 		<servlet-class>com.cnnic.whois.controller.AuthOpenIDServlet</servlet-class>
 	</servlet>

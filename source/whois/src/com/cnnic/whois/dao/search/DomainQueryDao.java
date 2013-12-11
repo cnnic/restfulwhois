@@ -7,7 +7,6 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
-
 public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 
 	public DomainQueryDao(String url) {
@@ -16,16 +15,16 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.DOMAIN;
+		return QueryType.SEARCHDOMAIN;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.DOMAIN.equals(queryType);
+		return QueryType.SEARCHDOMAIN.equals(queryType);
 	}
 
 	@Override
-	public SearchResult<DomainIndex> query(QueryParam param)
+	public SearchResult<DomainIndex> search(QueryParam param)
 			throws QueryException {
 		DomainQueryParam domainQueryParam = (DomainQueryParam) param;
 		PageBean page = param.getPage();

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -13,7 +15,7 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
-//@Repository("db.searchNsQueryDao")
+@Repository("db.searchNsQueryDao")
 public class SearchNsQueryDao extends AbstractSearchQueryDao {
 
 	@Override
@@ -22,7 +24,7 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 		Map<String, Object> map = null;
 		PageBean page = param.getPage();
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
-				QueryType.NAMESERVER, param);
+				QueryType.SEARCHNS, param);
 		try {
 			connection = ds.getConnection();
 			Map<String, Object> nsMap = fuzzyQuery(connection, result,

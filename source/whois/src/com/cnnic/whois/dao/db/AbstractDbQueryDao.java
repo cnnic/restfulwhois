@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.service.DomainIndexService;
-import com.cnnic.whois.service.EntityIndexService;
-import com.cnnic.whois.service.NameServerIndexService;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 

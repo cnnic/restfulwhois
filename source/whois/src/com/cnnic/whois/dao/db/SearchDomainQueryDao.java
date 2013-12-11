@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -11,7 +13,7 @@ import com.cnnic.whois.bean.index.Index;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
 
-//@Repository("db.searchDomainQueryDao")
+@Repository("db.searchDomainQueryDao")
 public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 
 	@Override
@@ -20,7 +22,7 @@ public class SearchDomainQueryDao extends AbstractSearchQueryDao {
 		Map<String, Object> map = null;
 		PageBean page = param.getPage();
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
-				QueryType.DOMAIN, param);
+				QueryType.SEARCHDOMAIN, param);
 		if (result.getResultList().size() == 0) {
 			return map;
 		}

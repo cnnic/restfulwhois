@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
-@Component
+@Component("textResponseWriter")
 public class TextResponseWriter extends AbstractResponseWriter {
 	private static TextResponseWriter writer = new TextResponseWriter();
 

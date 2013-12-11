@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.WhoisUtil;
-@Component
+@Component("xmlResponseWriter")
 public class XmlResponseWriter extends AbstractResponseWriter {
 	private static XmlResponseWriter writer = new XmlResponseWriter();
 

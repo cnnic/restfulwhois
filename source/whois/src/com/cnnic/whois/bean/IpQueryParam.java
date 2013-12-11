@@ -1,6 +1,11 @@
 package com.cnnic.whois.bean;
 
+import com.cnnic.whois.view.FormatType;
+
 public class IpQueryParam extends QueryParam {
+	private String ipInfo;
+	private int ipLength;
+	
 	private long startHighAddr;
 	private long endHighAddr;
 	private long startLowAddr;
@@ -14,6 +19,39 @@ public class IpQueryParam extends QueryParam {
 		this.startLowAddr = startLowAddr;
 		this.endLowAddr = endLowAddr;
 	}
+
+	
+	
+	public IpQueryParam(FormatType formatType, PageBean page) {
+		super();
+		super.setFormat(formatType);
+	}
+
+
+
+	public String getIpInfo() {
+		return ipInfo;
+	}
+
+
+
+	public void setIpInfo(String ipInfo) {
+		this.ipInfo = ipInfo;
+	}
+
+
+
+	public int getIpLength() {
+		return ipLength;
+	}
+
+
+
+	public void setIpLength(int ipLength) {
+		this.ipLength = ipLength;
+	}
+
+
 
 	public long getStartHighAddr() {
 		return startHighAddr;

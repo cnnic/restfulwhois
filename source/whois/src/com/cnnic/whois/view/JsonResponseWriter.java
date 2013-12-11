@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.util.DataFormat;
 import com.cnnic.whois.util.WhoisUtil;
-@Component
+@Component("jsonResponseWriter")
 public class JsonResponseWriter extends AbstractResponseWriter {
 	private static JsonResponseWriter writer = new JsonResponseWriter();
 

@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.Index;
@@ -16,7 +18,8 @@ import com.cnnic.whois.service.index.SearchResult;
 import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
-	protected SearchQueryExecutor searchQueryExecutor = SearchQueryExecutor.getExecutor();
+	@Autowired
+	protected SearchQueryExecutor searchQueryExecutor;
 	public Object querySpecificJoinTable(String key, String handle,
 			Connection connection)
 			throws SQLException{

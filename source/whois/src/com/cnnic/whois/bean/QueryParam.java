@@ -3,6 +3,7 @@ package com.cnnic.whois.bean;
 import com.cnnic.whois.view.FormatType;
 
 public class QueryParam {
+	private QueryType queryType;
 	private FormatType format;
 	private String q;
 	private boolean isFuzzyQ = false;
@@ -10,6 +11,9 @@ public class QueryParam {
 
 	public QueryParam(String q) {
 		this.q = q;
+	}
+	
+	public QueryParam() {
 	}
 
 	public QueryParam(FormatType format, String q, boolean isFuzzyQ,
@@ -25,6 +29,14 @@ public class QueryParam {
 		super();
 		this.format = format;
 		this.page = page;
+	}
+
+	public QueryType getQueryType() {
+		return queryType;
+	}
+
+	public void setQueryType(QueryType queryType) {
+		this.queryType = queryType;
 	}
 
 	public PageBean getPage() {

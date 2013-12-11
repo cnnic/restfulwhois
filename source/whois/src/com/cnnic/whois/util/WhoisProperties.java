@@ -39,7 +39,7 @@ public class WhoisProperties {
 	/*
 	 * prefix url of ".well-known/rdap/"
 	 */
-	private static final String WELL_KNOWN_RDAP_URL = "well-known/rdap";
+	private static final String WELL_KNOWN_RDAP_URL = ".well-known/rdap";
 	
 	/**
 	 * Load the resource file

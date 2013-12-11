@@ -35,7 +35,7 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 
 	private Map<String, Object> doFuzzyQuery(QueryParam param) throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
-				QueryType.DOMAIN, param);
+				QueryType.SEARCHDOMAIN, param);
 		return queryWithIndexs(result);
 	}
 

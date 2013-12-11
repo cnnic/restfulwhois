@@ -1,18 +1,45 @@
 package com.cnnic.whois.controller;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.cnnic.whois.bean.DomainQueryParam;
+import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.PageBean;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.view.FormatType;
+import com.cnnic.whois.view.ViewResolver;
 
 public class BaseController {
+	@Autowired
+	protected ViewResolver viewResolver;
+	
+	protected DomainQueryParam praseDomainQueryParams(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		FormatType formatType = FormatType.getFormatType(format);
+		PageBean page = getPageParam(request);
+		return new DomainQueryParam(formatType, page);
+	}
+	
 	protected QueryParam praseQueryParams(HttpServletRequest request) {
 		String format = getFormatCookie(request);
 		FormatType formatType = FormatType.getFormatType(format);
 		PageBean page = getPageParam(request);
 		return new QueryParam(formatType, page);
+	}
+	
+	protected IpQueryParam praseIpQueryParams(HttpServletRequest request) {
+		String format = getFormatCookie(request);
+		FormatType formatType = FormatType.getFormatType(format);
+		PageBean page = getPageParam(request);
+		return new IpQueryParam(formatType, page);
 	}
 
 	private PageBean getPageParam(HttpServletRequest request) {
@@ -22,6 +49,13 @@ public class BaseController {
 			page.setCurrentPage(Integer.valueOf(currentPageObj.toString()));
 		}
 		return page;
+	}
+	
+	protected void renderResponse(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> resultMap,
+			QueryParam queryParam) throws IOException, ServletException {
+		viewResolver.writeResponse(queryParam.getFormat(), request, response,
+				resultMap, 0);
 	}
 
 	private String getFormatCookie(HttpServletRequest request) {

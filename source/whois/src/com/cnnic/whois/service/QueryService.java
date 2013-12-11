@@ -21,8 +21,11 @@ import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
+import com.cnnic.whois.util.validate.ValidateUtils;
 @Service
 public class QueryService {
+	private static Long MIN_AS_NUM = 0L;
+	private static Long MAX_AS_NUM = 4294967295L;
 	private static QueryService queryService = new QueryService();
 	@Autowired
 	private QueryEngine queryEngine ;
@@ -33,6 +36,30 @@ public class QueryService {
 		return queryService;
 	}
 
+	public Map<String, Object> queryIP(IpQueryParam ipQueryParam) throws QueryException,
+		RedirectExecption {
+		long[] ipLongs = WhoisUtil.parsingIp(ipQueryParam.getIpInfo(), ipQueryParam.getIpLength());
+		ipQueryParam.setStartHighAddr(ipLongs[0]);
+		ipQueryParam.setEndHighAddr(ipLongs[1]);
+		ipQueryParam.setStartLowAddr(ipLongs[2]);
+		ipQueryParam.setEndLowAddr(ipLongs[3]);
+		Map map = queryEngine.query(QueryType.IP, ipQueryParam);
+		if (map == null) {
+			queryEngine.query(QueryType.IPREDIRECTION, 
+					new IpQueryParam("",ipLongs[0], ipLongs[1], ipLongs[2],ipLongs[3]));
+			return queryError("404");
+		}
+		
+		if ((map.get("$mul$IP") instanceof Object[])) {
+			List list = new ArrayList();
+			Map<String, Object> mapInfo = new LinkedHashMap<String, Object>();
+		
+			mapInfo.put("$mul$IP", list.toArray());
+			return mapInfo;
+		}
+		return map;
+	}
+	
 	public Map<String, Object> queryIP(String ipInfo, int ipLength) throws QueryException,
 			RedirectExecption {
 		long[] ipLongs = WhoisUtil.parsingIp(ipInfo, ipLength);
@@ -88,6 +115,25 @@ public class QueryService {
 		return map;
 	}
 
+	public Map<String, Object> queryAS(QueryParam queryParam)
+			throws QueryException, RedirectExecption {
+		String autnum = queryParam.getQ();
+		Map<String, Object> resultMap = null;
+		if (!autnum.matches("^[1-9][0-9]{0,9}$")){
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+		}
+		Long longValue = Long.valueOf(autnum);
+		if (longValue <= MIN_AS_NUM || longValue >= MAX_AS_NUM) {
+			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+		}
+		resultMap = queryEngine.query(QueryType.AUTNUM, queryParam);
+		if (resultMap == null) {
+			getRedirectionURL("autnum", queryParam.getQ());
+			return queryError("404");
+		}
+		return resultMap;
+	}
+
 	public Map<String, Object> queryAS(int asInfo, String role, String format)
 			throws QueryException, RedirectExecption {
 		Map map = queryEngine.query(QueryType.AUTNUM, new QueryParam(asInfo+""));
@@ -106,6 +152,15 @@ public class QueryService {
 			return queryError("404");
 		}
 		return map;
+	}
+	
+	public Map<String, Object> fuzzyQueryNameServer(QueryParam queryParam) throws QueryException,
+			RedirectExecption {
+		Map dnrMap = queryEngine.query(QueryType.SEARCHNS,queryParam);
+		if (dnrMap == null) {
+			return queryError("404");
+		}
+		return dnrMap;
 	}
 
 	public Map<String, Object> fuzzyQueryNameServer(String nameServer,
@@ -185,6 +240,18 @@ public class QueryService {
 		return wholeMap;
 	}
 
+	public Map<String, Object> queryEntity(QueryParam queryParam) throws QueryException, SQLException {
+		try {
+			Map map = queryEngine.query(QueryType.ENTITY, queryParam);
+			if (map == null) {
+				return queryError("404");
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
+	
 	public Map<String, Object> queryEntity(String queryPara, String role,
 			String format) throws QueryException, SQLException {
 		try {
@@ -198,6 +265,21 @@ public class QueryService {
 		}
 	}
 
+	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,
+			String queryPara)
+			throws QueryException, SQLException {
+		try {
+			Map map = queryEngine.query(QueryType.SEARCHENTITY, 
+					new EntityQueryParam(queryPara,fuzzyQueryParamName));
+			if (map == null) {
+				return queryError("404");
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
+	
 	public Map<String, Object> fuzzyQueryEntity(String fuzzyQueryParamName,
 			String queryPara, String role, String format, PageBean page)
 			throws QueryException, SQLException {
@@ -219,6 +301,18 @@ public class QueryService {
 			Map map = queryEngine.query(QueryType.LINKS, new QueryParam(queryPara));
 			if (map == null) {
 				return queryError("404");
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
+	
+	public Map<String, Object> query(QueryParam queryParam) throws QueryException {
+		try {
+			Map map = queryEngine.query(queryParam.getQueryType(), queryParam);
+			if (map == null) {
+				map = queryError("404");
 			}
 			return map;
 		} catch (RedirectExecption e) {
@@ -278,6 +372,18 @@ public class QueryService {
 		}
 	}
 
+	public Map<String, Object> queryDsData(QueryParam queryParam) throws QueryException {
+		try {
+			Map map = queryEngine.query(QueryType.DSDATA, queryParam);
+			if (map == null) {
+				return queryError("404");
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
+	
 	public Map<String, Object> queryDsData(String queryPara, String role,
 			String format) throws QueryException {
 		try {
@@ -355,6 +461,18 @@ public class QueryService {
 			throw new QueryException(e);
 		}
 	}
+	
+	public Map<String, Object> queryEvents(QueryParam queryParam) throws QueryException {
+		try {
+			Map map = queryEngine.query(QueryType.EVENTS, queryParam);
+			if (map == null) {
+				return queryError("404");
+			}
+			return map;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
 
 	public Map<String, Object> queryEvents(String queryPara) throws QueryException {
 		try {
@@ -378,6 +496,16 @@ public class QueryService {
 		}
 	}
 
+	public Map<String, Object> queryHelp(QueryParam queryParam) throws QueryException {
+		try {
+			Map helpMap = null;
+			helpMap = queryEngine.query(QueryType.HELP, queryParam);
+			return helpMap;
+		} catch (RedirectExecption e) {
+			throw new QueryException(e);
+		}
+	}
+	
 	public Map<String, Object> queryHelp(String helpCode, String role,
 			String format) throws QueryException {
 		try {

@@ -8,7 +8,6 @@ import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.service.index.SearchResult;
-
 public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 	private static final String ARRAY_SPLITER = "'~'";
 	private static final String FUZZY_MARK = "*";
@@ -20,16 +19,16 @@ public class EntityQueryDao extends AbstractSearchQueryDao<EntityIndex> {
 
 	@Override
 	public QueryType getQueryType() {
-		return QueryType.ENTITY;
+		return QueryType.SEARCHENTITY;
 	}
 
 	@Override
 	public boolean supportType(QueryType queryType) {
-		return QueryType.ENTITY.equals(queryType);
+		return getQueryType().equals(queryType);
 	}
 
 	@Override
-	public SearchResult<EntityIndex> query(QueryParam param)
+	public SearchResult<EntityIndex> search(QueryParam param)
 			throws QueryException {
 		EntityQueryParam entityQueryParam = (EntityQueryParam) param;
 		SearchResult<EntityIndex> result = fuzzyQueryEntitiesByHandleAndName(

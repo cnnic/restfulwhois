@@ -26,7 +26,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
 		SearchResult<? extends Index> result = searchQueryExecutor
-				.query(QueryType.ENTITY, param);
+				.query(QueryType.SEARCHENTITY, param);
 		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
