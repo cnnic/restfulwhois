@@ -18,7 +18,7 @@ public class QueryEngine {
 	private static QueryEngine engine = new QueryEngine();
 	@Autowired
 	@Qualifier("cacheQueryExecutor")
-	// dbQueryExecutor
+//	@Qualifier("dbQueryExecutor")
 	private QueryExecutor queryExecutor;
 	@Autowired
 	private ViewResolver viewResolver ;

@@ -172,6 +172,7 @@ public class QueryController extends BaseController {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 		} else {
 			queryParam.setQ(nsName);
+			queryParam.setQueryType(QueryType.NAMESERVER);
 			resultMap = queryService.query(queryParam);
 			request.setAttribute("queryPara", IDN.toUnicode(punyNsName));
 		}
@@ -232,13 +233,32 @@ public class QueryController extends BaseController {
 		ip = StringUtils.trim(ip);
 		Map<String, Object> resultMap = null;
 		IpQueryParam queryParam = super.praseIpQueryParams(request);
-		if (!ValidateUtils.isCommonInvalidStr(ip)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-		} else {
-			queryParam.setQ(ip);
-			resultMap = queryService.queryIP(queryParam);
-			request.setAttribute("queryPara", queryParam);
+		String ipLength = "0";
+		String strInfo = ip;
+		if (ip.indexOf(WhoisUtil.PRX) >= 0) {
+			String[] infoArray = ip.split(WhoisUtil.PRX);
+			if(infoArray.length > 2){//1.1.1.1//32
+				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+				viewResolver.writeResponse(queryParam.getFormat(), request, response,
+						resultMap, 0);
+				return;
+			}
+			if(infoArray.length > 1){
+				strInfo = infoArray[0];
+				ipLength = infoArray[1];
+			}
 		}
+		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			viewResolver.writeResponse(queryParam.getFormat(), request, response,
+					resultMap, 0);
+			return;
+		}
+		queryParam.setQ(ip);
+		queryParam.setIpInfo(strInfo);
+		queryParam.setIpLength(Integer.parseInt(ipLength));
+		resultMap = queryService.queryIP(queryParam);
+		request.setAttribute("queryPara", queryParam);
 		viewResolver.writeResponse(queryParam.getFormat(), request, response,
 				resultMap, 0);
 	}
