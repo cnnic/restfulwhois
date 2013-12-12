@@ -1,44 +1,96 @@
 package com.cnnic.whois.bean;
 
+import java.util.Date;
+
 public class OAuthAccessorBean {
 
-	private String requestToken;
+	private int id;
 
-	private String accessToken;
+	private String request_token;
 
-	private String tokenSecret;
+	private String token_secret;
+
+	private String access_token;
+	
+	private String app_key;
+	
+	private String app_secret;
+	
+	private Date create_time;
+
 
 	public OAuthAccessorBean() { }
-
-	public OAuthAccessorBean(String requestToken, String accessToken,
-			String tokenSecret) {
-		this.requestToken = requestToken;
-		this.accessToken = accessToken;
-		this.tokenSecret = tokenSecret;
+	
+	public OAuthAccessorBean(String request_token, String token_secret,
+			String access_token) {
+		this.request_token = request_token;
+		this.token_secret = token_secret;
+		this.access_token = access_token;
 	}
 
-	public String getRequestToken() {
-		return requestToken;
+	public OAuthAccessorBean(String request_token, String token_secret,
+			String access_token, String app_key, String app_secret) {
+		this.request_token = request_token;
+		this.token_secret = token_secret;
+		this.access_token = access_token;
+		this.app_key = app_key;
+		this.app_secret = app_secret;
 	}
 
-	public void setRequestToken(String requestToken) {
-		this.requestToken = requestToken;
+	public int getId() {
+		return id;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public String getRequest_token() {
+		return request_token;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setRequest_token(String request_token) {
+		this.request_token = request_token;
 	}
 
-	public String getTokenSecret() {
-		return tokenSecret;
+	public String getToken_secret() {
+		return token_secret;
 	}
 
-	public void setTokenSecret(String tokenSecret) {
-		this.tokenSecret = tokenSecret;
+	public void setToken_secret(String token_secret) {
+		this.token_secret = token_secret;
+	}
+
+	public String getAccess_token() {
+		return access_token;
+	}
+
+	public void setAccess_token(String access_token) {
+		this.access_token = access_token;
+	}
+
+	public String getApp_key() {
+		return app_key;
+	}
+
+	public void setApp_key(String app_key) {
+		this.app_key = app_key;
+	}
+
+	public String getApp_secret() {
+		return app_secret;
+	}
+
+	public void setApp_secret(String app_secret) {
+		this.app_secret = app_secret;
+	}
+	
+	public Date getCreate_time() {
+		return create_time;
+	}
+
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
 	}
 
 }

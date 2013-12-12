@@ -8,12 +8,12 @@ public interface OAuthAccessorDao {
 
 	public void save(OAuthAccessorBean oauthAccessorBean);
 
-	public void update(int id, OAuthAccessorBean oauthAccessorBean);
-
-	public void delete(int id);
-
-	public OAuthAccessorBean getOAuthAccessorBeanById(int id);
-
 	public List<OAuthAccessorBean> getOAuthAccessorBeans();
+	
+	public OAuthAccessorBean getOAuthAccessorBeanByTokenAndSecret(String requestToken, String tokenSecret);
+	
+	public void updateByTokenAndSecret(String requestToken, String tokenSecret, String accessToken);
+	
+	public void deleteInvalidDate();
 	
 }

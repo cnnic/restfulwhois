@@ -69,9 +69,6 @@ public class AuthorizationServlet extends HttpServlet {
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
         }
-        
-        
-        
     }
     
     @Override 

@@ -12,12 +12,9 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 public class BaseDao {
 	
 	protected QueryRunner queryRunner = new QueryRunner();
+	
 	/**
-	 * 增加，删除，更新操作
-	 * @param conn 数据库连接
-	 * @param sql 数据库操作语句
-	 * @param params 参数列表
-	 * @param message 异常信息
+	 * add，delete，update Operation
 	 */
 	protected void update(Connection conn, String sql, Object[] params, String message){
 		try {

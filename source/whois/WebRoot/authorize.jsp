@@ -73,7 +73,6 @@
         </label>
         <input class="input-block" id="password" name="password" tabindex="2" type="password">
 
-        <input id="return_to" name="return_to" type="hidden" value="/login/oauth/authorize?client_id=63af1fe13e53d92accb0&amp;redirect_uri=http%3A%2F%2Fwww.oschina.net%2Faction%2Fopenid%2Fafter_bind&amp;response_type=code&amp;scope=user%3Aemail&amp;state=ZFmf8TCalU9Dc9W6FNIh">                
         <input class="button" name="commit" tabindex="3" type="submit" value="Sign in">
       </div>
 </form>

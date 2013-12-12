@@ -12,6 +12,8 @@ public class UserApp {
 	
 	private int user_id;
 	
+	private int invalid_time;
+	
 	public UserApp() { }
 	
 	public UserApp(String app_description, int user_id) {
@@ -57,6 +59,14 @@ public class UserApp {
 
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
+	}
+	
+	public int getInvalid_time() {
+		return invalid_time;
+	}
+
+	public void setInvalid_time(int invalid_time) {
+		this.invalid_time = invalid_time;
 	}
 	
 }

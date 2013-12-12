@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import com.cnnic.whois.bean.OAuthAccessorBean;
 import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
 import com.cnnic.whois.dao.oauth.UserAppDao;
 
@@ -24,6 +26,7 @@ import net.oauth.OAuthConsumer;
 import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
 import net.oauth.OAuthProblemException;
+import net.oauth.OAuthServiceProvider;
 import net.oauth.OAuthValidator;
 import net.oauth.SimpleOAuthValidator;
 import net.oauth.server.OAuthServlet;
@@ -46,25 +49,6 @@ public class OAuthProvider {
 			.synchronizedMap(new HashMap<String, OAuthConsumer>(10));
 
 	private static final Collection<OAuthAccessor> ALL_TOKENS = new HashSet<OAuthAccessor>();
-
-//	static {
-//		OAuthAccessor oauth1 = new OAuthAccessor(
-//				"efcb3f6e5b108317fe48fa948ff76671", "14a0c060e0881ea64db1ec573d3af971", 
-//				"b7db316a1902eb58bb0e669ea0deb1b1", 
-//				new OAuthConsumer("/OAuth/Callback", "key1385973838215", "secret1385973838215", 
-//				new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
-//		));
-//		
-//		OAuthAccessor oauth2 = new OAuthAccessor(
-//				"efcb3f6e5b108317fe48fa948ff76672", "14a0c060e0881ea64db1ec573d3af972", 
-//				"b7db316a1902eb58bb0e669ea0deb1b2", 
-//				new OAuthConsumer("/OAuth/Callback", "key1385973838212", "secret1385973838212", 
-//				new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
-//		));
-//		
-//		ALL_TOKENS.add(oauth1);
-//		ALL_TOKENS.add(oauth2);
-//	}
 	
 	private static Properties consumerProperties = null;
 
@@ -132,6 +116,17 @@ public class OAuthProvider {
 		// try to load from local cache if not throw exception
 		String consumer_token = requestMessage.getToken();
 		OAuthAccessor accessor = null;
+		
+		List<OAuthAccessorBean> oauthAccessorBeanList = oauthAccessorDao.getOAuthAccessorBeans();
+		for(OAuthAccessorBean oauthAccessorBean : oauthAccessorBeanList){
+			accessor = new OAuthAccessor(
+					oauthAccessorBean.getRequest_token(), oauthAccessorBean.getAccess_token(), oauthAccessorBean.getToken_secret(), 
+					new OAuthConsumer("/OAuth/Callback", oauthAccessorBean.getApp_key(), oauthAccessorBean.getApp_secret(), 
+					new OAuthServiceProvider("request_token.do", "authorize.do", "access_token.do")
+			));
+			ALL_TOKENS.add(accessor);
+		}
+		
 		for (OAuthAccessor a : OAuthProvider.ALL_TOKENS) {
 			if (a.requestToken != null) {
 				if (a.requestToken.equals(consumer_token)) {
@@ -194,10 +189,12 @@ public class OAuthProvider {
 		accessor.tokenSecret = secret;
 		accessor.accessToken = null;
 		
-//		oauthAccessorDao.save(new OAuthAccessorBean(accessor.requestToken, accessor.tokenSecret, accessor.accessToken));
+		oauthAccessorDao.save(new OAuthAccessorBean(
+				accessor.requestToken, accessor.tokenSecret, accessor.accessToken, 
+				accessor.consumer.consumerKey, accessor.consumer.consumerSecret));
 
 		// add to the local cache
-		ALL_TOKENS.add(accessor);
+//		ALL_TOKENS.add(accessor);
 
 	}
 
@@ -217,13 +214,18 @@ public class OAuthProvider {
 		String token_data = consumer_key + System.nanoTime();
 		String token = DigestUtils.md5Hex(token_data);
 		// first remove the accessor from cache
-		ALL_TOKENS.remove(accessor);
+//		ALL_TOKENS.remove(accessor);
 
+		OAuthAccessorBean oauthAccessorBean = oauthAccessorDao.getOAuthAccessorBeanByTokenAndSecret(accessor.requestToken, accessor.tokenSecret);
+		if(oauthAccessorBean != null){
+			oauthAccessorDao.updateByTokenAndSecret(oauthAccessorBean.getRequest_token(), oauthAccessorBean.getToken_secret(), token);
+		}
+		
 		accessor.requestToken = null;
 		accessor.accessToken = token;
-
+		
 		// update token in local cache
-		ALL_TOKENS.add(accessor);
+//		ALL_TOKENS.add(accessor);
 	}
 
 	public static void handleException(Exception e, HttpServletRequest request,

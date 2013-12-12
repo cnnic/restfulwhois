@@ -14,12 +14,13 @@ public class UserAppDaoImpl extends BaseDao implements UserAppDao {
 	public void save(UserApp userApp) {
 		Connection conn = JdbcUtils.getConnection();
 		
-//		TODO : this part need modification
+//		TODO : this part need modification, default invalid_time setting 7 days
 		userApp.setApp_key("key" +System.currentTimeMillis());
 		userApp.setApp_secret("secret" +System.currentTimeMillis());
+		userApp.setInvalid_time(7);
 		
-		this.update(JdbcUtils.getConnection(), "insert into users_app (app_key, app_secret, app_description, user_id) values(?, ?, ?, ?)", 
-				new Object[]{userApp.getApp_key(), userApp.getApp_secret(), userApp.getApp_description(), userApp.getUser_id() }, "Save user app information failed !");
+		this.update(JdbcUtils.getConnection(), "insert into users_app (app_key, app_secret, app_description, user_id, invalid_time) values(?, ?, ?, ?, ?)", 
+				new Object[]{userApp.getApp_key(), userApp.getApp_secret(), userApp.getApp_description(), userApp.getUser_id(), userApp.getInvalid_time() }, "Save user app information failed !");
 		JdbcUtils.free(null, null, conn);
 	}
 	
