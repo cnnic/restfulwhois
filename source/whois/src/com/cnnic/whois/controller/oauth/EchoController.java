@@ -18,6 +18,7 @@ package com.cnnic.whois.controller.oauth;
 
 import java.io.IOException;
 import java.net.IDN;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,13 +32,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.controller.BaseController;
+import com.cnnic.whois.dao.oauth.UserDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
 import com.cnnic.whois.util.OAuthProvider;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
+import com.cnnic.whois.view.FormatType;
 import com.cnnic.whois.view.ViewResolver;
 
 import net.oauth.OAuthAccessor;
@@ -80,6 +84,7 @@ public class EchoController extends BaseController {
 				resultMap = queryService.queryDomain(queryParam);
 				System.err.println(resultMap);
 			}
+			
 			viewResolver.writeResponse(queryParam.getFormat(), request,
 					response, resultMap, 0);
 

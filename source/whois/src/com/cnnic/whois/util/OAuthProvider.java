@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import com.cnnic.whois.bean.OAuthAccessorBean;
+import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
 import com.cnnic.whois.dao.oauth.UserAppDao;
 

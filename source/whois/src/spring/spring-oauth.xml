@@ -5,13 +5,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
 		   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
-	default-autowire="byType" default-lazy-init="false">
-
-	<util:properties id="whoisproperties" location="classpath:whois.properties" />
-	<context:property-placeholder location="classpath:*.properties" />
-	<context:component-scan base-package="com.cnnic" />
-	<import resource="spring-servlet.xml" />
-	<!-- spring quartz -->
-	<import resource="spring-job.xml" />
+	default-autowire="byName" default-lazy-init="true">
+	
+	
+	<bean id="oauthAccessorDao" class="com.cnnic.whois.dao.oauth.OAuthAccessorDaoImpl" />
+	
+	<bean id="userAppDao" class="com.cnnic.whois.dao.oauth.UserAppDaoImpl" />
+	
+	<bean id="userDao" class="com.cnnic.whois.dao.oauth.UserDaoImpl" />
 	
 </beans>

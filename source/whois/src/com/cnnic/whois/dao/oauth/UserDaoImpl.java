@@ -3,10 +3,13 @@ package com.cnnic.whois.dao.oauth;
 import java.sql.Connection;
 import java.util.List;
 
-import com.cnnic.whois.bean.User;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.base.BaseDao;
 import com.cnnic.whois.util.JdbcUtils;
 
+@Service("userDao")
 public class UserDaoImpl extends BaseDao implements UserDao {
 
 	public void save(User user) {

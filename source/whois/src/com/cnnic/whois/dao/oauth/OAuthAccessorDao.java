@@ -2,7 +2,7 @@ package com.cnnic.whois.dao.oauth;
 
 import java.util.List;
 
-import com.cnnic.whois.bean.OAuthAccessorBean;
+import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 
 public interface OAuthAccessorDao {
 

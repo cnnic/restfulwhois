@@ -3,7 +3,7 @@ package com.cnnic.whois.dao.oauth;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.UserApp;
+import com.cnnic.whois.bean.oauth.UserApp;
 
 public interface UserAppDao {
 
@@ -12,8 +12,10 @@ public interface UserAppDao {
 	public void update(int id, UserApp userApp);
 
 	public void delete(int id);
+	
+	public UserApp getUserAppById(int id);
 
-	public UserApp getUserAppById(int user_id);
+	public UserApp getUserAppByUserId(int user_id);
 
 	public List<UserApp> getUserApps(int user_id);
 

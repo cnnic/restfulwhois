@@ -3,10 +3,13 @@ package com.cnnic.whois.dao.oauth;
 import java.sql.Connection;
 import java.util.List;
 
-import com.cnnic.whois.bean.OAuthAccessorBean;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 import com.cnnic.whois.dao.base.BaseDao;
 import com.cnnic.whois.util.JdbcUtils;
 
+@Service("oauthAccessorDao")
 public class OAuthAccessorDaoImpl extends BaseDao implements OAuthAccessorDao {
 
 	public void save(OAuthAccessorBean oauuthAccessorBean) {

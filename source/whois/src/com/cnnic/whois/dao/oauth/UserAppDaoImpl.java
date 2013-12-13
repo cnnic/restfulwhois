@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.bean.UserApp;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.bean.oauth.UserApp;
 import com.cnnic.whois.dao.base.BaseDao;
 import com.cnnic.whois.util.JdbcUtils;
 
+@Service("userAppDao")
 public class UserAppDaoImpl extends BaseDao implements UserAppDao {
 
 	public void save(UserApp userApp) {
@@ -39,6 +42,14 @@ public class UserAppDaoImpl extends BaseDao implements UserAppDao {
 	}
 
 	public UserApp getUserAppById(int user_id) {
+		Connection conn = JdbcUtils.getConnection();
+		UserApp userApp = this.getObject(JdbcUtils.getConnection(), "select id, app_key, app_secret, app_description, user_id from users_app where id = ?", 
+				new Object[]{user_id}, "Query user app information failed !", UserApp.class);
+		JdbcUtils.free(null, null, conn);
+		return userApp;
+	}
+	
+	public UserApp getUserAppByUserId(int user_id) {
 		Connection conn = JdbcUtils.getConnection();
 		UserApp userApp = this.getObject(JdbcUtils.getConnection(), "select id, app_key, app_secret, app_description, user_id from users_app where user_id = ?", 
 				new Object[]{user_id}, "Query user app information failed !", UserApp.class);

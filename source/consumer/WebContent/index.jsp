@@ -63,10 +63,15 @@
 					</fieldset>
 				</div>
 			</div>
+			
 			<div id="content">
-				<div id="maincontent">null</div>
+				<div id="maincontent"></div>
 				<div id="jsoncontent"></div>
 			</div>
+			<c:if test="${pageBean != null}">
+				<cnnic:page href="${queryPath}" pageBeanName="pageBean" maxShowPage="5" maxRecordConfigurable= "false" id="1"/>
+			</c:if>
+			<div style="clear: both;"></div>
 			
 			<div style="clear: both;"></div>
 		</div>

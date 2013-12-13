@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cnnic.whois.bean.User;
+import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.oauth.UserDao;
 import com.cnnic.whois.util.BeanFactory;
 import com.cnnic.whois.util.OAuthProvider;
@@ -110,7 +110,7 @@ public class AuthorizationServlet extends HttpServlet {
         request.setAttribute("CALLBACK", callback);
         request.setAttribute("TOKEN", accessor.requestToken);
         request.getRequestDispatcher //
-                    ("/authorize.jsp").forward(request, response);
+                    ("/WEB-INF/pages/oauth/authorize.jsp").forward(request, response);
         
     }
     
