@@ -19,7 +19,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
+import com.cnnic.whois.dao.oauth.OAuthAccessorDaoImpl;
 import com.cnnic.whois.dao.oauth.UserAppDao;
+import com.cnnic.whois.dao.oauth.UserAppDaoImpl;
 
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -39,10 +41,10 @@ import net.oauth.server.OAuthServlet;
  * @author Praveen Alavilli
  */
 public class OAuthProvider {
-
-	private static UserAppDao userAppDao = (UserAppDao) BeanFactory.getBean("userAppDao");
-	private static OAuthAccessorDao oauthAccessorDao = (OAuthAccessorDao) BeanFactory.getBean("oauthAccessorDao");
 	
+	private static UserAppDao userAppDao = new UserAppDaoImpl();
+	private static OAuthAccessorDao oauthAccessorDao = new OAuthAccessorDaoImpl();
+
 	public static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
 
 	private static final Map<String, OAuthConsumer> ALL_CONSUMERS = Collections

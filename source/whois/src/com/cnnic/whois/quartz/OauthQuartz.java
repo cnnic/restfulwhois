@@ -5,11 +5,11 @@ import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
-import com.cnnic.whois.util.BeanFactory;
+import com.cnnic.whois.dao.oauth.OAuthAccessorDaoImpl;
 
 public class OauthQuartz extends QuartzJobBean {
 
-	private static OAuthAccessorDao oauthAccessorDao = (OAuthAccessorDao) BeanFactory.getBean("oauthAccessorDao");
+	private static OAuthAccessorDao oauthAccessorDao = new OAuthAccessorDaoImpl();
 	
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)

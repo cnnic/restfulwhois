@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cnnic.whois.bean.oauth.User;
 import com.cnnic.whois.dao.oauth.UserDao;
-import com.cnnic.whois.util.BeanFactory;
+import com.cnnic.whois.dao.oauth.UserDaoImpl;
 import com.cnnic.whois.util.OAuthProvider;
 
 import net.oauth.OAuth;
@@ -42,7 +42,7 @@ import net.oauth.server.OAuthServlet;
  */
 public class AuthorizationServlet extends HttpServlet {
     
-	private UserDao userDao = (UserDao) BeanFactory.getBean("userDao");
+	private static UserDao userDao = new UserDaoImpl();
 	
     @Override
     public void init(ServletConfig config) throws ServletException {
