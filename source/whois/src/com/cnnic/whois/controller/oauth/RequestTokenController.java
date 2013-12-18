@@ -94,24 +94,33 @@ public class RequestTokenController {
 	}
 	
 	@RequestMapping(value = "/authorize" , method = RequestMethod.POST)
-	public void authorize_post(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+	public void authorizePost(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception{
+		
+		String result = request.getParameter("success");
+		
+		String userId = request.getParameter("userId");
+		 
+		OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
+        
+        OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+        
+		if(result != null && !"".equals(result)){
+			// set userId in accessor and mark it as authorized
+            OAuthProvider.markAsAuthorized(accessor, userId);
+            returnToConsumer(request, response, accessor);
+		}
 		try{
-            OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
-            
-            OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
-            
-            String userId = request.getParameter("userId");
             String password = request.getParameter("password");
             User user = userDao.findByUserIdAndPassword(userId, password);
             if (user == null || "".equals(user)){
             	request.setAttribute("error_value", "UserName or Password is wrong ! ");
             	sendToAuthorizePage(request, response, accessor);
+            }else {
+//            	TODO : This parameter need modify
+            	request.setAttribute("user", user);
+            	request.setAttribute("success", "success");
+            	nextToAuthorizePage(request, response, accessor);
             }
-            
-            // set userId in accessor and mark it as authorized
-            OAuthProvider.markAsAuthorized(accessor, userId);
-            
-            returnToConsumer(request, response, accessor);
             
         } catch (Exception e){
             OAuthProvider.handleException(e, request, response, true);
@@ -161,6 +170,22 @@ public class RequestTokenController {
         request.setAttribute("TOKEN", accessor.requestToken);
         request.getRequestDispatcher //
                     ("/WEB-INF/pages/oauth/authorize.jsp").forward(request, response);
+        
+    }
+    
+    private void nextToAuthorizePage(HttpServletRequest request, 
+            HttpServletResponse response, OAuthAccessor accessor)
+    throws IOException, ServletException{
+        String callback = request.getParameter("oauth_callback");
+        if(callback == null || callback.length() <=0) {
+            callback = "none";
+        }
+        String consumer_description = (String)accessor.consumer.getProperty("description");
+        request.setAttribute("CONS_DESC", consumer_description);
+        request.setAttribute("CALLBACK", callback);
+        request.setAttribute("TOKEN", accessor.requestToken);
+        request.getRequestDispatcher //
+                    ("/WEB-INF/pages/oauth/nextAuthorize.jsp").forward(request, response);
         
     }
     

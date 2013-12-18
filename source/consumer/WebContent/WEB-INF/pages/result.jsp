@@ -144,7 +144,7 @@ vertical-align: top !important;
 				
 					<table>
 						<tr>
-							<th colspan="2">Whois Information</th>
+							<th colspan="2">This result from restful whois api, query parameter is " ip = 1.1.1.1 "</th>
 						</tr>
 						
 						<tr>
@@ -172,7 +172,7 @@ vertical-align: top !important;
 				%>
 					<table>
 						<tr>
-							<th colspan="2">Whois Information</th>
+							<th colspan="2">This result from restful whois api, query parameter is " domain = z.cn "</th>
 						</tr>
 						
 						<tr>
@@ -203,7 +203,7 @@ vertical-align: top !important;
 				
 					<table>
 						<tr>
-							<th colspan="2">Whois Information</th>
+							<th colspan="2">This result from restful whois api, query parameter is " entity = IBM-1 "</th>
 						</tr>
 						
 						<tr>
