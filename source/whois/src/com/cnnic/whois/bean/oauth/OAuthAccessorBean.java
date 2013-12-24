@@ -17,6 +17,8 @@ public class OAuthAccessorBean {
 	private String app_secret;
 	
 	private Date create_time;
+	
+	private String oauth_user_role;
 
 
 	public OAuthAccessorBean() { }
@@ -91,6 +93,14 @@ public class OAuthAccessorBean {
 
 	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
+	}
+	
+	public String getOauth_user_role() {
+		return oauth_user_role;
+	}
+
+	public void setOauth_user_role(String oauth_user_role) {
+		this.oauth_user_role = oauth_user_role;
 	}
 
 }

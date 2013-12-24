@@ -162,20 +162,20 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String nsName,
+	public void fuzzyQueryNs(@RequestParam(required = false) String name,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);		
-		nsName = StringUtils.trim(nsName);
-		nsName = super.getNormalization(nsName);
-		if (StringUtils.isBlank(nsName)) {
+		name = StringUtils.trim(name);
+		name = super.getNormalization(name);
+		if (StringUtils.isBlank(name)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, queryParam);
 			return;
 		} 
-		String decodeQ = WhoisUtil.toChineseUrl(nsName);
+		String decodeQ = WhoisUtil.toChineseUrl(name);
 		String punyQ = IDN.toASCII(decodeQ);	
 		request.setAttribute("queryPara", decodeQ);
 		if (!ValidateUtils.verifyNameServer(punyQ)) {

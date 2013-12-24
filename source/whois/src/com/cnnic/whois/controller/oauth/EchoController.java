@@ -30,14 +30,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cnnic.whois.bean.Authentication;
 import com.cnnic.whois.bean.EntityQueryParam;
 import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
+import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 import com.cnnic.whois.controller.BaseController;
+import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
+import com.cnnic.whois.dao.oauth.OAuthProvider;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.service.QueryService;
-import com.cnnic.whois.util.OAuthProvider;
+import com.cnnic.whois.util.AuthenticationHolder;
 import com.cnnic.whois.util.WhoisUtil;
 import com.cnnic.whois.util.validate.ValidateUtils;
 import com.cnnic.whois.view.ViewResolver;
@@ -56,6 +60,10 @@ public class EchoController extends BaseController {
 	private QueryService queryService;
 	@Autowired
 	private ViewResolver viewResolver;
+	@Autowired
+	private OAuthAccessorDao oauthAccessorDao;
+	@Autowired
+	private OAuthProvider oauthProvider;
 
 	@RequestMapping(value = "/echo")
 	@ResponseBody
@@ -65,77 +73,73 @@ public class EchoController extends BaseController {
 		try {
 			OAuthMessage requestMessage = OAuthServlet
 					.getMessage(request, null);
-			OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+			OAuthAccessor accessor = oauthProvider.getAccessor(requestMessage);
 			OAuthProvider.VALIDATOR.validateMessage(requestMessage, accessor);
-
-			 for (Object item : request.getParameterMap().entrySet()) {
-	                Map.Entry parameter = (Map.Entry) item;
-	                String[] values = (String[]) parameter.getValue();
-	                for (String value : values) {
-	                	if(value.equals("ip")){
-	                		
-	                		String net = "0";
-	                		String ip = StringUtils.trim("1.1.1.1");
-	                		
-	                		Map<String, Object> resultMap = null;
-	                		IpQueryParam queryParam = super.praseIpQueryParams(request);
-	                		String strInfo = ip;
-	                		if (!ValidateUtils.verifyIP(strInfo, net)) {
-	                			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-	                			viewResolver.writeResponse(queryParam.getFormat(), request,
-	                					response, resultMap, 0);
-	                			return;
-	                		}
-	                		queryParam.setQ(ip);
-	                		queryParam.setIpInfo(strInfo);
-	                		queryParam.setIpLength(Integer.parseInt(net));
-	                		resultMap = queryService.queryIP(queryParam);
-	                		request.setAttribute("queryPara", ip);
-	                		request.setAttribute("queryType", "ip");
-	                		viewResolver.writeResponse(queryParam.getFormat(), request, response,
-	                				resultMap, 0);
-	                	}
-	                	if(value.equals("domain")){
-	                		String domainName = StringUtils.trim("z.cn");
-	            			String queryParaPuny = IDN.toASCII(domainName);
-	            			Map<String, Object> resultMap = null;
-	            			QueryParam queryParam = super.praseQueryParams(request);
-	            			if (!ValidateUtils.validateDomainName(queryParaPuny)) {
-	            				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
-	            			} else {
-	            				queryParam.setQ(domainName);
-	            				resultMap = queryService.queryDomain(queryParam);
-	            				System.err.println(resultMap);
-	            			}
-	            			viewResolver.writeResponse(queryParam.getFormat(), request,
-	            					response, resultMap, 0);
-	                	}
-	                	if(value.equals("entity")){
-	                		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
-	                		queryParam.setQ("IBM-1");
-	                		Map<String, Object> resultMap = queryService.queryEntity(queryParam);
-	                		request.setAttribute("queryType", "entity");
-	                		request.setAttribute("queryPara", "IBM-1");
-	                		renderResponse(request, response, resultMap, queryParam);
-	                	}
-	                }
-	            }
-
-			// String userId = (String) accessor.getProperty("user");
-			// response.setContentType("text/plain");
-			// PrintWriter out = response.getWriter();
-			// for (Object item : request.getParameterMap().entrySet()) {
-			// Map.Entry parameter = (Map.Entry) item;
-			// String[] values = (String[]) parameter.getValue();
-			// for (String value : values) {
-			// out.println(parameter.getKey() + ": " + value);
-			// }
-			// }
-
+			accessApi(accessor.accessToken, request, response);
 		} catch (Exception e) {
 			OAuthProvider.handleException(e, request, response, false);
 		}
-
+	}
+	
+	private void accessApi(String accessToken, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		OAuthAccessorBean oauthAccessorBean = oauthAccessorDao.getOAuthAccessorBeanByAccessToken(accessToken);
+		AuthenticationHolder.setAuthentication(new Authentication(oauthAccessorBean.getOauth_user_role()));
+		
+		 for (Object item : request.getParameterMap().entrySet()) {
+                Map.Entry parameter = (Map.Entry) item;
+                String[] values = (String[]) parameter.getValue();
+                for (String value : values) {
+                	
+                	if(value.equals("ip")){
+                		
+                		String net = "0";
+                		String ip = StringUtils.trim("1.1.1.1");
+                		
+                		Map<String, Object> resultMap = null;
+                		IpQueryParam queryParam = super.praseIpQueryParams(request);
+                		String strInfo = ip;
+                		if (!ValidateUtils.verifyIP(strInfo, net)) {
+                			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+                			viewResolver.writeResponse(queryParam.getFormat(), request,
+                					response, resultMap, 0);
+                			return;
+                		}
+                		queryParam.setQ(ip);
+                		queryParam.setIpInfo(strInfo);
+                		queryParam.setIpLength(Integer.parseInt(net));
+                		resultMap = queryService.queryIP(queryParam);
+                		request.setAttribute("queryPara", ip);
+                		request.setAttribute("queryType", "ip");
+                		viewResolver.writeResponse(queryParam.getFormat(), request, response,
+                				resultMap, 0);
+                	}
+                	if(value.equals("domain")){
+                		String domainName = StringUtils.trim("z.cn");
+            			String queryParaPuny = IDN.toASCII(domainName);
+            			Map<String, Object> resultMap = null;
+            			QueryParam queryParam = super.praseQueryParams(request);
+            			if (!ValidateUtils.validateDomainName(queryParaPuny)) {
+            				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+            			} else {
+            				queryParam.setQ(domainName);
+            				resultMap = queryService.queryDomain(queryParam);
+            				System.err.println(resultMap);
+            			}
+            			viewResolver.writeResponse(queryParam.getFormat(), request,
+            					response, resultMap, 0);
+                	}
+                	if(value.equals("entity")){
+                		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
+                		queryParam.setQ("IBM-1");
+                		Map<String, Object> resultMap = queryService.queryEntity(queryParam);
+                		request.setAttribute("queryType", "entity");
+                		request.setAttribute("queryPara", "IBM-1");
+                		renderResponse(request, response, resultMap, queryParam);
+                	}
+                }
+            }
 	}
 
 }

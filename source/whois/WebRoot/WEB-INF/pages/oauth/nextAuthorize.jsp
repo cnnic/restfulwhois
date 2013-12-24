@@ -341,38 +341,32 @@
 </li>
 
     <li>
-  <span class="label read off"><span class="circle"></span>read</span>
+  <span class="label read on"><span class="circle"></span>read</span>
   <span class="label write off"><span class="circle"></span>write</span>
-  <span class="permission">Your followers</span>
+  <span class="permission">RestfulWhois IP</span>
 </li>
 
     <li>
-  <span class="label read off"><span class="circle"></span>read</span>
+  <span class="label read on"><span class="circle"></span>read</span>
   <span class="label write off"><span class="circle"></span>write</span>
-  <span class="permission">Your private email addresses</span>
+  <span class="permission">RestfulWhois Domain</span>
 </li>
 
 </ul>
 
 <ul class="permission-list">
     <li>
-  <span class="label read off"><span class="circle"></span>read</span>
+  <span class="label read on"><span class="circle"></span>read</span>
   <span class="label write off"><span class="circle"></span>write</span>
-  <span class="permission">Private repositories and organizations</span>
+  <span class="permission">RestfulWhois Entity</span>
 </li>
-
+<!--  
     <li>
   <span class="label read off"><span class="circle"></span>read</span>
   <span class="label write off"><span class="circle"></span>write</span>
-  <span class="permission">Private commit status</span>
+  <span class="permission">Your private email addresses</span>
 </li>
-
-    <li>
-  <span class="label read off"><span class="circle"></span>read</span>
-  <span class="label write off"><span class="circle"></span>write</span>
-  <span class="permission">Private notifications</span>
-</li>  
-  
+-->
 </ul>
 
       <div class="question">

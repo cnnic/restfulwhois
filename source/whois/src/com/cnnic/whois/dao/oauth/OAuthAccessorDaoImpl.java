@@ -38,7 +38,16 @@ public class OAuthAccessorDaoImpl extends BaseDao implements OAuthAccessorDao {
 	}
 
 	@Override
-	public void updateByTokenAndSecret(String requestToken, String tokenSecret, String accessToken) {
+	public void updateUserRoleByTokenAndSecret(String requestToken, String tokenSecret,
+			String userRole) {
+		Connection conn = JdbcUtils.getConnection();
+		this.update(JdbcUtils.getConnection(), "update oauth_accessor set oauth_user_role = ? where request_token = ? and token_secret = ? ", 
+				new Object[]{userRole, requestToken, tokenSecret }, "Update OAuthAccessor information failed !");
+		JdbcUtils.free(null, null, conn);
+	}
+
+	@Override
+	public void updateAccessTokenByTokenAndSecret(String requestToken, String tokenSecret, String accessToken) {
 		Connection conn = JdbcUtils.getConnection();
 		this.update(JdbcUtils.getConnection(), "update oauth_accessor set access_token = ? where request_token = ? and token_secret = ? ", 
 				new Object[]{accessToken, requestToken, tokenSecret }, "Update OAuthAccessor information failed !");
@@ -63,6 +72,36 @@ public class OAuthAccessorDaoImpl extends BaseDao implements OAuthAccessorDao {
 					new Object[]{ }, "Delete OAuthAccessor information failed !");
 		}
 		JdbcUtils.free(null, null, conn);
+	}
+
+	@Override
+	public OAuthAccessorBean getOAuthAccessorBeansByAccessToken(
+			String accessToken) {
+		Connection conn = JdbcUtils.getConnection();
+		OAuthAccessorBean oauthAccessorBean;
+		oauthAccessorBean = this.getObject(JdbcUtils.getConnection(), "select oa.id, oa.request_token, oa.token_secret, oa.access_token, oa.app_key, oa.app_secret " +
+				"from oauth_accessor oa where  oa.access_token = ?", 
+				new Object[]{accessToken }, "Query OAuthAccessor information failed !", OAuthAccessorBean.class);
+		
+		if(oauthAccessorBean == null){
+			oauthAccessorBean = this.getObject(JdbcUtils.getConnection(), "select oa.id, oa.request_token, oa.token_secret, oa.access_token, oa.app_key, oa.app_secret " +
+					"from oauth_accessor oa where  oa.request_token = ?", 
+					new Object[]{accessToken }, "Query OAuthAccessor information failed !", OAuthAccessorBean.class);
+		}
+		
+		JdbcUtils.free(null, null, conn);
+		
+		return oauthAccessorBean;
+	}
+
+	@Override
+	public OAuthAccessorBean getOAuthAccessorBeanByAccessToken(String accessToken) {
+		Connection conn = JdbcUtils.getConnection();
+//		User user = this.getObject(JdbcUtils.getConnection(), "select u.id, u.user_role from users u where u.user_name =  (select oa.oauth_user_role from oauth_accessor oa where oa.access_token = ? ) ", 
+		OAuthAccessorBean user = this.getObject(JdbcUtils.getConnection(), "select oa.id, oa.oauth_user_role from oauth_accessor oa where oa.access_token = ? ", 
+				new Object[]{accessToken }, "Query OAuthAccessor information failed !", OAuthAccessorBean.class);
+		JdbcUtils.free(null, null, conn);
+		return user;
 	}
 
 }

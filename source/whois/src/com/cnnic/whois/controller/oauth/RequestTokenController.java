@@ -9,15 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cnnic.whois.bean.oauth.User;
+import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
+import com.cnnic.whois.dao.oauth.OAuthProvider;
 import com.cnnic.whois.dao.oauth.UserDao;
-import com.cnnic.whois.dao.oauth.UserDaoImpl;
-import com.cnnic.whois.util.OAuthProvider;
 
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
@@ -31,12 +32,17 @@ import net.oauth.server.OAuthServlet;
 @Controller
 public class RequestTokenController {
 
-	private static UserDao userDao = new UserDaoImpl();
+	@Autowired
+	private UserDao userDao;
+	@Autowired
+	private OAuthAccessorDao oauthAccessorDao;
+	@Autowired
+	private OAuthProvider oauthProvider;
 	
 	@PostConstruct
 	public void init() throws ServletException {
       try{
-          OAuthProvider.loadConsumers();
+    	  oauthProvider.loadConsumers();
       }catch(IOException e){
           throw new ServletException(e.getMessage());
       }
@@ -60,7 +66,7 @@ public class RequestTokenController {
                 }
             }
             // generate request_token and secret
-            OAuthProvider.generateRequestToken(accessor);
+            oauthProvider.generateRequestToken(accessor);
             
             response.setContentType("text/plain");
             OutputStream out = response.getOutputStream();
@@ -79,7 +85,7 @@ public class RequestTokenController {
 		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
-            OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+            OAuthAccessor accessor = oauthProvider.getAccessor(requestMessage);
            
             if (Boolean.TRUE.equals(accessor.getProperty("authorized"))) {
                 // already authorized send the user back
@@ -102,13 +108,14 @@ public class RequestTokenController {
 		 
 		OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
         
-        OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+        OAuthAccessor accessor = oauthProvider.getAccessor(requestMessage);
         
 		if(result != null && !"".equals(result)){
 			// set userId in accessor and mark it as authorized
             OAuthProvider.markAsAuthorized(accessor, userId);
             returnToConsumer(request, response, accessor);
 		}
+		
 		try{
             String password = request.getParameter("password");
             User user = userDao.findByUserIdAndPassword(userId, password);
@@ -116,8 +123,7 @@ public class RequestTokenController {
             	request.setAttribute("error_value", "UserName or Password is wrong ! ");
             	sendToAuthorizePage(request, response, accessor);
             }else {
-//            	TODO : This parameter need modify
-            	request.setAttribute("user", user);
+            	oauthAccessorDao.updateUserRoleByTokenAndSecret(accessor.requestToken, accessor.tokenSecret, user.getUser_role());
             	request.setAttribute("success", "success");
             	nextToAuthorizePage(request, response, accessor);
             }
@@ -132,7 +138,7 @@ public class RequestTokenController {
 		try{
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
             
-            OAuthAccessor accessor = OAuthProvider.getAccessor(requestMessage);
+            OAuthAccessor accessor = oauthProvider.getAccessor(requestMessage);
             OAuthProvider.VALIDATOR.validateMessage(requestMessage, accessor);
             
 //          TODO :  Not sure whether to delete this part
@@ -142,7 +148,7 @@ public class RequestTokenController {
 //                throw problem;
 //            }
             // generate access token and secret
-            OAuthProvider.generateAccessToken(accessor);
+            oauthProvider.generateAccessToken(accessor);
             
             response.setContentType("text/plain");
             OutputStream out = response.getOutputStream();

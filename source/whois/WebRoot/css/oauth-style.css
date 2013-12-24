@@ -16,12 +16,12 @@ div#header h1 a {
 	margin-left: 100px;
 }
 
-     	.auth-form {
+.auth-form {
 	width: 400px;
 	margin: 60px auto;
 }
 
-     	.auth-form-header {
+.auth-form-header {
 	position: relative;
 	padding: 10px 20px;
 	margin: 0;
@@ -37,7 +37,7 @@ div#header h1 a {
 	border-radius: 4px 4px 0 0;
 }
 
-     	.auth-form-body {
+.auth-form-body {
 	padding: 20px;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -48,13 +48,13 @@ div#header h1 a {
 	border-radius: 0 0 4px 4px;
 }
      	
-     	.auth-form-body .input-block {
+.auth-form-body .input-block {
 	margin-top: 5px;
 	margin-bottom: 15px;
 }
 
 input[type="text"], #adv_code_search .search-page-label, input[type="password"], input[type="email"], input[type="number"], input[type="tel"], input[type="url"], textarea {
-	min-height: 34px;
+	/*min-height: 34px;*/
 	padding: 7px 8px;
 	outline: none;
 	color: #333;
