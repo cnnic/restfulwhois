@@ -15,18 +15,18 @@
 	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.query.search.NsQueryDao">
 		<constructor-arg value="${solr.url.nameserver}" />
 	</bean>
-	<bean id="whoisproperties" class="com.cnnic.whois.util.WhoisProperties">
+	<bean id="whoisProperties" class="com.cnnic.whois.util.WhoisProperties">
 	    <property name="anonymousExpireTime" value="${anonymous_expire_time}" />
         <property name="authenticatedExpireTime" value="${authenticated_expire_time}" />
         <property name="rootExpireTime" value="${root_expire_time}" />
         <property name="expireTime" value="${expire_time}" />
         <property name="domainSolrUrl" value="${solr.url.domain}" />
         <property name="entitySolrUrl" value="${solr.url.entity}" />
-        <property name="nameserverSolrUrl" value="${solr.url.nameserver}" />
+        <property name="nameServerSolrUrl" value="${solr.url.nameserver}" />
         <property name="maxFuzzyQuery" value="${maxsize.fuzzyquery}" />
-        <property name="cacheIp" value="${cache.ip}" />
+        <property name="cacheIP" value="${cache.ip}" />
         <property name="cachePort" value="${cache.port}" />
-        <property name="wellKnown" value="${well.known}" />
+        <property name="rdapUrl" value="${well.known}" />
      
 	</bean>     
 	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">

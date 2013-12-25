@@ -41,7 +41,7 @@ public class QueryController extends BaseController {
 	@Autowired
 	private QueryEngine queryEngine;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = {"/",""}, method = RequestMethod.GET)
 	public String index() {
 		return "/dot/index";
 	}
@@ -164,20 +164,20 @@ public class QueryController extends BaseController {
 
 	@RequestMapping(value = "/nameservers", method = RequestMethod.GET)
 	@ResponseBody
-	public void fuzzyQueryNs(@RequestParam(required = false) String nsName,
+	public void fuzzyQueryNs(@RequestParam(required = false) String name,
 			HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, SQLException, IOException, ServletException,
 			RedirectExecption {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);		
-		nsName = StringUtils.trim(nsName);
-		nsName = super.getNormalization(nsName);
-		if (StringUtils.isBlank(nsName)) {
+		name = StringUtils.trim(name);
+		name = super.getNormalization(name);
+		if (StringUtils.isBlank(name)) {
 			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
 			renderResponse(request, response, resultMap, queryParam);
 			return;
 		} 
-		String decodeQ = WhoisUtil.toChineseUrl(nsName);
+		String decodeQ = WhoisUtil.toChineseUrl(name);
 		String punyQ = IDN.toASCII(decodeQ);	
 		request.setAttribute("queryPara", decodeQ);
 		if (!ValidateUtils.verifyNameServer(punyQ)) {
@@ -246,22 +246,17 @@ public class QueryController extends BaseController {
 		query(QueryType.EVENTS, q, request, response);
 	}
 
-	@RequestMapping(value = "/help/{q}", method = RequestMethod.GET)
+	@RequestMapping(value = "/help", method = RequestMethod.GET)
 	@ResponseBody
-	public void queryHelp(@PathVariable String help,
-			HttpServletRequest request, HttpServletResponse response)
+	public void queryHelp(HttpServletRequest request, HttpServletResponse response)
 			throws QueryException, RedirectExecption, IOException,
 			ServletException {
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
-		if (StringUtils.isNotBlank(help)) {
-			super.renderResponseError400(request, response);
-		} else {
-			queryParam.setQ("helpID");
-			resultMap = queryService.queryHelp(queryParam);
-			request.setAttribute("queryPara", queryParam);
-			renderResponse(request, response, resultMap, queryParam);
-		}
+		queryParam.setQ("helpID");
+		resultMap = queryService.queryHelp(queryParam);
+		request.setAttribute("queryPara", queryParam);
+		renderResponse(request, response, resultMap, queryParam);
 	}
 
 	@RequestMapping(value = {"/ip/{ip}","/ip/{ip}/"}, method = RequestMethod.GET)

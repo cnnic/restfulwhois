@@ -8,7 +8,7 @@ OAuthProblemException:<br/>
 <form>
 <table>
 <%
-    OAuthProblemException p = (OAuthProblemException) request.getAttribute("OAuthProblemException");
+    //OAuthProblemException p = (OAuthProblemException) request.getAttribute("OAuthProblemException");
     for (Iterator i = p.getParameters().entrySet().iterator(); i.hasNext(); ) {
         Map.Entry parameter = (Map.Entry) i.next();
         Object v = parameter.getValue();

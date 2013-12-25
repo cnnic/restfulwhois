@@ -3,6 +3,7 @@
     <wb-module deploy-name="whois">
         <wb-resource deploy-path="/" source-path="/WebRoot"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/oauth"/>
         <property name="java-output-path" value="/whois/WebRoot/WEB-INF/classes"/>
         <property name="context-root" value="/ROOT"/>
     </wb-module>

@@ -55,7 +55,7 @@ public class WhoisProperties {
 	/*
 	 * prefix url of ".well-known/rdap/" 
 	 */
-	private static String wellKnown;
+	private static String rdapUrl;
 	
 	public void setAnonymousExpireTime(String time) {
 	    anonymousExpireTime = time;
@@ -137,10 +137,10 @@ public class WhoisProperties {
 	}	
 	
 	public void setRdapUrl(String url) {
-	    wellKnown = url;
+		rdapUrl = url;
 	}
 	 
 	public static String getRdapUrl() {
-	    return wellKnown;
+	    return rdapUrl;
 	}
 }

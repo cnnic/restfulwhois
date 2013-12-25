@@ -25,7 +25,7 @@ CREATE TABLE `users` (
   `pwd` varchar(80) NOT NULL,
   `user_role` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 #
 # Dumping data for table users
@@ -33,9 +33,10 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'auth','auth',NULL);
-INSERT INTO `users` VALUES (2,'root','root',NULL);
-INSERT INTO `users` VALUES (3,'admin','admin',NULL);
+INSERT INTO `users` VALUES (1,'auth','auth','authenticated');
+INSERT INTO `users` VALUES (2,'root','root','root');
+INSERT INTO `users` VALUES (3,'admin','admin','anonymous');
+INSERT INTO `users` VALUES (6,'xx','xx','anonymous');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -48,19 +49,23 @@ CREATE TABLE `oauth_accessor` (
   `app_key` varchar(40) DEFAULT NULL,
   `app_secret` varchar(40) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oauth_user_role` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table oauth_accessor
+#
 
 LOCK TABLES `oauth_accessor` WRITE;
 /*!40000 ALTER TABLE `oauth_accessor` DISABLE KEYS */;
-INSERT INTO `oauth_accessor` VALUES (87,'aeb34f02ad87d39534b87ccba02403da','1acc4bd55518fdd95eeb527ce06ef374','a3fc662c504c9e83cb125523d9d88198','key1385973838215','secret1385973838215','2013-10-10 10:10:10');
-INSERT INTO `oauth_accessor` VALUES (89,'94da680e60c7ad9de42aa8bfbf682475','5ecf7167d22792fef8b89c20f068cb3e',NULL,'key1385973838215','secret1385973838215','2012-10-10 10:10:10');
-INSERT INTO `oauth_accessor` VALUES (90,'970bbecf2fba58d904c49730a8f668dd','9e30d2b3087bb97abc2225162ab8f51f','3c81887b49406861aca6c624b3e0cda4','key1385973838215','secret1385973838215','2012-10-10 10:10:10');
-INSERT INTO `oauth_accessor` VALUES (91,'aaec04ec95014fb562b1e208b87dc344','16223307d1139face616a62f134298c0','363a04eecc25874a1cdc8a9d3737945f','key1385973838215','secret1385973838215','2012-10-10 10:10:10');
-INSERT INTO `oauth_accessor` VALUES (92,'5fdb813dca371a6732dd22770f36d5e7','5dfdaf48ddcf1d925d80ab0812ca3873',NULL,'key1385973838215','secret1385973838215','2012-10-10 10:10:10');
+INSERT INTO `oauth_accessor` VALUES (210,'878e83972ef3e3a773d40212802c56ad','60a86853877b9982e423959feb9118d9','4626044f0deb6e38e21b11d3167f941e','key1385973838215','secret1385973838215','2013-12-24 09:36:56','root');
+INSERT INTO `oauth_accessor` VALUES (211,'8391a6fdd6843bccf36a65419d20d1b6','177b1b1fa61733e21ef82e42078b0a25','66340e00b476f3b566cb08b37f27e4a8','key1385973838215','secret1385973838215','2013-12-24 09:37:16','anonymous');
+INSERT INTO `oauth_accessor` VALUES (212,'51f9a54a4805ffec96e6154bed6e4a94','797b6ebaba92155ff8b675acea3cd356','dd0ea7644b8dfb713f2baf0c8743f04b','key1385973838215','secret1385973838215','2013-12-24 09:43:14','anonymous');
+INSERT INTO `oauth_accessor` VALUES (213,'70bbc1793ab2fe40693e0539091be6bd','1564ff45300affa788a873abff9c4f38','7dbd4bfe478042685e80a60083e7304a','key1385973838215','secret1385973838215','2013-12-24 09:46:21','authenticated');
+INSERT INTO `oauth_accessor` VALUES (214,'3d7c3b341406de31e245487e93f37442','aea62eae1153c70eb21b8b20439e5143','99926cc7aaf710e82453da3e2de01862','key1385973838215','secret1385973838215','2013-12-24 09:57:01','root');
 /*!40000 ALTER TABLE `oauth_accessor` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 DROP TABLE IF EXISTS `users_app`;
 CREATE TABLE `users_app` (
