@@ -16,7 +16,7 @@
 	
 	<bean id="jobGenerateIndexController" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass">
-			<value>com.cnnic.whois.quartz.OauthQuartz</value>
+			<value>com.cnnic.whois.oauth.quartz.OauthQuartz</value>
 		</property>
 		<property name="jobDataAsMap">
 			<map>
