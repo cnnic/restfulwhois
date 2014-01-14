@@ -1,4 +1,4 @@
-package com.cnnic.whois.dao;
+package com.cnnic.whois.admin.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,21 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
+
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class ExColumnDAO {
-	private static ExColumnDAO columnDAO = new ExColumnDAO();
-
-	/**
-	 * Get ExColumnDAO objects
-	 * 
-	 * @return ExColumnDAO objects
-	 */
-	public static ExColumnDAO getColumnDAO() {
-		return columnDAO;
-	}
+@Repository
+public class ExColumnDAO extends BaseJdbcDao {
 
 	/**
 	 * Add the extension field
@@ -91,27 +87,17 @@ public class ExColumnDAO {
 	 */
 	public Map<String, String> listCoulumn(String tableName)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
-		PreparedStatement stmt = null;
-		Map<String, String> columnInfoList = new HashMap<String, String>();
-
-		try {
-			stmt = connection.prepareStatement(WhoisUtil.LIST_COLUMNINFO);
-			stmt.setString(1, tableName);
-			ResultSet results = stmt.executeQuery();
-			while (results.next()) {
-				String columnName = results.getString("columnName").substring(
-						WhoisUtil.EXTENDPRX.length());
-				columnInfoList.put(columnName,
-						results.getString("columnLength"));
+		return this.getJdbcTemplate().query(WhoisUtil.LIST_COLUMNINFO, new Object[] {tableName }, new ResultSetExtractor<Map<String, String>>() {
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, String> columnInfoList = new HashMap<String, String>();
+				while (rs.next()) {
+					String columnName = rs.getString("columnName").substring(WhoisUtil.EXTENDPRX.length());
+					columnInfoList.put(columnName, rs.getString("columnLength"));
+				}
+				return columnInfoList;
 			}
-			return columnInfoList;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new ManagementException(e);
-		} finally {
-			JdbcUtils.free(null, null, connection);
-		}
+		});
 	}
 
 	/**
@@ -184,26 +170,15 @@ public class ExColumnDAO {
 	 */
 	public void deleteCoulumn(String tableName, String columnName)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
-		PreparedStatement stmt = null;
+//		TODO : need modify
 		columnName = WhoisUtil.EXTENDPRX + columnName;
-
-		try {
-			String sql = WhoisUtil.DELETE_COLUMNINFO1 + tableName
-					+ WhoisUtil.DELETE_COLUMNINFO2 + columnName;
-			stmt = connection.prepareStatement(sql);
-			stmt.execute();
-
-			sql = WhoisUtil.DELETE_COLUMNINFOERMISSION1 + columnName
-					+ WhoisUtil.DELETE_COLUMNINFOERMISSION2 + tableName + "'";
-			stmt = connection.prepareStatement(sql);
-			stmt.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new ManagementException(e);
-		} finally {
-			JdbcUtils.free(null, null, connection);
-		}
+		String sql = WhoisUtil.DELETE_COLUMNINFO1 + tableName
+				+ WhoisUtil.DELETE_COLUMNINFO2 + columnName;
+		this.getJdbcTemplate().update(sql);
+		
+		sql = WhoisUtil.DELETE_COLUMNINFOERMISSION1 + columnName
+				+ WhoisUtil.DELETE_COLUMNINFOERMISSION2 + tableName + "'";
+		this.getJdbcTemplate().update(sql);
 	}
 
 }

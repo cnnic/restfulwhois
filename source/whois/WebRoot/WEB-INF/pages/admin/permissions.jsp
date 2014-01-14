@@ -1,19 +1,10 @@
-<%@ page import="com.cnnic.whois.service.AccessControlService"%>
+<%@ page import="com.cnnic.whois.admin.service.AccessControlService"%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page session="true"%>
-<%
-	AccessControlService accessControlService = AccessControlService
-			.getAccessControlService();
-	String tabletype = request.getParameter("tableType");
-	Map<String, Object> columnPermissionList = accessControlService
-			.listPermissionCoulumn(tabletype);
-	request.setAttribute("columnPermissionList", columnPermissionList);
-%>
 <form action="" method="post">
-	<input type="hidden" name="tabletype" id="tabletype"
-		value='<%=tabletype%>'></input>
+	<input type="hidden" name="tableType" id="tableType" value='${tableType }' />
 		<div class="sucessFlag">
 			<input type="button" value="update permission" onclick="updatePermission();"></input>
 			<font color="red" style="font-size: 12px; float: right">${requestScope.successFlag}</font>

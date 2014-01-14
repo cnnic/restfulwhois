@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
-import com.cnnic.whois.dao.BaseJdbcDao;
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.oauth.bean.User;
 import com.cnnic.whois.oauth.bean.UserRowMapper;
 

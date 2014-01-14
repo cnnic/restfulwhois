@@ -1,4 +1,4 @@
-package com.cnnic.whois.dao;
+package com.cnnic.whois.admin.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,22 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Repository;
+
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.IpUtil;
 import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
 
-public class RedirectionDAO {
-	private static RedirectionDAO redirectDAO = new RedirectionDAO();
-
-	/**
-	 * Get RedirectionDAO objects
-	 * 
-	 * @return RedirectionDAO objects
-	 */
-	public static RedirectionDAO getRedirectDAO() {
-		return redirectDAO;
-	}
+@Repository
+public class RedirectionDAO extends BaseJdbcDao {
 
 	/**
 	 * Add domainRedirection information
@@ -33,8 +29,9 @@ public class RedirectionDAO {
 	 * @param redirectUrl
 	 * @throws ManagementException
 	 */
-	public void addDomainRedirection(String domainName, String redirectUrl)
+	public void addDomainRedirection(final String domainName, final String redirectUrl)
 			throws ManagementException {
+		
 		Connection connection = JdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
@@ -45,6 +42,7 @@ public class RedirectionDAO {
 			stmt.setString(2, redirectUrl);
 			resultsIsNull = stmt.executeQuery();
 
+//			TODO : Whatever return result is true or false, still execute next code
 			if (resultsIsNull.next())
 				throw new ManagementException("Already exists in the data ");
 
@@ -152,60 +150,52 @@ public class RedirectionDAO {
 	 * @return map collection
 	 * @throws ManagementException
 	 */
-	public Map<Integer, List<String>> listRedirect(String tableName)
+	public Map<Integer, List<String>> listRedirect(final String tableName)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
-		PreparedStatement stmt = null;
-		Map<Integer, List<String>> redirectInfoList = new HashMap<Integer, List<String>>();
+		String sql = WhoisUtil.SELECT_REDIRECT + tableName + "_redirect";
+		return this.getJdbcTemplate().query(sql, new ResultSetExtractor<Map<Integer, List<String>>>() {
+			@Override
+			public Map<Integer, List<String>> extractData(ResultSet results) throws SQLException, DataAccessException {
+				Map<Integer, List<String>> redirectInfoList = new HashMap<Integer, List<String>>();
+				while (results.next()) {
+					List<String> list = new ArrayList<String>();
+					if (tableName.equals(WhoisUtil.AUTNUM)) {
+						list.add(results.getString("startNumber"));
+						list.add(results.getString("endNumber"));
 
-		try {
-			String sql = WhoisUtil.SELECT_REDIRECT + tableName + "_redirect";
+					} else if (tableName.equals(WhoisUtil.IP)) {
+						//The long type data into ip
+						long startHightAddress = results
+								.getLong("StartHighAddress");
+						long startLowAddress = results.getLong("StartLowAddress");
+						long endHighAddress = results.getLong("EndHighAddress");
+						long endLowAddress = results.getLong("EndLowAddress");
 
-			stmt = connection.prepareStatement(sql);
-			ResultSet results = stmt.executeQuery();
-			while (results.next()) {
-				List<String> list = new ArrayList<String>();
-				if (tableName.equals(WhoisUtil.AUTNUM)) {
-					list.add(results.getString("startNumber"));
-					list.add(results.getString("endNumber"));
+						String startNumber = "";
+						String endNumber = "";
 
-				} else if (tableName.equals(WhoisUtil.IP)) {
-					//The long type data into ip
-					long startHightAddress = results
-							.getLong("StartHighAddress");
-					long startLowAddress = results.getLong("StartLowAddress");
-					long endHighAddress = results.getLong("EndHighAddress");
-					long endLowAddress = results.getLong("EndLowAddress");
+						if (startHightAddress != 0 && endHighAddress != 0) {
+							startNumber = IpUtil.ipV6ToString(startHightAddress,
+									startLowAddress);
+							endNumber = IpUtil.ipV6ToString(endHighAddress,
+									endLowAddress);
+						} else {
+							startNumber = IpUtil.longtoipV4(startLowAddress);
+							endNumber = IpUtil.longtoipV4(endLowAddress);
+						}
 
-					String startNumber = "";
-					String endNumber = "";
+						list.add(startNumber);
+						list.add(endNumber);
 
-					if (startHightAddress != 0 && endHighAddress != 0) {
-						startNumber = IpUtil.ipV6ToString(startHightAddress,
-								startLowAddress);
-						endNumber = IpUtil.ipV6ToString(endHighAddress,
-								endLowAddress);
 					} else {
-						startNumber = IpUtil.longtoipV4(startLowAddress);
-						endNumber = IpUtil.longtoipV4(endLowAddress);
+						list.add(results.getString("redirectType"));
 					}
-
-					list.add(startNumber);
-					list.add(endNumber);
-
-				} else {
-					list.add(results.getString("redirectType"));
+					list.add(results.getString("redirectURL"));
+					redirectInfoList.put(results.getInt("id"), list);
 				}
-				list.add(results.getString("redirectURL"));
-				redirectInfoList.put(results.getInt("id"), list);
+				return redirectInfoList;
 			}
-			return redirectInfoList;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new ManagementException(e);
-		} finally {
-			JdbcUtils.free(null, null, connection);
-		}
+		});
 	}
 
 	/**
@@ -343,22 +333,10 @@ public class RedirectionDAO {
 	 */
 	public void deleteRedirect(int id, String tableName)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
-		PreparedStatement stmt = null;
-
-		try {
-			String sql = WhoisUtil.DELETE_REDIRECT1 + tableName + "_redirect"
-					+ WhoisUtil.DELETE_REDIRECT2;
-
-			stmt = connection.prepareStatement(sql);
-			stmt.setInt(1, id);
-			stmt.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new ManagementException(e);
-		} finally {
-			JdbcUtils.free(null, null, connection);
-		}
+		String sql = WhoisUtil.DELETE_REDIRECT1 + tableName + "_redirect"
+				+ WhoisUtil.DELETE_REDIRECT2;
+		Object[] param = new Object[]{id };
+		this.getJdbcTemplate().update(sql, param);
 	}
 
 }

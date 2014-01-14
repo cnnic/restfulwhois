@@ -1,16 +1,9 @@
-<%@ page import="com.cnnic.whois.service.ExColumnService"%>
+<%@ page import="com.cnnic.whois.admin.service.ExColumnService"%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page session="true"%>
-<%
-	ExColumnService columnService = ExColumnService.getColumnService();
-	String tabletype = request.getParameter("tableType");
-	Map<String, String> columnInfoList = columnService
-			.listCoulumn(tabletype);
-	request.setAttribute("columnInfoList", columnInfoList);
-%>
-<input type="button" value="add column"
-	onclick="changeAddColumn('<%=tabletype%>')"><br/><br/>
+<input type="button" value="add column" onclick="changeAddColumn('${tableType }')"><br/><br/>
+
 <table>
 	<tr>
 		<th>
@@ -33,7 +26,7 @@
 			</td>
 			<td>
 				<select id='operat'
-					onchange="javascript:operationColumn(this,'<%=tabletype%>','${columnInfoList.key}','${columnInfoList.value}')"
+					onchange="javascript:operationColumn(this,'${tableType }','${columnInfoList.key}','${columnInfoList.value}')"
 					style="width: 180px">
 					<option value='0'>
 						...Please select Operation...

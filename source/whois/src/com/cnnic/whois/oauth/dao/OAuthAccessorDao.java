@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.cnnic.whois.dao.BaseJdbcDao;
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.oauth.bean.OAuthAccessorBean;
 import com.cnnic.whois.oauth.bean.OAuthAccessorBeanIdRowMapper;
 import com.cnnic.whois.oauth.bean.OAuthAccessorBeanRowMapper;

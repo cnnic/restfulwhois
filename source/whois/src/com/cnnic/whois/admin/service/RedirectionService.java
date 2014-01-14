@@ -1,27 +1,22 @@
-package com.cnnic.whois.service;
+package com.cnnic.whois.admin.service;
 
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.dao.RedirectionDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.admin.dao.RedirectionDAO;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.IpUtil;
+import com.cnnic.whois.util.TransformUtils;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Service
 public class RedirectionService {
-	private static RedirectionService redirectService = new RedirectionService();
-
-	private RedirectionService() {
-	}
-
-	/**
-	 * Get RedirectionService objects
-	 * 
-	 * @return RedirectionService Object
-	 */
-	public static RedirectionService getRedirectService() {
-		return redirectService;
-	}
+	
+	@Autowired
+	private RedirectionDAO redirectionDao;
 
 	/**
 	 * Add redirection information
@@ -33,25 +28,22 @@ public class RedirectionService {
 	 */
 	public void addRedirect(String startNumber, String endNumber,
 			String redirectUrl, String tableName) throws ManagementException {
-		RedirectionDAO redirectDAO = RedirectionDAO.getRedirectDAO();
-
 		if (tableName.endsWith(WhoisUtil.IP)) {
-			String[] startAddress = isIPMaskNetWork(startNumber);
-			String[] endAddress = isIPMaskNetWork(endNumber);
+			String[] startAddress = TransformUtils.isIPMaskNetWork(startNumber);
+			String[] endAddress = TransformUtils.isIPMaskNetWork(endNumber);
 			
 			long[] ipLongs = IpUtil.parsingIp(startAddress[0],
 					endAddress[0], Integer.parseInt(startAddress[1]),
 					Integer.parseInt(endAddress[1]));
 
-			redirectDAO.addIPRedirection(ipLongs[0], ipLongs[1], ipLongs[2],
+			redirectionDao.addIPRedirection(ipLongs[0], ipLongs[1], ipLongs[2],
 					ipLongs[3], redirectUrl);
 			return;
 		} else if (tableName.endsWith(WhoisUtil.AUTNUM)) {
-			redirectDAO.addAutnumRedirection(startNumber, endNumber,
-					redirectUrl);
+			redirectionDao.addAutnumRedirection(startNumber, endNumber, redirectUrl);
 			return;
 		}
-		redirectDAO.addDomainRedirection(startNumber, redirectUrl);
+		redirectionDao.addDomainRedirection(startNumber, redirectUrl);
 	}
 
 	private String[] isIPMaskNetWork(String ipInfo) {
@@ -74,8 +66,7 @@ public class RedirectionService {
 	 */
 	public Map<Integer, List<String>> listRedirect(String tableName)
 			throws ManagementException {
-		RedirectionDAO redirectDAO = RedirectionDAO.getRedirectDAO();
-		return redirectDAO.listRedirect(tableName);
+		return redirectionDao.listRedirect(tableName);
 	}
 
 	/**
@@ -90,7 +81,7 @@ public class RedirectionService {
 	public void updateRedirect(String startNumber, String endNumber,
 			String redirectUrl, int id, String tableName)
 			throws ManagementException {
-		RedirectionDAO redirectDAO = RedirectionDAO.getRedirectDAO();
+		
 		if (tableName.endsWith(WhoisUtil.IP)) {
 			String[] startAddress = isIPMaskNetWork(startNumber);
 			String[] endAddress = isIPMaskNetWork(endNumber);
@@ -99,15 +90,15 @@ public class RedirectionService {
 					endAddress[0], Integer.parseInt(startAddress[1]),
 					Integer.parseInt(endAddress[1]));;
 			
-			redirectDAO.updateIPRedirection(ipLongs[0], ipLongs[1], ipLongs[2],
+			redirectionDao.updateIPRedirection(ipLongs[0], ipLongs[1], ipLongs[2],
 					ipLongs[3], id,redirectUrl);
 			return;
 		} else if (tableName.endsWith(WhoisUtil.AUTNUM)) {
-			redirectDAO.updateAutnumRedirection(startNumber, endNumber,id,
+			redirectionDao.updateAutnumRedirection(startNumber, endNumber,id,
 					redirectUrl);
 			return;
 		}
-		redirectDAO.updateDomainRedirection(startNumber,id, redirectUrl);
+		redirectionDao.updateDomainRedirection(startNumber,id, redirectUrl);
 	}
 
 	/**
@@ -119,8 +110,7 @@ public class RedirectionService {
 	 */
 	public void deleteRedirect(int id, String tableName)
 			throws ManagementException {
-		RedirectionDAO redirectDAO = RedirectionDAO.getRedirectDAO();
-		redirectDAO.deleteRedirect(id, tableName);
+		redirectionDao.deleteRedirect(id, tableName);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.cnnic.whois.service;
+package com.cnnic.whois.admin.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,27 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cnnic.whois.dao.AccessControlDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.admin.dao.AccessControlDAO;
 import com.cnnic.whois.execption.ManagementException;
-import com.cnnic.whois.execption.QueryException;
-import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Service
 public class AccessControlService {
-	private static AccessControlService accessControlService = new AccessControlService();
-
-	private AccessControlService() {
-	}
-
-	/**
-	 * Get AccessControlService objects
-	 * 
-	 * @return AccessControlService Object
-	 */
-	public static AccessControlService getAccessControlService() {
-		return accessControlService;
-	}
+	
+	@Autowired
+	private AccessControlDAO accessControlDAO;
 
 	/**
 	 * List permission information
@@ -37,8 +29,6 @@ public class AccessControlService {
 	 */
 	public Map<String, Object> listPermissionCoulumn(String tableName)
 			throws ManagementException {
-		AccessControlDAO accessControlDAO = AccessControlDAO
-				.getAccessControlDAO();
 		return accessControlDAO.listPermissionCoulumn(tableName);
 	}
 
@@ -67,8 +57,6 @@ public class AccessControlService {
 			permissionList.put(anonymousStr[0], userList);
 
 		}
-		AccessControlDAO accessControlDAO = AccessControlDAO
-				.getAccessControlDAO();
 		accessControlDAO.updatePermission(tableName, permissionList);
 		setPermissionList(tableName);
 	}

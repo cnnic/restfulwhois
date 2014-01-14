@@ -1,4 +1,4 @@
-package com.cnnic.whois.dao;
+package com.cnnic.whois.dao.base;
 
 import java.util.List;
 

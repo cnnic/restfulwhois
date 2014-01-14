@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.cnnic.whois.dao.BaseJdbcDao;
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 import com.cnnic.whois.oauth.bean.UserApp;
 import com.cnnic.whois.oauth.bean.UserAppRowMapper;
 

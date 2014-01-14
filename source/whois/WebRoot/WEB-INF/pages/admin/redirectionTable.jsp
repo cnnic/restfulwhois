@@ -1,17 +1,8 @@
-<%@ page import="com.cnnic.whois.service.RedirectionService"%>
+<%@ page import="com.cnnic.whois.admin.service.RedirectionService"%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page session="true"%>
-<%
-	RedirectionService redirectService = RedirectionService
-			.getRedirectService();
-	String tableName = request.getParameter("tableName");
-	Map<Integer, List<String>> redirectList = redirectService
-			.listRedirect(tableName);
-
-	request.setAttribute("redirectList", redirectList);
-%>
 <form action="" method="post">
 <input type="button" value="add redirection"
 		onclick="changeAddRedirect('${tableName}');"></input>

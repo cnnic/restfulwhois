@@ -1,27 +1,21 @@
-package com.cnnic.whois.service;
+package com.cnnic.whois.admin.service;
 
 import java.util.Arrays;
 import java.util.Map;
 
-import com.cnnic.whois.dao.ExColumnDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cnnic.whois.admin.dao.ExColumnDAO;
 import com.cnnic.whois.execption.ManagementException;
 import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.WhoisUtil;
 
+@Service
 public class ExColumnService {
-	private static ExColumnService columnService = new ExColumnService();
-
-	private ExColumnService() {
-	}
-
-	/**
-	 * Get ExColumnService objects
-	 * 
-	 * @return ExColumnService Object
-	 */
-	public static ExColumnService getColumnService() {
-		return columnService;
-	}
+	
+	@Autowired
+	private ExColumnDAO exColumnDao;
 
 	/**
 	 * Add the extension field
@@ -32,8 +26,7 @@ public class ExColumnService {
 	 */
 	public void addCoulumn(String tableName, Map<String, String> columnMap)
 			throws ManagementException {
-		ExColumnDAO columnDAO = ExColumnDAO.getColumnDAO();
-		columnDAO.addCoulumn(tableName, columnMap);
+		exColumnDao.addCoulumn(tableName, columnMap);
 		setColumnExtendList(tableName);
 	}
 
@@ -46,8 +39,7 @@ public class ExColumnService {
 	 */
 	public Map<String, String> listCoulumn(String tableName)
 			throws ManagementException {
-		ExColumnDAO columnDAO = ExColumnDAO.getColumnDAO();
-		return columnDAO.listCoulumn(tableName);
+		return exColumnDao.listCoulumn(tableName);
 	}
 
 	/**
@@ -62,8 +54,7 @@ public class ExColumnService {
 	public void updateCoulumn(String tableName, String oldColumnName,
 			String newCloumnName, String columnLength)
 			throws ManagementException {
-		ExColumnDAO columnDAO = ExColumnDAO.getColumnDAO();
-		columnDAO.updateCoulumn(tableName, oldColumnName, newCloumnName,
+		exColumnDao.updateCoulumn(tableName, oldColumnName, newCloumnName,
 				columnLength);
 		setColumnExtendList(tableName);
 
@@ -78,8 +69,7 @@ public class ExColumnService {
 	 */
 	public void deleteCoulumn(String tableName, String columnName)
 			throws ManagementException {
-		ExColumnDAO columnDAO = ExColumnDAO.getColumnDAO();
-		columnDAO.deleteCoulumn(tableName, columnName);
+		exColumnDao.deleteCoulumn(tableName, columnName);
 		setColumnExtendList(tableName);
 	}
 
