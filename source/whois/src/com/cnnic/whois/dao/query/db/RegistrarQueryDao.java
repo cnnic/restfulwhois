@@ -1,8 +1,6 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import com.cnnic.whois.bean.QueryJoinType;
@@ -24,25 +22,15 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	 */
 	public Map<String, Object> queryVariants(String queryInfo, String format)
 			throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
-
 		try {
-			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + queryInfo
 					+ "'";
-			map = query(connection, selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, ColumnCache.getColumnCache()
 					.getRegistrarKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -73,10 +61,9 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, connection, ColumnCache
+				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, ColumnCache
 						.getColumnCache().getRegistrarKeyFileds());
 	}
 }

@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +39,9 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, connection, ColumnCache
+				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, ColumnCache
 						.getColumnCache().getPublicIdsKeyFileds());
 	}
 

@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +20,8 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
-
 		try {
-			connection = ds.getConnection();
 			List<String> keyFields = ColumnCache.getColumnCache()
 					.getRIRDomainKeyFileds();
 			Map<String, Object> domainMap = query(
@@ -37,13 +33,6 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}

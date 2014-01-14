@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,11 +28,9 @@ public class IpQueryDao extends AbstractDbQueryDao {
 		long endHighAddr = ipParam.getEndHighAddr();
 		long startLowAddr = ipParam.getStartLowAddr();
 		long endLowAddr = ipParam.getEndLowAddr();
-		Connection connection = null;
 		Map<String, Object> map = null;
 		String selectSql = "";
 		try {
-			connection = ds.getConnection();
 			if (startHighAddr == 0) { // If fuzzy matching with the SQL
 										// statement
 				selectSql = (endLowAddr == 0) ? (WhoisUtil.SELECT_LIST_IPv4_1
@@ -59,7 +56,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 								+ WhoisUtil.SELECT_LIST_IPv6_7 + WhoisUtil.SELECT_LIST_IPv6_9);
 			}
 
-			Map<String, Object> ipMap = query(connection, selectSql,
+			Map<String, Object> ipMap = query(selectSql,
 					ColumnCache.getColumnCache().getIPKeyFileds(), "$mul$IP");
 			if (ipMap != null) {
 				map = rdapConformance(map);
@@ -74,13 +71,6 @@ public class IpQueryDao extends AbstractDbQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -142,8 +132,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 

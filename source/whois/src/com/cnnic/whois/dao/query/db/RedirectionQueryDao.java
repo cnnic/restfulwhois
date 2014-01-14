@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -81,8 +80,7 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }
