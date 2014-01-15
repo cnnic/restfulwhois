@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -22,21 +21,17 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 		throw new UnsupportedOperationException();
 	}
 
-	public Map<String, Object> query(String listSql, List<String> keyFields,
-			String q) throws QueryException {
-		String sql = listSql + "'" + q + "'";
-		return this.queryBySql(sql, keyFields);
-	}
+//	public Map<String, Object> query(String listSql, List<String> keyFields,
+//			String q) throws QueryException {
+//		String sql = listSql + "'" + q + "'";
+//		return this.queryBySql(sql, keyFields);
+//	}
 
 	protected Map<String, Object> queryBySql(String sql,
 			List<String> keyFields) throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
-
 		try {
-			connection = ds.getConnection();
-			Map<String, Object> domainMap = query(connection, sql, keyFields,
-					QUERY_KEY);
+			Map<String, Object> domainMap = query(sql, keyFields, QUERY_KEY);
 			if (domainMap != null) {
 				map = rdapConformance(map);
 				map.putAll(domainMap);
@@ -44,13 +39,6 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -72,8 +60,7 @@ public abstract class AbstractDomainQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 }

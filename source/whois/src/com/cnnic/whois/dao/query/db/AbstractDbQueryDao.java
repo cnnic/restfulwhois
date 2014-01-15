@@ -1,7 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +11,9 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
@@ -22,6 +23,18 @@ import com.cnnic.whois.util.WhoisUtil;
 
 public abstract class AbstractDbQueryDao implements QueryDao{
 	//	private static AbstractDbQueryDao queryDAO = new AbstractDbQueryDao();
+	
+	private JdbcTemplate jdbcTemplate;
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	@Autowired
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+	
 	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
@@ -29,8 +42,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	protected List<AbstractDbQueryDao> dbQueryDaos;
 	protected abstract boolean supportJoinType(QueryType queryType,
 			QueryJoinType queryJoinType);
-	public abstract Object querySpecificJoinTable(String key, String handle,
-			Connection connection)
+	public abstract Object querySpecificJoinTable(String key, String handle)
 			throws SQLException ;
 	@Override
 	public Map<String, Object> getAll()
@@ -53,16 +65,15 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		}
 	}
 
-	protected Map<String, Object> query(Connection connection, String sql,
-			List<String> keyFlieds, String keyName)
+	protected Map<String, Object> query(String sql,
+			final List<String> keyFlieds, final String keyName)
 			throws SQLException {
-		PreparedStatement stmt = null; 
-		ResultSet results = null;
-		try {
-			stmt = connection.prepareStatement(sql);
-			results = stmt.executeQuery();
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			while (results.next()) {
+		
+		return this.getJdbcTemplate().query(sql, new ResultSetExtractor<Map<String, Object>>() {
+					@Override
+					public Map<String, Object> extractData(ResultSet results) throws SQLException, DataAccessException {
+						List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+						while (results.next()) {
 				Map<String, Object> map = new LinkedHashMap<String, Object>();
 				putQueryType(map);
 				for (int i = 0; i < keyFlieds.size(); i++) {
@@ -83,8 +94,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 						String fliedName = getJoinFieldName(keyName);
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								results.getString(fliedName),
-								connection);
+								results.getString(fliedName));
 						if (value != null)
 							map.put(key, value);//map or map-list
 					} else {
@@ -119,20 +129,8 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 				}
 			}
 			return mapInfo;
-		} finally {
-			if (results != null) {
-				try {
-					results.close();
-				} catch (SQLException se) {
-				}
 			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
+		});
 	}
 
 	protected String getJoinFieldName(String keyName) {
@@ -160,15 +158,13 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @return Returns the schedule information content
 	 * @throws SQLException
 	 */
-	public Object queryJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object queryJoinTable(String key, String handle) throws SQLException {
 		String keyWithoutJoinPrefix = key.substring(WhoisUtil.JOINFILEDPRX.length());
 		QueryJoinType joinType = QueryJoinType.getQueryJoinType(keyWithoutJoinPrefix);
 		QueryType queryType = getQueryType();
 		for (AbstractDbQueryDao dbQueryDao : dbQueryDaos) {
 			if (dbQueryDao.supportJoinType(queryType, joinType)) {
-				Object result = dbQueryDao.querySpecificJoinTable(key, handle,
-						connection);
+				Object result = dbQueryDao.querySpecificJoinTable(key, handle);
 				if(result instanceof Map){
 					addQueryJoinTypeEntry(joinType, result);
 				}else if(result instanceof Object[]){
@@ -198,11 +194,10 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	 * @return Returns the schedule information content
 	 * @throws SQLException
 	 */
-	public Object querySpecificJoinTable(String key, String handle, String sql,
-			Connection connection, List<String> keyFlieds)
+	public Object querySpecificJoinTable(String key, String handle, String sql, List<String> keyFlieds)
 			throws SQLException {
 
-		Map<String, Object> map = query(connection, sql + "'" + handle + "'",
+		Map<String, Object> map = query(sql + "'" + handle + "'",
 				keyFlieds, key);
 		if (map != null) {
 			if (null == map.get(key)) {

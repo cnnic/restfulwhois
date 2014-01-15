@@ -1,7 +1,7 @@
 function operation(valueName) {
 	var operationFlag = valueName;
 	var data = "tableType=" + operationFlag;
-	var columnUrl = "ColumnAction!list?";
+	var columnUrl = "columnController/list?";
 	queryButton(columnUrl, data);
 }
 
@@ -85,7 +85,7 @@ function checkAddColumn() {
 function submitAddCoulmn(columnArray) {
 	var data1 = "columnArray=" + columnArray;
 	var data2 = "&tableType=" + tableName
-	var columnUrl = "ColumnAction!add?";
+	var columnUrl = "columnController/add?";
 	queryButton(columnUrl, data1 + data2);
 }
 
@@ -98,7 +98,7 @@ function operationColumn(obj, taName, coName, coValue) {
 	} else if (operationFlag == 2) {
 		var boo = confirm("Confirm delete?");
 		if (boo == true) {
-			var columnUrl = "ColumnAction!delete?";
+			var columnUrl = "columnController/delete?";
 			queryButton(columnUrl, data1 + data2);
 		}
 	}
@@ -152,27 +152,27 @@ function checkColumn(columnName, columnLength) {
 
 function updateExtendColumn() {
 	var data1 = $("#updateColumnInfo").serialize();
-	var columnUrl = "ColumnAction!update?";
+	var columnUrl = "columnController/update?";
 	queryButton(columnUrl, data1);
 }
 
 function operationPermissionTable(valueName) {
 	var data = "tableType=" + valueName;
-	var permissionUrl = "AccessControlAction!list";
-	queryButton(permissionUrl, data)
+	var permissionUrl = "accessController/list";
+	queryButton(permissionUrl, data);
 }
 
 function updatePermission() {
 	var anonymousObj = document.getElementsByName('anonymousUser');
 	var authenticatedObj = document.getElementsByName('authenticatedUser');
 	var rootObj = document.getElementsByName('rootUser');
-	var tableName = $("#tabletype").val();
+	var tableName = $("#tableType").val();
 
 	var anonymousArray = checkPermission(anonymousObj);
 	var authenticatedArray = checkPermission(authenticatedObj);
 	var rootArray = checkPermission(rootObj);
 
-	var permissionUrl = "AccessControlAction!update";
+	var permissionUrl = "accessController/update";
 	var permissionData = "tableType=" + tableName + "&" + "anonymous="
 			+ anonymousArray + "&" + "authenticated=" + authenticatedArray
 			+ "&" + "root=" + rootArray
@@ -192,7 +192,7 @@ function checkPermission(obj) {
 }
 
 function operationRedirectTable(tableName) {
-	var permissionUrl = "RedirectAction!list";
+	var permissionUrl = "redirectionController/list";
 	queryButton(permissionUrl, "tableName=" + tableName);
 }
 
@@ -203,7 +203,7 @@ function operationRedirect(obj, id, start, redirectUrl, end, tableName) {
 	} else if (operationFlag == 2) {
 		var boo = confirm("Confirm delete?");
 		if (boo == true) {
-			var permissionUrl = "RedirectAction!delete?";
+			var permissionUrl = "redirectionController/delete?";
 			queryButton(permissionUrl, "id=" + id + "&tableName=" + tableName);
 		}
 	}
@@ -346,7 +346,7 @@ function submitAddRedirect() {
 		return false;
 
 	var data = $("#addRedirectfo").serialize();
-	var columnUrl = "RedirectAction!add?";
+	var columnUrl = "redirectionController/add?";
 	queryButton(columnUrl, data + "&tableName=" + testTable);
 }
 

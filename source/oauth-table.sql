@@ -18,8 +18,8 @@
 # Source for table users
 #
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+DROP TABLE IF EXISTS `oauth_users`;
+CREATE TABLE `oauth_users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_name` varchar(20) NOT NULL,
   `pwd` varchar(80) NOT NULL,
@@ -28,16 +28,16 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 #
-# Dumping data for table users
+# Dumping data for table oauth_users
 #
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'auth','auth','authenticated');
-INSERT INTO `users` VALUES (2,'root','root','root');
-INSERT INTO `users` VALUES (3,'admin','admin','anonymous');
-INSERT INTO `users` VALUES (6,'xx','xx','anonymous');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `oauth_users` WRITE;
+/*!40000 ALTER TABLE `oauth_users` DISABLE KEYS */;
+INSERT INTO `oauth_users` VALUES (1,'auth','auth','authenticated');
+INSERT INTO `oauth_users` VALUES (2,'root','root','root');
+INSERT INTO `oauth_users` VALUES (3,'admin','admin','anonymous');
+INSERT INTO `oauth_users` VALUES (6,'xx','xx','anonymous');
+/*!40000 ALTER TABLE `oauth_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `oauth_accessor`;
@@ -67,8 +67,8 @@ INSERT INTO `oauth_accessor` VALUES (214,'3d7c3b341406de31e245487e93f37442','aea
 /*!40000 ALTER TABLE `oauth_accessor` ENABLE KEYS */;
 UNLOCK TABLES;
 
-DROP TABLE IF EXISTS `users_app`;
-CREATE TABLE `users_app` (
+DROP TABLE IF EXISTS `oauth_users_app`;
+CREATE TABLE `oauth_users_app` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `app_key` varchar(40) NOT NULL,
   `app_secret` varchar(80) NOT NULL,
@@ -76,13 +76,18 @@ CREATE TABLE `users_app` (
   `user_id` int(10) DEFAULT NULL,
   `invalid_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
-LOCK TABLES `users_app` WRITE;
-/*!40000 ALTER TABLE `users_app` DISABLE KEYS */;
-INSERT INTO `users_app` VALUES (3,'key-498702880','secret-858606152','范德萨',1,7);
-INSERT INTO `users_app` VALUES (4,'key-498702880f','secret-858606152f','fff',2,7);
-INSERT INTO `users_app` VALUES (7,'key1385973838215','secret1385973838215','fff',1,7);
-INSERT INTO `users_app` VALUES (8,'key1386742777776','secret1386742777776','其它',2,7);
-/*!40000 ALTER TABLE `users_app` ENABLE KEYS */;
+#
+# Dumping data for table oauth_users_app
+#
+
+LOCK TABLES `oauth_users_app` WRITE;
+/*!40000 ALTER TABLE `oauth_users_app` DISABLE KEYS */;
+INSERT INTO `oauth_users_app` VALUES (3,'key-498702880','secret-858606152','范德萨',1,1);
+INSERT INTO `oauth_users_app` VALUES (4,'key-498702880f','secret-858606152f','fff',2,7);
+INSERT INTO `oauth_users_app` VALUES (7,'key1385973838215','secret1385973838215','fff',1,7);
+INSERT INTO `oauth_users_app` VALUES (8,'key1386742777776','secret1386742777776','其它',2,7);
+INSERT INTO `oauth_users_app` VALUES (9,'key1386899431580','secret1386899431580','其它',6,7);
+/*!40000 ALTER TABLE `oauth_users_app` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,8 +19,7 @@ import com.cnnic.whois.util.WhoisUtil;
 public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 	@Autowired
 	protected SearchQueryExecutor searchQueryExecutor;
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection)
+	public Object querySpecificJoinTable(String key, String handle)
 			throws SQLException{
 		throw new UnsupportedOperationException();
 	}
@@ -38,7 +36,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 		}
 	}
 	
-	protected Map<String, Object> fuzzyQuery(Connection connection, SearchResult<? extends Index> domains,
+	protected Map<String, Object> fuzzyQuery(SearchResult<? extends Index> domains,
 			String keyName)
 			throws SQLException {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -64,8 +62,7 @@ public abstract class AbstractSearchQueryDao extends AbstractDbQueryDao{
 					} else if (field.startsWith(WhoisUtil.JOINFILEDPRX)) {
 						String key = field.substring(WhoisUtil.JOINFILEDPRX.length());
 						Object value = queryJoinTable(field,
-								index.getHandle(),
-								connection);
+								index.getHandle());
 						if (value != null)
 							map.put(key, value);
 					} else {

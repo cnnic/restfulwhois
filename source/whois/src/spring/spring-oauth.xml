@@ -7,8 +7,8 @@
 		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 	default-autowire="byName" default-lazy-init="true">
 	
-	<bean id="oauthAccessorDao" class="com.cnnic.whois.dao.oauth.OAuthAccessorDao" />
-	<bean id="userAppDao" class="com.cnnic.whois.dao.oauth.UserAppDao" />
-	<bean id="userDao" class="com.cnnic.whois.dao.oauth.UserDao" />
+	<bean id="oauthAccessorDao" class="com.cnnic.whois.oauth.dao.OAuthAccessorDao" />
+	<bean id="userAppDao" class="com.cnnic.whois.oauth.dao.UserAppDao" />
+	<bean id="userDao" class="com.cnnic.whois.oauth.dao.UserDao" />
 	
 </beans>

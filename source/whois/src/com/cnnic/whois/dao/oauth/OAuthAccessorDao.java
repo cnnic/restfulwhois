@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.bean.oauth.OAuthAccessorBean;
 import com.cnnic.whois.bean.oauth.OAuthAccessorBeanIdRowMapper;
 import com.cnnic.whois.bean.oauth.OAuthAccessorBeanRowMapper;
-import com.cnnic.whois.dao.BaseJdbcDao;
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 
 @Repository
 public class OAuthAccessorDao extends BaseJdbcDao {

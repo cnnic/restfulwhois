@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.oauth.UserApp;
 import com.cnnic.whois.bean.oauth.UserAppRowMapper;
-import com.cnnic.whois.dao.BaseJdbcDao;
+import com.cnnic.whois.dao.base.BaseJdbcDao;
 
 @Repository
 public class UserAppDao extends BaseJdbcDao {

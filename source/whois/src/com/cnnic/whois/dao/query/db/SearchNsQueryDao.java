@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,14 +19,12 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 
 	@Override
 	public Map<String, Object> query(QueryParam param) throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 		PageBean page = param.getPage();
 		SearchResult<? extends Index> result = searchQueryExecutor.query(
 				QueryType.SEARCHNS, param);
 		try {
-			connection = ds.getConnection();
-			Map<String, Object> nsMap = fuzzyQuery(connection, result,
+			Map<String, Object> nsMap = fuzzyQuery(result,
 					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
@@ -37,13 +34,6 @@ public class SearchNsQueryDao extends AbstractSearchQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}

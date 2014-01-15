@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,24 +30,15 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			throws QueryException {
 		SearchResult<? extends Index> result = 
 				searchEntityQueryDao.preciseQueryEntitiesByHandleOrName(param);
-		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
-			connection = ds.getConnection();
-			map = fuzzyQuery(connection, result, MAP_KEY);
+			map = fuzzyQuery(result, MAP_KEY);
 			if(null != map){
 				map = rdapConformance(map);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -56,14 +46,12 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	@SuppressWarnings("unused")
 	private Map<String, Object> queryDNREntity(String queryInfo, String role,
 			String format) throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 
 		try {
-			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_DNRENTITY + "'"
 					+ queryInfo + "'";
-			Map<String, Object> entityMap = query(connection, selectSql,
+			Map<String, Object> entityMap = query(selectSql,
 					ColumnCache.getColumnCache().getDNREntityKeyFileds(),
 					MAP_KEY);
 			if (entityMap != null) {
@@ -73,13 +61,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -87,14 +68,11 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 	@SuppressWarnings("unused")
 	private Map<String, Object> queryRIREntity(String queryInfo, String role,
 			String format) throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
-
 		try {
-			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY + "'"
 					+ queryInfo + "'";
-			Map<String, Object> entityMap = query(connection, selectSql,
+			Map<String, Object> entityMap = query(selectSql,
 					ColumnCache.getColumnCache().getRIREntityKeyFileds(),
 					MAP_KEY);
 			if (entityMap != null) {
@@ -104,13 +82,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -138,11 +109,9 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 
 	protected Map<String, Object> getAllEntity(String sql, List<String> keyFields)
 			throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
-			connection = ds.getConnection();
-			Map<String, Object> entityMap = query(connection, sql, keyFields,
+			Map<String, Object> entityMap = query(sql, keyFields,
 					MAP_KEY);
 			if (entityMap != null) {
 				map = rdapConformance(map);
@@ -151,13 +120,6 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}

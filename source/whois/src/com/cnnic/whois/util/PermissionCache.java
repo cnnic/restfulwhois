@@ -481,6 +481,13 @@ public class PermissionCache {
 		List<String> authenticatedDataList = new ArrayList<String>();
 		List<String> rootDataList = new ArrayList<String>();
 
+//		return this.getJdbcTemplate().query(WhoisUtil.SELECT_PERMISSION, new Object[] { tableName },
+//				new ResultSetExtractor<Map<String, List<String>>>() {
+//					@Override
+//					public Map<String, List<String>> extractData(ResultSet results) throws SQLException, DataAccessException {
+//						while (results.next()) {
+//		});
+		
 		Connection connection = JdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection

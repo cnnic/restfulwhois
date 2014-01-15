@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -22,26 +21,16 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
-
 		try {
-			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'"
 					+ param.getQ() + "'";
-			map = query(connection, selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, ColumnCache.getColumnCache()
 					.getDsDataKeyFileds(), "$mul$dsData");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
+		} 
 		return map;
 	}
 
@@ -52,22 +41,13 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
-			connection = ds.getConnection();
-			map = query(connection, GET_ALL_DSDATA, ColumnCache
+			map = query(GET_ALL_DSDATA, ColumnCache
 					.getColumnCache().getDsDataKeyFileds(), QUERY_KEY);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -89,10 +69,9 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DSDATA, connection, ColumnCache
+				WhoisUtil.SELECT_JOIN_LIST_DSDATA, ColumnCache
 						.getColumnCache().getDsDataKeyFileds());
 	}
 

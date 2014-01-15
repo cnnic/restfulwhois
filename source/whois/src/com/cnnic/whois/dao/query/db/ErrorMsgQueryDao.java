@@ -1,6 +1,5 @@
 package com.cnnic.whois.dao.query.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +20,11 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
-			connection = ds.getConnection();
 			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
 					+ param.getQ() + "'";
-			Map<String, Object> errorMessageMap = query(connection, selectSql,
+			Map<String, Object> errorMessageMap = query(selectSql,
 					ColumnCache.getColumnCache().getErrorMessageKeyFileds(),
 					"$mul$errormessage");
 			if (errorMessageMap != null) {
@@ -37,13 +34,6 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -61,12 +51,9 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		Connection connection = null;
 		Map<String, Object> map = null;
 		try {
-			connection = ds.getConnection();
-			Map<String, Object> errorMessageMap = query(connection,
-					GET_ALL_ERRORMESSAGE, ColumnCache.getColumnCache()
+			Map<String, Object> errorMessageMap = query(GET_ALL_ERRORMESSAGE, ColumnCache.getColumnCache()
 							.getErrorMessageKeyFileds(), "$mul$errormessage");
 			if (errorMessageMap != null) {
 				map = rdapConformance(map);
@@ -75,13 +62,6 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-				}
-			}
 		}
 		return map;
 	}
@@ -103,8 +83,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	}
 
 	@Override
-	public Object querySpecificJoinTable(String key, String handle,
-			Connection connection) throws SQLException {
+	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		throw new UnsupportedOperationException();
 	}
 
