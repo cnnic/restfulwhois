@@ -5,7 +5,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.cnnic.whois.oauth.dao.OAuthAccessorDao;
+import com.cnnic.whois.dao.oauth.OAuthAccessorDao;
 
 public class OauthQuartz extends QuartzJobBean {
 
