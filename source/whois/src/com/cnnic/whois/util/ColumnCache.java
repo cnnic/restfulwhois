@@ -429,6 +429,17 @@ public class ColumnCache {
 	private List<String> getKeyList(String tableName) {
 		List<String> coulumNameList = new ArrayList<String>();
 
+//		return this.getJdbcTemplate().query(WhoisUtil.SELECT_LIST_COLUMNNAME, new Object[] { tableName },
+//				new ResultSetExtractor<List<String>>() {
+//					@Override
+//					public List<String> extractData(ResultSet results) throws SQLException, DataAccessException {
+//						while (results.next()) {
+//							coulumNameList.add(results.getString("columnName"));
+//						}
+//						return coulumNameList;
+//					}
+//		});
+		
 		Connection connection = JdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection

@@ -38,6 +38,10 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 					+ queryInfo + "'";
 		}
 
+//		this.getJdbcTemplate().query(selectSql, new RowCallbackHandler() {
+//		    @Override
+//		    public void processRow(ResultSet results) throws SQLException {
+//		});
 		try {
 			connection = ds.getConnection();
 			stmt = connection.prepareStatement(selectSql);

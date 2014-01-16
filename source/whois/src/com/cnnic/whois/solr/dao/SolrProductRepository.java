@@ -15,22 +15,25 @@ import org.springframework.stereotype.Repository;
 import com.cnnic.whois.solr.bean.Product;
 
 @Repository
-public class SolrProductRepository extends MySimpleSolrRepository<Product, String> implements ProductRepository {
+public class SolrProductRepository extends MySimpleSolrRepository<Product, String> {
 	
-	@Override
 	public Page<Product> findByPopularity(Integer popularity) {
 		Query query = new SimpleQuery(new Criteria(SolrSearchableFields.POPULARITY).is(popularity));
 		return getSolrOperations().queryForPage(query, Product.class);
 	}
 
-	@Override
 	public FacetPage<Product> findByNameStartingWithAndFacetOnAvailable(String namePrefix) {
 		FacetQuery query = new SimpleFacetQuery(new Criteria(SolrSearchableFields.NAME).startsWith(namePrefix));
 		query.setFacetOptions(new FacetOptions(SolrSearchableFields.AVAILABLE));
 		return getSolrOperations().queryForFacetPage(query, Product.class);
 	}
+	
+	public FacetPage<Product> findByNameFuzzyAndFacetOnAvailable(String namePrefix) {
+		FacetQuery query = new SimpleFacetQuery(new Criteria(SolrSearchableFields.NAME).expression(namePrefix));
+		query.setFacetOptions(new FacetOptions(SolrSearchableFields.AVAILABLE));
+		return getSolrOperations().queryForFacetPage(query, Product.class);
+	}
 
-	@Override
 	public Page<Product> findByAvailableTrue() {
 		Query query = new SimpleQuery(new Criteria(new SimpleField(Criteria.WILDCARD)).expression(Criteria.WILDCARD));
 		query.addFilterQuery(new SimpleQuery(new Criteria(SolrSearchableFields.AVAILABLE).is(true)));
