@@ -11,6 +11,7 @@
 	<context:property-placeholder location="classpath:*.properties" />
 	<import resource="spring-common.xml" />
 	<import resource="spring-servlet.xml" />
+	<import resource="spring-redis.xml" />
 	<!-- spring quartz -->
 	<import resource="spring-job.xml" />
 	<import resource="spring-context.xml" />

@@ -24,8 +24,6 @@
         <property name="entitySolrUrl" value="${solr.url.entity}" />
         <property name="nameServerSolrUrl" value="${solr.url.nameserver}" />
         <property name="maxFuzzyQuery" value="${maxsize.fuzzyquery}" />
-        <property name="cacheIP" value="${cache.ip}" />
-        <property name="cachePort" value="${cache.port}" />
         <property name="rdapUrl" value="${well.known}" />
      
 	</bean>     

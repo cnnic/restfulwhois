@@ -43,16 +43,6 @@ public class WhoisProperties {
 	private static String maxFuzzyQuery;
 	
 	/*
-	 * cache IP
-	 */
-	private static String cacheIP;
-	
-	/*
-	 * cache port
-	 */
-	private static String cachePort;
-	
-	/*
 	 * prefix url of ".well-known/rdap/" 
 	 */
 	private static String rdapUrl;
@@ -119,22 +109,6 @@ public class WhoisProperties {
 	public static String getMaxFuzzyQuery() {
 	    return maxFuzzyQuery;
 	}
-	
-	public void setCacheIP(String ip) {
-	    cacheIP = ip;
-	}
-	
-	public static String getCacheIP() {
-	    return cacheIP;
-	}
-	
-	public void setCachePort(String port) {
-	    cachePort = port;
-	}
-	
-	public static String getCachePort() {
-	    return cachePort;
-	}	
 	
 	public void setRdapUrl(String url) {
 		rdapUrl = url;

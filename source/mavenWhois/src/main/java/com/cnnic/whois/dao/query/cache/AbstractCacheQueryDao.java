@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import redis.clients.jedis.Jedis;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
@@ -20,27 +22,25 @@ import com.cnnic.whois.dao.query.db.QueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
 import com.cnnic.whois.util.DataFormat;
-import com.cnnic.whois.util.WhoisProperties;
 
 public abstract class AbstractCacheQueryDao implements QueryDao {
 	@Autowired
 	@Qualifier("dbQueryExecutor")
 	protected DbQueryExecutor dbQueryExecutor;
-	private static Jedis cache = new Jedis(WhoisProperties.getCacheIP(),
-			Integer.valueOf(WhoisProperties.getCachePort()));
+	@Autowired
+	private StringRedisTemplate redisTemplate;
 
-	public AbstractCacheQueryDao() {
-		super();
-		init();
-	}
+	private ValueOperations<String, String> valueOps;
 
-	private void init() {
+	@PostConstruct
+	public void initRedisTpl() {
+		valueOps = this.redisTemplate.opsForValue();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> query(QueryParam param)
-			throws QueryException, RedirectExecption {
+	public Map<String, Object> query(QueryParam param) throws QueryException,
+			RedirectExecption {
 		String cacheKey = getCacheKey(param);
 		return getMapAndConvertToJsonObject(cacheKey);
 	}
@@ -63,7 +63,7 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	}
 
 	private JSONObject getMapAndConvertToJsonObject(String key) {
-		String cacheObj = cache.get(key);
+		String cacheObj = valueOps.get(key);
 		if (StringUtils.isBlank(cacheObj)) {
 			return null;
 		}
@@ -107,13 +107,13 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 			e.printStackTrace();
 		}
 	}
-	protected String convertCacheKeyValue(String value){
+
+	protected String convertCacheKeyValue(String value) {
 		return value;
 	}
 
 	private void setCache(Map<String, Object> entityMap, String key) {
-		String keyValue = convertCacheKeyValue(entityMap.get(key)
-				.toString());
+		String keyValue = convertCacheKeyValue(entityMap.get(key).toString());
 		String cacheKey = getCacheKey(new QueryParam(keyValue));
 		System.err.println("init cache,add " + getQueryType() + ",key:"
 				+ cacheKey);
@@ -128,6 +128,6 @@ public abstract class AbstractCacheQueryDao implements QueryDao {
 	protected void setCache(String key, Map<String, Object> entityMap) {
 		String jsonStr = DataFormat.getJsonObject(entityMap).toString();
 		System.err.println(jsonStr);
-		cache.set(key, jsonStr);
+		valueOps.set(key, jsonStr);
 	}
 }
