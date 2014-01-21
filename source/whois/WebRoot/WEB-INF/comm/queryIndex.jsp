@@ -5,9 +5,7 @@
 	contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page session="true"%>
-<%-- 
 <%@ taglib prefix="cnnic" uri="http://cnnic.cn" %>
---%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
@@ -211,11 +209,9 @@
 				<div id="maincontent"><%=jsonObject%></div>
 				<div id="jsoncontent"></div>
 			</div>
-			<%-- 
 			<c:if test="${pageBean != null}">
 				<cnnic:page href="${queryPath}" pageBeanName="pageBean" maxShowPage="5" maxRecordConfigurable= "false" id="1"/>
 			</c:if>
-			--%>
 			<div style="clear: both;"></div>
 		</div>
 		<div id="footer">
