@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd ">
+	
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/image/**" location="/image/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    	<property name="useDefaultSuffixPattern" value="false" />
+	</bean>
+	<context:component-scan base-package="com.cnnic.**.controller" />
+	<!-- Saves a locale change using a cookie -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- <bean id="exceptionResolver" class="com.cnnic.whois.controller.MappingExceptionResolver">
+		<property name="defaultErrorView" value="error/500" />
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.security.access.AccessDeniedException">error/403</prop>
+				<prop key="java.lang.Exception">error/500</prop>
+			</props>
+		</property>
+		<property name="statusCodes">
+			<props>
+				<prop key="error/404">404</prop>
+				<prop key="error/403">403</prop>
+				<prop key="error/400">400</prop>
+				<prop key="error/401">401</prop>
+				<prop key="error/429">429</prop>
+				<prop key="error/500">500</prop> 
+			</props>
+		</property>
+	</bean> -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!-- Define the OXM marshaller which is used to convert the Objects <-> 
+		XML. -->
+
+	<bean id="marshallingConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="supportedMediaTypes" value="application/xml" />
+	</bean>
+
+	<bean id="jsonConverter"
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+		<list>
+			<value>application/json;charset=UTF-8</value>
+			<value>text/html;charset=UTF-8</value>
+		</list>
+		</property>
+	</bean>
+	
+	<bean id="formHttpMessageConverter" class="org.springframework.http.converter.FormHttpMessageConverter" />
+
+	<!-- Required for REST services in order to bind the return value to the 
+		ResponseBody. -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+			<ref bean="jsonConverter" />
+			<ref bean="marshallingConverter" />
+				
+			</util:list>
+		</property>
+	</bean>
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonConverter" />
+				<ref bean="marshallingConverter" />
+				<ref bean="formHttpMessageConverter"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Configures the @Controller programming model -->
+</beans>
