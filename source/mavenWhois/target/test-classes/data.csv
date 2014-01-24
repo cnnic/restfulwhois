@@ -1,0 +1,2 @@
+path,Accept,param,status,mark
+/nameservers,application/rdap+json,,400,BAD REQUEST

@@ -1,0 +1,50 @@
+path,Accept,param,status,mark
+/domain/z.cn,application/rdap+json,unkonwParam=zzz,200,Handle
+/domain/z.cn,application/json,unkonwParam=zzz,200,Handle
+/domain/z.cn,application/rdap+json;application/json,unkonwParam=zzz,200,Handle
+/domain/z.cn,application/rdap+json,unknowParam,200,Handle
+/domain/z.cn,application/rdap+json,unknowParam=zzz,200,Handle
+/malformedQueries/z.cn,application/rdap+json,unkonwParam=zzz,400,
+/domains,application/json,name=zzz,400,BAD REQUEST
+#
+/domains?name=t*.cn,application/json,,200,Handle
+/domains?name=*t.cn,application/json,,200,domainSearchResults
+/domains?name=清华*.中国,application/json,,200,Handle
+#
+/domains,application/json,,400,BAD REQUEST
+/domains/,application/json,,400,BAD REQUEST
+/domains/nonexist,application/json,,400,BAD REQUEST
+/domains?name=*,application/json,,400,BAD REQUEST
+/domains?name=t*,application/json,,400,BAD REQUEST
+/domains?name=*cn,application/json,,400,BAD REQUEST
+/domains?name=*.cn,application/json,,400,BAD REQUEST
+/domains?name=binary\x03*,application/json,,400,BAD REQUEST
+/domains?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
+#
+/entities,application/rdap+json,,400,BAD REQUEST
+/entities/,application/rdap+json,,400,BAD REQUEST
+/entities/nonexist,application/rdap+json,,400,BAD REQUEST
+/entities?fn=*,application/json,,200,entitySearchResults
+/entities?fn=*,application/json,,200,entitySearchResults
+/entities?fn=*,application/json,,200,searchResultsTruncated
+/entities?fn=*.cn,application/json,,200,entitySearchResults
+/entities?fn=*.cn,application/json,,200,.cn
+/entities?fn=s*.cn,application/json,,200,entitySearchResults
+/entities?fn=*公司,application/json,,200,entitySearchResults
+#
+/entities?handle=*,application/json,,200,entitySearchResults
+/entities?handle=*,application/json,,200,searchResultsTruncated
+/entities?handle=s*,application/json,,200,entitySearchResults
+/entities?fn=nonexist*.nonexist,application/json,,404,NOT FOUND
+#
+/nameservers,application/rdap+json,,400,BAD REQUEST
+/nameservers/,application/rdap+json,,400,BAD REQUEST
+/nameservers/nonexist,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=n*.com,application/rdap+json,,200,nameserverSearchResults
+/nameservers?name=清华*.cn,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=清华*,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=*清华,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=*,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=n*,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=*n,application/rdap+json,,400,BAD REQUEST
+/nameservers?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
