@@ -14,6 +14,7 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.RedirectionQueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class RedirectionQueryDao extends AbstractDbQueryDao {
@@ -43,7 +44,7 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 //		    public void processRow(ResultSet results) throws SQLException {
 //		});
 		try {
-			connection = ds.getConnection();
+			connection = JdbcUtils.getConnection();
 			stmt = connection.prepareStatement(selectSql);
 			results = stmt.executeQuery();
 			if (results.next()) {

@@ -68,7 +68,7 @@ public class WhoisUtil {
 	public static final String RDAPCONFORMANCE = "rdap_level_0";
 
 	public static final String PRX = "/";
-	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
+//	public static final String JNDI_NAME = "java:comp/env/jdbc/DataSource";
 
 	public static final String SELECT_LIST_IPv4_1 = "select * from ip where StartLowAddress <=";
 	public static final String SELECT_LIST_IPv4_2 = " and ";

@@ -7,9 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,7 +32,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
-	protected DataSource ds;
 	protected PermissionCache permissionCache = PermissionCache
 			.getPermissionCache();
 	@Autowired
@@ -48,21 +44,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	public Map<String, Object> getAll()
 			throws QueryException {
 		throw new UnsupportedOperationException();
-	}
-	/**
-	 * Connect to the datasource in the constructor
-	 * 
-	 * @throws IllegalStateException
-	 */
-	public AbstractDbQueryDao() {
-		super();
-		try {
-			InitialContext ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup(WhoisUtil.JNDI_NAME);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalStateException(e.getMessage());
-		}
 	}
 
 	protected Map<String, Object> query(String sql,
