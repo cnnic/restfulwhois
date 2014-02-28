@@ -19,7 +19,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			List<String> keyFields = ColumnCache.getColumnCache()
+			List<String> keyFields = columnCache
 					.getDNRDomainKeyFileds();
 			String sql = String.format(WhoisUtil.SELECT_LIST_DNRDOMAIN, param.getQ(),param.getQ());
 			Map<String, Object> domainMap = query(
@@ -37,7 +37,7 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		List<String> dnrKeyFields = ColumnCache.getColumnCache()
+		List<String> dnrKeyFields = columnCache
 				.getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
@@ -68,6 +68,6 @@ public class DnrDomainQueryDao extends AbstractDomainQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getDNRDomainKeyFileds(role);
+		return permissionCache.getDNRDomainKeyFileds(role);
 	}
 }

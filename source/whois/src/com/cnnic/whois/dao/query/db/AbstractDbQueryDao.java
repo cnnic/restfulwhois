@@ -7,9 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +15,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.cnnic.whois.bean.QueryJoinType;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.execption.QueryException;
+import com.cnnic.whois.util.ColumnCache;
 import com.cnnic.whois.util.PermissionCache;
 import com.cnnic.whois.util.WhoisUtil;
 
@@ -35,9 +33,19 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
-	protected DataSource ds;
-	protected PermissionCache permissionCache = PermissionCache
-			.getPermissionCache();
+	protected PermissionCache permissionCache;
+	
+	@Autowired
+	public void setPermissionCache(PermissionCache permissionCache) {
+		this.permissionCache = permissionCache;
+	}
+	
+	protected ColumnCache columnCache;
+	@Autowired
+	public void setColumnCache(ColumnCache columnCache) {
+		this.columnCache = columnCache;
+	}
+
 	@Autowired
 	protected List<AbstractDbQueryDao> dbQueryDaos;
 	protected abstract boolean supportJoinType(QueryType queryType,
@@ -48,21 +56,6 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 	public Map<String, Object> getAll()
 			throws QueryException {
 		throw new UnsupportedOperationException();
-	}
-	/**
-	 * Connect to the datasource in the constructor
-	 * 
-	 * @throws IllegalStateException
-	 */
-	public AbstractDbQueryDao() {
-		super();
-		try {
-			InitialContext ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup(WhoisUtil.JNDI_NAME);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalStateException(e.getMessage());
-		}
 	}
 
 	protected Map<String, Object> query(String sql,

@@ -25,7 +25,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_ERRORMESSAGE + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> errorMessageMap = query(selectSql,
-					ColumnCache.getColumnCache().getErrorMessageKeyFileds(),
+					columnCache.getErrorMessageKeyFileds(),
 					"$mul$errormessage");
 			if (errorMessageMap != null) {
 				map = rdapConformance(map);
@@ -53,7 +53,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			Map<String, Object> errorMessageMap = query(GET_ALL_ERRORMESSAGE, ColumnCache.getColumnCache()
+			Map<String, Object> errorMessageMap = query(GET_ALL_ERRORMESSAGE, columnCache
 							.getErrorMessageKeyFileds(), "$mul$errormessage");
 			if (errorMessageMap != null) {
 				map = rdapConformance(map);
@@ -89,7 +89,7 @@ public class ErrorMsgQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getErrorMessageKeyFileds(
+		return permissionCache.getErrorMessageKeyFileds(
 				role);
 	}
 }

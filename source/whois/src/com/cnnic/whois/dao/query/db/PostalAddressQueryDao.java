@@ -23,7 +23,7 @@ public class PostalAddressQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_POSTALADDRESS + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getPostalAddressKeyFileds(), "$mul$postalAddress");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -51,12 +51,12 @@ public class PostalAddressQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_POSTALADDRESS, ColumnCache.getColumnCache().getPostalAddressKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_POSTALADDRESS, columnCache.getPostalAddressKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getPostalAddressKeyFileds(
+		return permissionCache.getPostalAddressKeyFileds(
 				role);
 	}
 }

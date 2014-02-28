@@ -25,7 +25,7 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_DSDATA + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getDsDataKeyFileds(), "$mul$dsData");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -43,8 +43,7 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_DSDATA, ColumnCache
-					.getColumnCache().getDsDataKeyFileds(), QUERY_KEY);
+			map = query(GET_ALL_DSDATA, columnCache.getDsDataKeyFileds(), QUERY_KEY);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -71,12 +70,11 @@ public class DsDataQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_DSDATA, ColumnCache
-						.getColumnCache().getDsDataKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_DSDATA, columnCache.getDsDataKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getDsDataMapKeyFileds(role);
+		return permissionCache.getDsDataMapKeyFileds(role);
 	}
 }

@@ -24,7 +24,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_LINK + "'" + param.getQ()
 					+ "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getLinkKeyFileds(), "$mul$link");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,7 +37,7 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_LINK, ColumnCache.getColumnCache()
+			map = query(GET_ALL_LINK, columnCache
 					.getLinkKeyFileds(), "$mul$link");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -65,12 +65,11 @@ public class LinksQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_LINK, ColumnCache
-						.getColumnCache().getLinkKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_LINK, columnCache.getLinkKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getLinkKeyFileds(role);
+		return permissionCache.getLinkKeyFileds(role);
 	}
 }

@@ -24,7 +24,7 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getVariantsKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,8 +37,7 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_VARIANTS, ColumnCache
-					.getColumnCache().getVariantsKeyFileds(), "$mul$variants");
+			map = query(GET_ALL_VARIANTS, columnCache.getVariantsKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -65,12 +64,11 @@ public class VariantsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, ColumnCache
-						.getColumnCache().getVariantsKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_VARIANTS, columnCache.getVariantsKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getVariantsKeyFileds(role);
+		return permissionCache.getVariantsKeyFileds(role);
 	}
 }

@@ -24,7 +24,7 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_KEYDATA + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getKeyDataKeyFileds(), "$mul$keyData");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,8 +37,7 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_KEYDATA, ColumnCache
-					.getColumnCache().getKeyDataKeyFileds(), "$mul$keyData");
+			map = query(GET_ALL_KEYDATA, columnCache.getKeyDataKeyFileds(), "$mul$keyData");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -77,13 +76,12 @@ public class KeyDataQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_KEYDATA, ColumnCache
-						.getColumnCache().getKeyDataKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_KEYDATA, columnCache.getKeyDataKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache()
+		return permissionCache
 				.getKeyDataMapKeyFileds(role);
 	}
 }

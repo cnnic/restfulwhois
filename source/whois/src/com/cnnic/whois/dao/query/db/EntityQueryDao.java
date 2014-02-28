@@ -52,7 +52,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_DNRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(selectSql,
-					ColumnCache.getColumnCache().getDNREntityKeyFileds(),
+					columnCache.getDNREntityKeyFileds(),
 					MAP_KEY);
 			if (entityMap != null) {
 				map = rdapConformance(map);
@@ -73,7 +73,7 @@ public class EntityQueryDao extends AbstractSearchQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_RIRENTITY + "'"
 					+ queryInfo + "'";
 			Map<String, Object> entityMap = query(selectSql,
-					ColumnCache.getColumnCache().getRIREntityKeyFileds(),
+					columnCache.getRIREntityKeyFileds(),
 					MAP_KEY);
 			if (entityMap != null) {
 				map = rdapConformance(map);

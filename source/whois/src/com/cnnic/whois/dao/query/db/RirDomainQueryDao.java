@@ -22,7 +22,7 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 	public Map<String, Object> query(QueryParam param) throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			List<String> keyFields = ColumnCache.getColumnCache()
+			List<String> keyFields = columnCache
 					.getRIRDomainKeyFileds();
 			String sql = String.format(WhoisUtil.SELECT_LIST_RIRDOMAIN, param.getQ());
 			Map<String, Object> domainMap = query(
@@ -41,7 +41,7 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
 		List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-		List<String> rirKeyFields = ColumnCache.getColumnCache()
+		List<String> rirKeyFields = columnCache
 				.getRIRDomainKeyFileds();
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
 				rirKeyFields);
@@ -75,6 +75,6 @@ public class RirDomainQueryDao extends AbstractDomainQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getRIRDomainKeyFileds(role);
+		return permissionCache.getRIRDomainKeyFileds(role);
 	}
 }

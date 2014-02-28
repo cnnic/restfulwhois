@@ -61,10 +61,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 	private Map<String, Object> doQuery(QueryParam param, 
 			PageBean... page) throws QueryException {
 		Map<String, Object> map = null;
-		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
+		List<String> dnrKeyFields = columnCache.getDNRDomainKeyFileds();
 		Map<String, Object> dnrMap = query(param, dnrKeyFields, page);
 		map.putAll(dnrMap);
-		List<String> rirKeyFields = ColumnCache.getColumnCache().getRIRDomainKeyFileds();
+		List<String> rirKeyFields = columnCache.getRIRDomainKeyFileds();
 		Map<String, Object> rirMap = query(param, rirKeyFields, page);
 		map.putAll(rirMap);
 		return map;
@@ -113,10 +113,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		List<String> dnrKeyFields = ColumnCache.getColumnCache().getDNRDomainKeyFileds();
+		List<String> dnrKeyFields = columnCache.getDNRDomainKeyFileds();
 		Map<String, Object> dnrDomains = queryBySql(GET_ALL_DNRDOMAIN,
 				dnrKeyFields);
-		List<String> rirKeyFields = ColumnCache.getColumnCache().getRIRDomainKeyFileds();
+		List<String> rirKeyFields = columnCache.getRIRDomainKeyFileds();
 		Map<String, Object> rirDomains = queryBySql(GET_ALL_RIRDOMAIN,
 				rirKeyFields);
 		Map<String, Object> result = new HashMap<String, Object>();

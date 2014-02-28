@@ -8,12 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.NameServerIndex;
 
+@Component
 public class PermissionCache {
-	private static PermissionCache permissionCache = new PermissionCache();
+	@Autowired
+	JdbcUtils jdbcUtils;
 
 	private Map<String, List<String>> IPMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> DNREntityMap = new HashMap<String, List<String>>();
@@ -38,12 +45,14 @@ public class PermissionCache {
 	private Map<String, List<String>> ErrorMessageMap = new HashMap<String, List<String>>();
 	private Map<String, List<String>> helpMap = new HashMap<String, List<String>>();
 	
-	private ColumnCache columnCache = ColumnCache.getColumnCache();
+	private ColumnCache columnCache;
 
 	/**
 	 * In the constructor to initialize the property value
 	 */
-	private PermissionCache() {
+	private PermissionCache() {}
+	@PostConstruct
+	private void postInit() {
 		IPMap = getKeyMap(WhoisUtil.IP, columnCache.getIPKeyFileds());
 		DNREntityMap = getKeyMap(WhoisUtil.DNRENTITY,
 				columnCache.getDNREntityKeyFileds());
@@ -93,7 +102,7 @@ public class PermissionCache {
 	 * @return PermissionCache objects
 	 */
 	public static PermissionCache getPermissionCache() {
-		return permissionCache;
+		return null;
 	}
 
 	/**
@@ -481,7 +490,7 @@ public class PermissionCache {
 		List<String> authenticatedDataList = new ArrayList<String>();
 		List<String> rootDataList = new ArrayList<String>();
 
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection
 					.prepareStatement(WhoisUtil.SELECT_PERMISSION);
@@ -590,5 +599,10 @@ public class PermissionCache {
 	public void setHelpMap() {
 		this.helpMap = getKeyMap(WhoisUtil.HELP,
 				columnCache.getHelpKeyFields());
+	}
+	
+	@Autowired
+	public void setColumnCache(ColumnCache columnCache) {
+		this.columnCache = columnCache;
 	}
 }

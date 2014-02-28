@@ -24,7 +24,7 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_NOTICES + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getNoticesKeyFileds(), "$mul$notices");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,8 +37,7 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_NOTICES, ColumnCache
-					.getColumnCache().getNoticesKeyFileds(), "$mul$notices");
+			map = query(GET_ALL_NOTICES, columnCache.getNoticesKeyFileds(), "$mul$notices");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -79,12 +78,11 @@ public class NoticesQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_NOTICES, ColumnCache
-						.getColumnCache().getNoticesKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_NOTICES, columnCache.getNoticesKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getNoticesKeyFileds(role);
+		return permissionCache.getNoticesKeyFileds(role);
 	}
 }

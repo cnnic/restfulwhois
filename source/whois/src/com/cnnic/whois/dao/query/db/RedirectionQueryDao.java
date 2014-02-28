@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.cnnic.whois.bean.QueryJoinType;
@@ -14,10 +15,14 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.RedirectionQueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
+import com.cnnic.whois.util.JdbcUtils;
 import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class RedirectionQueryDao extends AbstractDbQueryDao {
 
+	@Autowired
+	private JdbcUtils jdbcUtils;
+	
 	@Override
 	public Map<String, Object> query(QueryParam param)
 			throws QueryException, RedirectExecption {
@@ -43,7 +48,7 @@ public class RedirectionQueryDao extends AbstractDbQueryDao {
 //		    public void processRow(ResultSet results) throws SQLException {
 //		});
 		try {
-			connection = ds.getConnection();
+			connection = jdbcUtils.getConnection();
 			stmt = connection.prepareStatement(selectSql);
 			results = stmt.executeQuery();
 			if (results.next()) {

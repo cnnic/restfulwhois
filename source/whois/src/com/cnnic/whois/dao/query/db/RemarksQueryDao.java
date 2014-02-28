@@ -24,7 +24,7 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_REMARKS + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getRemarksKeyFileds(), "$mul$remarks");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,8 +37,7 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_REMARKS, ColumnCache
-					.getColumnCache().getRemarksKeyFileds(), "$mul$remarks");
+			map = query(GET_ALL_REMARKS, columnCache.getRemarksKeyFileds(), "$mul$remarks");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -79,12 +78,11 @@ public class RemarksQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REMARKS, ColumnCache
-						.getColumnCache().getRemarksKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_REMARKS, columnCache.getRemarksKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getRemarksKeyFileds(role);
+		return permissionCache.getRemarksKeyFileds(role);
 	}
 }

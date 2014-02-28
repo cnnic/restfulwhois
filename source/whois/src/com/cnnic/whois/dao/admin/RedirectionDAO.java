@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,8 @@ import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class RedirectionDAO extends BaseJdbcDao {
 
+	@Autowired
+	private JdbcUtils jdbcUtils;
 	/**
 	 * Add domainRedirection information
 	 * 
@@ -32,7 +35,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	public void addDomainRedirection(final String domainName, final String redirectUrl)
 			throws ManagementException {
 		
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {
@@ -72,7 +75,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	public void addIPRedirection(long startHighAddr, long endHighAddr,
 			long startLowAddr, long endLowAddr, String redirectUrl)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {
@@ -112,7 +115,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	 */
 	public void addAutnumRedirection(String startNumber, String endNumber,
 			String redirectUrl) throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {
@@ -208,7 +211,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	 */
 	public void updateDomainRedirection(String domainName, int id,
 			String redirectUrl) throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {
@@ -246,7 +249,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	 */
 	public void updateAutnumRedirection(String startNumber, String endNumber,
 			int id, String redirectUrl) throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {
@@ -291,7 +294,7 @@ public class RedirectionDAO extends BaseJdbcDao {
 	public void updateIPRedirection(long startHighAddr, long endHighAddr,
 			long startLowAddr, long endLowAddr, int id, String redirectUrl)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet resultsIsNull = null;
 		try {

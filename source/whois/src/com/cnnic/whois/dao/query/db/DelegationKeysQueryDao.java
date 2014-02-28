@@ -18,7 +18,7 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 		Map<String, Object> map = null;
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_DELEGATIONKEYS + "'" + param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getDelegationKeyFileds(), "$mul$delegationKeys");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -47,6 +47,6 @@ public class DelegationKeysQueryDao extends AbstractDbQueryDao {
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_DELEGATIONKEYS,
-				ColumnCache.getColumnCache().getDelegationKeyFileds());
+				columnCache.getDelegationKeyFileds());
 	}
 }

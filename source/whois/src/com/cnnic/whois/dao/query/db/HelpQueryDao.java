@@ -24,7 +24,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_HELP + "'" + param.getQ() + "'";
 			Map<String, Object> helpMap = query(selectSql,
-					ColumnCache.getColumnCache().getHelpKeyFields(),
+					columnCache.getHelpKeyFields(),
 					"$mul$notices");
 			if (helpMap != null) {
 				map = rdapConformance(map);
@@ -42,7 +42,7 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 		Map<String, Object> map = null;
 		try {
 			Map<String, Object> helpMap = query(GET_ALL_HELP,
-					ColumnCache.getColumnCache().getHelpKeyFields(),
+					columnCache.getHelpKeyFields(),
 					"$mul$notices");
 			if (helpMap != null) {
 				map = rdapConformance(map);
@@ -92,6 +92,6 @@ public class HelpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getHelpKeyFileds(role);
+		return permissionCache.getHelpKeyFileds(role);
 	}
 }

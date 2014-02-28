@@ -26,7 +26,7 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_VARIANTS + "'" + queryInfo
 					+ "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getRegistrarKeyFileds(), "$mul$variants");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -63,7 +63,6 @@ public class RegistrarQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, ColumnCache
-						.getColumnCache().getRegistrarKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_REGISTRAR, columnCache.getRegistrarKeyFileds());
 	}
 }

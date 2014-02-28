@@ -26,7 +26,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 			String selectSql = WhoisUtil.SELECT_LIST_NAMESREVER + "'"
 					+ param.getQ() + "'";
 			Map<String, Object> nsMap = query(selectSql,
-					ColumnCache.getColumnCache().getNameServerKeyFileds(),
+					columnCache.getNameServerKeyFileds(),
 					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
@@ -57,7 +57,7 @@ public class NsQueryDao extends AbstractDbQueryDao {
 		Map<String, Object> map = null;
 		try {
 			Map<String, Object> nsMap = query(GET_ALL_NAMESREVER,
-					ColumnCache.getColumnCache().getNameServerKeyFileds(),
+					columnCache.getNameServerKeyFileds(),
 					"$mul$nameServer");
 			if (nsMap != null) {
 				map = rdapConformance(map);
@@ -89,12 +89,12 @@ public class NsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, ColumnCache.getColumnCache().getNameServerKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_JOINNAMESERVER, columnCache.getNameServerKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		List<String> cacheFields = PermissionCache.getPermissionCache()
+		List<String> cacheFields = permissionCache
 				.getNameServerKeyFileds(role);
 		List<String> result = new ArrayList<String>(cacheFields);
 		result.add(WhoisUtil.IPPREFIX);

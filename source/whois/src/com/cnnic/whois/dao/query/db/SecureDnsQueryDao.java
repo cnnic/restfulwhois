@@ -24,7 +24,7 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_SECUREDNS + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getSecureDNSKeyFileds(), "$mul$secureDNS");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -49,8 +49,7 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_SECUREDNS, ColumnCache
-					.getColumnCache().getSecureDNSKeyFileds(), "$mul$secureDNS");
+			map = query(GET_ALL_SECUREDNS, columnCache.getSecureDNSKeyFileds(), "$mul$secureDNS");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -77,13 +76,12 @@ public class SecureDnsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, ColumnCache
-						.getColumnCache().getSecureDNSKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_SECUREDNS, columnCache.getSecureDNSKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getSecureDNSMapKeyFileds(
+		return permissionCache.getSecureDNSMapKeyFileds(
 				role);
 	}
 }

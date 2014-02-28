@@ -26,6 +26,8 @@
 		<property name="maxIdle" value="10"></property>
 		<property name="minIdle" value="0"></property>
 		<property name="initialSize" value="2"></property>
+		<property name="testOnBorrow" value="true"></property>
+		<property name="testWhileIdle" value="true"></property>
 		<property name="validationQuery" value="select 1"></property>
 	</bean>
 

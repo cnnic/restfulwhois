@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,8 @@ import com.cnnic.whois.util.WhoisUtil;
 @Repository
 public class ExColumnDAO extends BaseJdbcDao {
 
+	@Autowired
+	private JdbcUtils jdbcUtils;
 	/**
 	 * Add the extension field
 	 * 
@@ -29,7 +32,7 @@ public class ExColumnDAO extends BaseJdbcDao {
 	 */
 	public void addCoulumn(String tableName, Map<String, String> columnMap)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 
 		try {
@@ -112,7 +115,7 @@ public class ExColumnDAO extends BaseJdbcDao {
 	public void updateCoulumn(String tableName, String oldColumnName,
 			String newCloumnName, String columnLength)
 			throws ManagementException {
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		PreparedStatement stmt = null;
 
 		try {

@@ -41,12 +41,11 @@ public class PublicIdsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, ColumnCache
-						.getColumnCache().getPublicIdsKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_PUBLICIDS, columnCache.getPublicIdsKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getPublicIdsKeyFileds(role);
+		return permissionCache.getPublicIdsKeyFileds(role);
 	}
 }

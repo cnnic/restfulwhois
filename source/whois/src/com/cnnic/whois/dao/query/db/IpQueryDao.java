@@ -57,7 +57,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 			}
 
 			Map<String, Object> ipMap = query(selectSql,
-					ColumnCache.getColumnCache().getIPKeyFileds(), "$mul$IP");
+					columnCache.getIPKeyFileds(), "$mul$IP");
 			if (ipMap != null) {
 				map = rdapConformance(map);
 				map.putAll(ipMap);
@@ -138,7 +138,7 @@ public class IpQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		List<String> cacheFields = PermissionCache.getPermissionCache()
+		List<String> cacheFields = permissionCache
 				.getIPKeyFileds(role);
 		List<String> result = new ArrayList<String>(cacheFields);
 		result.add("Start_Address");

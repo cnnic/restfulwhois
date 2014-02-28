@@ -24,7 +24,7 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_EVENTS + "'"
 					+ param.getQ() + "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getEventsKeyFileds(), "$mul$events");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,8 +37,7 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	public Map<String, Object> getAll() throws QueryException {
 		Map<String, Object> map = null;
 		try {
-			map = query(GET_ALL_EVENTS, ColumnCache
-					.getColumnCache().getEventsKeyFileds(), "$mul$events");
+			map = query(GET_ALL_EVENTS, columnCache.getEventsKeyFileds(), "$mul$events");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new QueryException(e);
@@ -65,12 +64,11 @@ public class EventsQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_EVENTS, ColumnCache
-						.getColumnCache().getEventsKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_EVENTS, columnCache.getEventsKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getEventsKeyFileds(role);
+		return permissionCache.getEventsKeyFileds(role);
 	}
 }

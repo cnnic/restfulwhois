@@ -23,7 +23,7 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 		try {
 			String selectSql = WhoisUtil.SELECT_LIST_PHONE + "'" + param.getQ()
 					+ "'";
-			map = query(selectSql, ColumnCache.getColumnCache()
+			map = query(selectSql, columnCache
 					.getPhonesKeyFileds(), "$mul$phones");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -51,12 +51,11 @@ public class PhonesQueryDao extends AbstractDbQueryDao {
 	@Override
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
-				WhoisUtil.SELECT_JOIN_LIST_PHONE, ColumnCache
-						.getColumnCache().getPhonesKeyFileds());
+				WhoisUtil.SELECT_JOIN_LIST_PHONE, columnCache.getPhonesKeyFileds());
 	}
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getPhonesKeyFileds(role);
+		return permissionCache.getPhonesKeyFileds(role);
 	}
 }

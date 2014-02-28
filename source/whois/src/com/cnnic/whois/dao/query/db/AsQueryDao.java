@@ -25,7 +25,7 @@ public class AsQueryDao extends AbstractDbQueryDao {
 					+ WhoisUtil.SELECT_LIST_AS2 + param.getQ()
 					+ WhoisUtil.SELECT_LIST_AS3;
 			Map<String, Object> asMap = query(selectSql,
-					ColumnCache.getColumnCache().getASKeyFileds(),
+					columnCache.getASKeyFileds(),
 					"$mul$autnum");
 			if (asMap != null) {
 				map = rdapConformance(map);
@@ -61,6 +61,6 @@ public class AsQueryDao extends AbstractDbQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getASKeyFileds(role);
+		return permissionCache.getASKeyFileds(role);
 	}
 }

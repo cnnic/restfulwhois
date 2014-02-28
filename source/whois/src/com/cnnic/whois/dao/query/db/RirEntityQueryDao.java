@@ -36,7 +36,7 @@ public class RirEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		List<String> keyFields = ColumnCache.getColumnCache()
+		List<String> keyFields = columnCache
 				.getRIREntityKeyFileds();
 		return getAllEntity(GET_ALL_RIRENTITY, keyFields);
 	}
@@ -45,7 +45,7 @@ public class RirEntityQueryDao extends EntityQueryDao {
 	public Object querySpecificJoinTable(String key, String handle) throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINRIRENTITY,
-				ColumnCache.getColumnCache().getRIREntityKeyFileds());
+				columnCache.getRIREntityKeyFileds());
 	}
 
 	public static boolean joinRirEntity(QueryType queryType) {
@@ -56,6 +56,6 @@ public class RirEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getRIREntityKeyFileds(role);
+		return permissionCache.getRIREntityKeyFileds(role);
 	}
 }

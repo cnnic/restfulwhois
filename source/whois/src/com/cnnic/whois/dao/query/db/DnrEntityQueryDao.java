@@ -39,7 +39,7 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 
 	@Override
 	public Map<String, Object> getAll() throws QueryException {
-		List<String> keyFields = ColumnCache.getColumnCache()
+		List<String> keyFields = columnCache
 				.getDNREntityKeyFileds();
 		return getAllEntity(GET_ALL_DNRENTITY, keyFields);
 	}
@@ -49,11 +49,11 @@ public class DnrEntityQueryDao extends EntityQueryDao {
 			throws SQLException {
 		return querySpecificJoinTable(key, handle,
 				WhoisUtil.SELECT_JOIN_LIST_JOINDNRENTITY,
-				ColumnCache.getColumnCache().getDNREntityKeyFileds());
+				columnCache.getDNREntityKeyFileds());
 	}
 	
 	@Override
 	public List<String> getKeyFields(String role) {
-		return PermissionCache.getPermissionCache().getDNREntityKeyFileds(role);
+		return permissionCache.getDNREntityKeyFileds(role);
 	}
 }

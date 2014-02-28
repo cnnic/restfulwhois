@@ -6,8 +6,16 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class ColumnCache {
-	private static ColumnCache columnCache = new ColumnCache();
+	@Autowired
+	JdbcUtils jdbcUtils;
+	private ColumnCache columnCache ;
 	private List<String> IPKeyFileds = new ArrayList<String>();
 	private List<String> DNREntityKeyFileds = new ArrayList<String>();
 	private List<String> RIREntityKeyFileds = new ArrayList<String>();
@@ -34,7 +42,10 @@ public class ColumnCache {
 	/**
 	 * In the constructor to initialize the property value
 	 */
-	private ColumnCache() {
+	private ColumnCache() { }
+	
+	@PostConstruct
+	private void postInit() {
 		IPKeyFileds = getKeyList(WhoisUtil.IP);
 		DNREntityKeyFileds = getKeyList(WhoisUtil.DNRENTITY);
 		RIREntityKeyFileds = getKeyList(WhoisUtil.RIRENTITY);
@@ -65,7 +76,7 @@ public class ColumnCache {
 	 * @return ColumnCache objects
 	 */
 	public static ColumnCache getColumnCache() {
-		return columnCache;
+		return null;
 	}
 
 	/**
@@ -429,7 +440,7 @@ public class ColumnCache {
 	private List<String> getKeyList(String tableName) {
 		List<String> coulumNameList = new ArrayList<String>();
 
-		Connection connection = JdbcUtils.getConnection();
+		Connection connection = jdbcUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection
 					.prepareStatement(WhoisUtil.SELECT_LIST_COLUMNNAME);
