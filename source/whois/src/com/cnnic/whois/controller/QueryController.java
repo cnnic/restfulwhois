@@ -27,7 +27,6 @@ import com.cnnic.whois.bean.IpQueryParam;
 import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.dao.query.QueryEngine;
-import com.cnnic.whois.dao.query.search.AbstractSearchQueryDao;
 import com.cnnic.whois.dao.query.search.EntityQueryDao;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.execption.RedirectExecption;
@@ -56,6 +55,7 @@ public class QueryController extends BaseController {
 			ServletException {
 		name = WhoisUtil.urlDecode(name);
 		name = StringUtils.trim(name);
+		name = ValidateUtils.deleteLastPoint(name);
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
 				.praseDomainQueryParams(request);
@@ -96,6 +96,7 @@ public class QueryController extends BaseController {
 			ServletException {
 		domainName = StringUtils.trim(domainName);
 		domainName = StringUtils.lowerCase(domainName);
+		domainName = ValidateUtils.deleteLastPoint(domainName);
 		String punyDomainName = domainName;
 		Map<String, Object> resultMap = null;
 		DomainQueryParam domainQueryParam = super
@@ -199,6 +200,7 @@ public class QueryController extends BaseController {
 		if(StringUtils.isNotBlank(name)){
 			name = StringUtils.trim(name);
 			name = WhoisUtil.urlDecode(name);
+			name = ValidateUtils.deleteLastPoint(name);
 			name = super.getNormalization(name);
 			if ("*".equals(name)) {
 				super.renderResponseError422(request, response,queryParam);
@@ -267,6 +269,7 @@ public class QueryController extends BaseController {
 			throws QueryException, SQLException, IOException, ServletException {
 		nsName = StringUtils.trim(nsName);
 		nsName = StringUtils.lowerCase(nsName);
+		nsName = ValidateUtils.deleteLastPoint(nsName);
 		String punyNsName = IDN.toASCII(WhoisUtil.toChineseUrl(nsName));
 		Map<String, Object> resultMap = null;
 		QueryParam queryParam = super.praseQueryParams(request);
@@ -452,7 +455,7 @@ public class QueryController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "/**", method = RequestMethod.GET)
+	@RequestMapping(value = "/**")
 	@ResponseBody
 	public void error400(HttpServletRequest request,
 			HttpServletResponse response) throws QueryException,
