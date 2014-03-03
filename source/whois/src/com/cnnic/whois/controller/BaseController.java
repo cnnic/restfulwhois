@@ -54,7 +54,7 @@ public class BaseController {
 		return new EntityQueryParam(formatType, page);
 	}
 
-	protected QueryParam praseQueryParams(HttpServletRequest request) {
+	public static QueryParam praseQueryParams(HttpServletRequest request) {
 		FormatType formatType = getFormatType(request);
 		PageBean page = getPageParam(request);
 		return new QueryParam(formatType, page);
@@ -66,7 +66,7 @@ public class BaseController {
 		return new IpQueryParam(formatType, page);
 	}
 
-	private PageBean getPageParam(HttpServletRequest request) {
+	private static PageBean getPageParam(HttpServletRequest request) {
 		Object currentPageObj = request.getParameter("currentPage");
 		PageBean page = new PageBean();
 		if (null != currentPageObj) {
@@ -83,19 +83,19 @@ public class BaseController {
 	}
 
 	protected void renderResponseError400(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException,
+			HttpServletResponse response,QueryParam queryParam) throws IOException, ServletException,
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
-				.processError(WhoisUtil.COMMENDRRORCODE);
+				.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		viewResolver.writeResponse(getFormatType(request),
 				getQueryType(request), request, response, resultMap);
 	}
 
 	protected void renderResponseError422(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException,
+			HttpServletResponse response,QueryParam queryParam) throws IOException, ServletException,
 			QueryException {
 		Map<String, Object> resultMap = WhoisUtil
-				.processError(WhoisUtil.UNPROCESSABLEERRORCODE);
+				.processError(WhoisUtil.UNPROCESSABLEERRORCODE,queryParam);
 		viewResolver.writeResponse(getFormatType(request),
 				getQueryType(request), request, response, resultMap);
 	}
@@ -139,7 +139,7 @@ public class BaseController {
 			String queryType = (String) request.getAttribute("queryType");
 			return QueryType.getQueryType(queryType);
 		} else {
-			QueryParam param = (QueryParam) request.getAttribute("queryPara");
+			QueryParam param = (QueryParam) request.getAttribute("queryPara");//TODO:delete
 			return param.getQueryType();
 		}
 	}

@@ -65,4 +65,4 @@ def sendAll(filePath):
         else:
             print "    no mark."
 # sendAll("data-search.csv")
-sendAll("data-query.csv")
+sendAll("data-search.csv")

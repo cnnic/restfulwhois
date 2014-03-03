@@ -108,7 +108,7 @@ public abstract class AbstractDbQueryDao implements QueryDao{
 					keyName.equals(WhoisUtil.JOINNANOTICES) ||
 					keyName.equals(WhoisUtil.JOINREMARKS) ||
 					keyName.equals(WhoisUtil.MULTIPRXLINK ) ||
-//					keyName.equals(WhoisUtil.MULTIPRXNOTICES )||
+					keyName.equals(WhoisUtil.JOINENTITESFILED )||
 					keyName.equals(WhoisUtil.MULTIPRXREMARKS) ||
 					keyName.equals(WhoisUtil.JOINPUBLICIDS) ||
 					keyName.equals(WhoisUtil.JOINDSDATA)||

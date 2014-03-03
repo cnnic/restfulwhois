@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 
 public interface ResponseWriter {
@@ -19,7 +20,7 @@ public interface ResponseWriter {
 		throws IOException, ServletException;
 	
 	void displayOverTimeMessage(HttpServletRequest request, HttpServletResponse response, 
-			String role) 
+			String role,QueryParam queryParam) 
 					throws IOException, ServletException;
 	
 	Map<String, Object> getMapKey(QueryType queryType, Map<String, Object> map);

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 @Service
 public class ViewResolver {
@@ -61,11 +62,11 @@ public class ViewResolver {
 	}
 
 	public void displayOverTimeMessage(HttpServletRequest request,
-			HttpServletResponse response, FormatType formatType, String role)
+			HttpServletResponse response, FormatType formatType, String role,QueryParam queryParam)
 			throws IOException, ServletException {
 		for (ResponseWriter writer : responseWriters) {
 			if (writer.support(formatType)) {
-				writer.displayOverTimeMessage(request, response, role);
+				writer.displayOverTimeMessage(request, response, role,queryParam);
 			}
 		}
 	}

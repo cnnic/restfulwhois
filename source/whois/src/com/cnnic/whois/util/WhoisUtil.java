@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.springframework.web.context.ContextLoader;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 
@@ -1020,12 +1021,12 @@ public class WhoisUtil {
 	 * @return error map collection
 	 * @throws QueryException
 	 */
-	public static Map<String, Object> processError(String errorCode)
+	public static Map<String, Object> processError(String errorCode,QueryParam queryParam)
 			throws QueryException {
 		Map<String, Object> ErrorMessageMap = null;
 		QueryService queryService = (QueryService) ContextLoader
 				.getCurrentWebApplicationContext().getBean("queryService");
-		ErrorMessageMap = queryService.queryError(errorCode);
+		ErrorMessageMap = queryService.queryError(errorCode,queryParam);
 		return ErrorMessageMap;
 	}
 

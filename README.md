@@ -26,10 +26,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
             <a href="#MysqlInstallation">Mysql Installation</a>
           </li>
           <li>
-            <a href="#AppacheInstallation">Appache Installation</a>
-          </li>
-          <li>
-            <a href="#ApacheTomcatConnector">Apache Tomcat Connector</a>
+            <a href="#SolrInstallation">Solr Installation</a>
           </li>
         </ol>
       </li>
@@ -132,93 +129,28 @@ If the status is [FAILED], please start the Mysql service.
 </p>
 </blockquote>
 <pre class="wiki">$ service mysql start
-</pre><h3 id="AppacheInstallation">Appache Installation</h3>
-<ul><li>Download file httpd-2.2.10.tar.gz.
-</li><li>Decompress this file and install.
-</li></ul><pre class="wiki">$ tar xvf httpd-2.2.10.tar.gz
-$ cd httpd-2.2.10
-$ sudo ./configure --prefix=/usr/local/apache2 --enable-module=so
-$ sudo make
-$ sudo make install
-</pre><ul><li>Modify the server address in the configuration file.
-</li></ul><pre class="wiki">$ vi /usr/local/apache2/conf/httpd.conf
-</pre><blockquote>
-<p>
-Configure the server name.
-</p>
-</blockquote>
-<pre class="wiki">ServerName 127.0.0.1:80
-</pre><blockquote>
-<p>
-Start the server.
-</p>
-</blockquote>
-<pre class="wiki">$ sudo /usr/local/apache2/bin/httpd -k start 
-</pre><h3 id="ApacheTomcatConnector">Apache Tomcat Connector</h3>
-<ul><li> Install Tomcat connector.
-</li></ul><pre class="wiki">$ tar -xvf tomcat-connectors-1.2.37-src.tar 
-$ cd tomcat-connectors-1.2.32-src/native
-$ sudo ./configure --with-apxs=/usr/local/apache2/bin/apxs --with-java-home=/usr/java/jdk1.6.0_30/
-$ sudo make
-$ sudo make install
-</pre><ul><li>Configuration
-</li></ul><blockquote>
-<p>
-Create and edit file mod_jk.conf.
-</p>
-</blockquote>
-<pre class="wiki">$ vi /conf/mod_jk.conf
-</pre><blockquote>
-<p>
-Add the following content.
-</p>
-</blockquote>
-<pre class="wiki">LoadModule jk_module modules/mod_jk.so
-JkWorkersFile conf/workers.properties
-JkLogFile logs/mod_jk.log
-JkLogLevel info
-JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
-JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
-JkRequestLogFormat "%w %V %T"
-JkMount /* tomcat
-</pre><blockquote>
-<p>
-Create and edit file workers.properties.
-</p>
-</blockquote>
-<pre class="wiki">$ vi /conf/workers.properties
-</pre><blockquote>
-<p>
-Add the following content.
-</p>
-</blockquote>
-<pre class="wiki">worker.list=tomcat
-worker.jvm1.type=ajp13
-worker.jvm1.port=8009
-worker.jvm1.host=127.0.0.1
-worker.jvm1.lbfactor=1
-</pre><ul><li>Start and shutdown service.
-</li></ul><pre class="wiki">$ /usr/local/apache2/bin/apachectl start 
-$ /usr/local/apache2/bin/apachectl stop 
+</pre><h3 id="ApacheTomcatConnector">Solr Installation</h3>
+<ul><li> download tomcat-solr: deployment/apache-tomcat-solr.tar.gz
+</li></ul><ul><li>Install and start up
+</li></ul>
+<pre class="wiki"> 
+tar -zxvf apache-tomcat-solr.tar.gz
+cd  apache-tomcat-solr
+bin/startup.sh
+note that this tomcat use port '9090'.
+</pre>
+<blockquote>
+<ul><li>shutdown service.
+</li></ul><pre class="wiki">
+bin/shutdown.sh
 </pre><h2 id="SystemDeployment">System Deployment</h2>
 <h3 id="ImportdatatoMysql">Import data to Mysql</h3>
-<ul><li>Download the whois.sql under the directory of <a class="ext-link" href="http://restfulwhois.org/trac/RestfulWhois/browser/source"><span class="icon">​</span>Source Code</a>.
+<ul><li>Download the whois.sql from: deployment/whois.sql.
 </li><li>Import data to the database.
 </li></ul><pre class="wiki">$ source whois.sql
 </pre><h3 id="Tomcatconfiguration">Tomcat configuration</h3>
-<ul><li>Modify the following information in the file of server.xml
-</li></ul><pre class="wiki">&lt;Resource name="jdbc/mysql" auth="Container" 
-                type="javax.sql.DataSource"
-                driverClassName="com.mysql.jdbc.Driver"
-  	password="Your password"			
-                maxIdle="200"
-	        maxWaite="200"
-                username="root"
-                url="jdbc:mysql://DBServerIP:3306/whois"  
-                maxActive="100" /&gt;
-&lt;/GlobalNamingResources&gt;
-</pre><ul><li>Add the following information in the file of context.xml
-</li></ul><pre class="wiki">&lt;ResourceLink name="jdbc/DataSource" global="jdbc/mysql"  type="javax.sql.DataSource"/&gt; 
+<ul><li>Modify conf/server.xml,add following to 'Connector' element:
+</li></ul><pre class="wiki">URIEncoding="UTF-8"
 </pre><ul><li>Configure the user roles of digest authentication in tomcat-user.xml file. Currently, there are 3 types of roles, they are root, authenticated and administrator. Anonymous, authenticated and root user can access the rdap.restfulwhois.org to make queries. Administrators can access rdap.restfulwhois.org/admin to log in and configure the system parameters of back end. Following is an example of user configuration.
 </li></ul><pre class="wiki">&lt;role rolename="authenticated"/&gt;
 &lt;role rolename="root"/&gt;
@@ -230,8 +162,30 @@ $ /usr/local/apache2/bin/apachectl stop
 &lt;user username="admin" password="admin" roles="administrator"/&gt;
 </pre><ul><li>Restart Tomcat.
 </li></ul><h3 id="RDAPWeb">RDAP Web</h3>
-<ul><li>Copy all the files under the directory of deployment/ROOT to /usr/tomcat/webapps/ROOT.
-</li><li>Restart tomcat.
+<ul><li>download war from:deployment/whois.war,unzip and copy to /usr/tomcat/webapps/ROOT.
+<pre class='wiki'>
+rm -rf /usr/tomcat/webapps/ROOT/*
+unzip whois.war
+cp -r whois/*  /usr/tomcat/webapps/ROOT/
+</pre>
+</li>
+
+<li>config file: WEB-INF/classes/whois.properties
+<pre class='wiki'>
+solr.url：change to solr service url
+serverurl: change to rdap service url
+</pre>
+</li>
+
+<li>config file: WEB-INF/classes/jdbc.properties
+<pre class='wiki'>
+jdbc.url：change to mysql service url
+jdbc.username: change to mysql username
+jdbc.password: change to mysql password
+</pre>
+</li>
+
+<li>Restart tomcat.
 </li></ul><h3 id="Port43WhoisProxy">Port43 Whois Proxy</h3>
 <ul><li>Copy all the files under the directory of deployment/Whois43Proxy to /usr/whoisProxy.
 </li><li>Configure environment parameter.

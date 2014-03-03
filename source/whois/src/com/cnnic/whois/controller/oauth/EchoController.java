@@ -101,7 +101,7 @@ public class EchoController extends BaseController {
                 		IpQueryParam queryParam = super.praseIpQueryParams(request);
                 		String strInfo = ip;
                 		if (!ValidateUtils.verifyIP(strInfo, net)) {
-                			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+                			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
                 			viewResolver.writeResponse(queryParam.getFormat(), queryParam.getQueryType(),
                 					request, response, resultMap);
                 			return;
@@ -121,7 +121,7 @@ public class EchoController extends BaseController {
             			Map<String, Object> resultMap = null;
             			QueryParam queryParam = super.praseQueryParams(request);
             			if (!ValidateUtils.validateDomainName(queryParaPuny)) {
-            				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+            				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
             			} else {
             				queryParam.setQ(domainName);
             				resultMap = queryService.queryDomain(queryParam);

@@ -44,4 +44,10 @@ public class QueryEngine {
 		result = viewResolver.format(result, param.getFormat());
 		return result;
 	}
+	
+	public Map<String, Object> format(Map<String, Object> result, QueryParam param)
+			throws QueryException, RedirectExecption {
+		result = viewResolver.format(result, param.getFormat());
+		return result;
+	}
 }

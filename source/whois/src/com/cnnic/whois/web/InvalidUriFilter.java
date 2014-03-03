@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.ContextLoader;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.controller.BaseController;
 import com.cnnic.whois.execption.QueryException;
@@ -62,7 +63,8 @@ public class InvalidUriFilter implements Filter {
 				.getCurrentWebApplicationContext().getBean("viewResolver");
 		Map<String, Object> resultMap;
 		try {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			QueryParam queryParam = BaseController.praseQueryParams(request);
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		} catch (QueryException e) {
 			throw new ServletException("query exception:" + e);
 		}

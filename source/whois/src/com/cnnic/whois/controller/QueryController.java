@@ -62,7 +62,7 @@ public class QueryController extends BaseController {
 		request.setAttribute("queryType", "domain");
 		name = super.getNormalization(name);
 		if ("*".equals(name)) {
-			super.renderResponseError422(request, response);
+			super.renderResponseError422(request, response,domainQueryParam);
 			return;
 		}
 		name = WhoisUtil.getLowerCaseByLabel(name);
@@ -70,12 +70,12 @@ public class QueryController extends BaseController {
 		try {
 			punyDomainName = IDN.toASCII(name);// long lable exception/not utf8 exception
 		} catch (Exception e) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,domainQueryParam);
 			return;
 		}
 		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		if (!ValidateUtils.isCommonInvalidStr(punyDomainName)) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,domainQueryParam);
 			return;
 		}
 		domainQueryParam.setQueryType(QueryType.SEARCHDOMAIN);
@@ -105,12 +105,12 @@ public class QueryController extends BaseController {
 			domainName = WhoisUtil.toChineseUrl(domainName);
 			punyDomainName = IDN.toASCII(domainName);// long lable exception
 		} catch (Exception e) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,domainQueryParam);
 			return;
 		}
 		request.setAttribute("queryPara", IDN.toUnicode(punyDomainName));
 		if (!ValidateUtils.validateDomainName(punyDomainName)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,domainQueryParam);
 		} else {
 			domainQueryParam.setQueryType(QueryType.DOMAIN);
 			domainQueryParam.setQ(domainName);
@@ -130,7 +130,7 @@ public class QueryController extends BaseController {
 		EntityQueryParam queryParam = super.praseEntityQueryParams(request);
 		request.setAttribute("queryType", "entity");
 		if (StringUtils.isBlank(fn) && StringUtils.isBlank(handle)) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,queryParam);
 			return;
 		}
 		String q = handle;
@@ -141,12 +141,12 @@ public class QueryController extends BaseController {
 		try {
 			IDN.toASCII(q);// long lable exception/not utf8 exception
 		} catch (Exception e) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,queryParam);
 			return;
 		}
 		q = super.getNormalization(q);
 		if ("*".equals(q)) {
-			super.renderResponseError422(request, response);
+			super.renderResponseError422(request, response,queryParam);
 			return;
 		}
 		q = WhoisUtil.getLowerCaseIfAllAscii(q);
@@ -193,7 +193,7 @@ public class QueryController extends BaseController {
 		QueryParam queryParam = super.praseQueryParams(request);
 		request.setAttribute("queryType", "nameserver");
 		if (StringUtils.isBlank(name) && StringUtils.isBlank(ip)) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,queryParam);
 			return;
 		}
 		if(StringUtils.isNotBlank(name)){
@@ -201,7 +201,7 @@ public class QueryController extends BaseController {
 			name = WhoisUtil.urlDecode(name);
 			name = super.getNormalization(name);
 			if ("*".equals(name)) {
-				super.renderResponseError422(request, response);
+				super.renderResponseError422(request, response,queryParam);
 				return;
 			}
 			name = WhoisUtil.getLowerCaseByLabel(name);
@@ -210,12 +210,12 @@ public class QueryController extends BaseController {
 				// long lable exception/not utf8 exception
 				punyQ = IDN.toASCII(name);
 			} catch (Exception e) {
-				super.renderResponseError400(request, response);
+				super.renderResponseError400(request, response,queryParam);
 				return;
 			}
 			request.setAttribute("queryPara", name);
 			if (!ValidateUtils.verifyFuzzyDomain(name)) {
-				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+				resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 			} else {
 				geneNsQByName(queryParam, punyQ, request);
 				resultMap = queryService.fuzzyQueryNameServer(queryParam);
@@ -227,7 +227,7 @@ public class QueryController extends BaseController {
 		if(StringUtils.isNotBlank(ip) && StringUtils.isBlank(name)){
 			String net = "0";
 			if (!ValidateUtils.verifyIP(ip, net)) {
-				super.renderResponseError400(request, response);
+				super.renderResponseError400(request, response,queryParam);
 				return;
 			}
 			geneNsQByIp(queryParam, ip, request);
@@ -272,7 +272,7 @@ public class QueryController extends BaseController {
 		QueryParam queryParam = super.praseQueryParams(request);
 		request.setAttribute("queryType", "nameserver");
 		if (!ValidateUtils.verifyNameServer(nsName)) {
-			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE);
+			resultMap = WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		} else {
 			queryParam.setQ(punyNsName);
 			queryParam.setQueryType(QueryType.NAMESERVER);
@@ -321,7 +321,6 @@ public class QueryController extends BaseController {
 		QueryParam queryParam = super.praseQueryParams(request);
 		queryParam.setQ("helpID");
 		resultMap = queryService.queryHelp(queryParam);
-		request.setAttribute("queryPara", queryParam);
 		renderResponse(request, response, resultMap, queryParam);
 	}
 
@@ -355,7 +354,7 @@ public class QueryController extends BaseController {
 		request.setAttribute("queryPara", ip);
 		request.setAttribute("queryType", "ip");
 		if (!ValidateUtils.verifyIP(strInfo, ipLength)) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,queryParam);
 			return;
 		}
 		queryParam.setQ(ip);
@@ -445,10 +444,10 @@ public class QueryController extends BaseController {
 		queryParam.setQ(q);
 		request.setAttribute("queryType", queryType.getName());
 		if (!ValidateUtils.isCommonInvalidStr(queryParam.getQ())) {
-			super.renderResponseError400(request, response);
+			super.renderResponseError400(request, response,queryParam);
 		} else {
 			resultMap = queryService.query(queryParam);
-			request.setAttribute("queryPara", queryParam);
+			request.setAttribute("queryPara", q);
 			renderResponse(request, response, resultMap, queryParam);
 		}
 	}
@@ -460,7 +459,7 @@ public class QueryController extends BaseController {
 			RedirectExecption, IOException, ServletException {
 		QueryParam queryParam = praseQueryParams(request);
 		Map<String, Object> resultMap = WhoisUtil
-				.processError(WhoisUtil.COMMENDRRORCODE);
+				.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		renderResponse(request, response, resultMap, queryParam);
 		return;
 	}

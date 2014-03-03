@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.controller.BaseController;
 import com.cnnic.whois.util.WhoisProperties;
 import com.cnnic.whois.util.WhoisUtil;
@@ -50,7 +51,8 @@ public class WhoisFilter implements Filter {
 		if (isQueryOverTime) {
 			chain.doFilter(request, response);
 		} else {
-			displayOverTimeMessage(request, response, format, role);
+			QueryParam queryParam = BaseController.praseQueryParams(request);
+			displayOverTimeMessage(request, response, format, role,queryParam);
 		}
 	}
 
@@ -60,10 +62,10 @@ public class WhoisFilter implements Filter {
 	}
 
 	private void displayOverTimeMessage(HttpServletRequest request,
-			HttpServletResponse response, FormatType formatType, String role)
+			HttpServletResponse response, FormatType formatType, String role,QueryParam queryParam)
 			throws IOException, ServletException {
 		ViewResolver viewResolver = ViewResolver.getResolver();
-		viewResolver.displayOverTimeMessage(request, response, formatType, role);
+		viewResolver.displayOverTimeMessage(request, response, formatType, role,queryParam);
 	}
 
 	/**
