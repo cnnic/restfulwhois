@@ -193,4 +193,17 @@ public class ValidateUtils {
 		}
 		return map;
 	}
+	
+	/**
+	 * delete last point
+	 * @param paramStr
+	 * @return
+	 */
+	public static String deleteLastPoint(String paramStr){
+		if(".".equals(paramStr.substring(paramStr.length() - 1))){
+			paramStr = paramStr.substring(0, paramStr.length() - 1);
+		}
+		return paramStr;
+	}
+	
 }
