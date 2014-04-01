@@ -4,26 +4,53 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 	<display-name></display-name>
-
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/spring-applicationContext.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>propertiesConfigLocation</param-name>
+		<param-value>classpath:*.properties</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
 	<filter>
-		<filter-name>struts2</filter-name>
-		<filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>struts2</filter-name>
-		<url-pattern>/admin/*</url-pattern>
-	</filter-mapping>
-	
-	<filter>
-		<filter-name>ErrorFilter</filter-name>
-		<filter-class>com.cnnic.whois.web.ErrorFilter</filter-class>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.cnnic.whois.web.AuthenticationFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>ErrorFilter</filter-name>
+		<filter-name>AuthenticationFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+	<filter>
+		<filter-name>HttpMethodFilter</filter-name>
+		<filter-class>com.cnnic.whois.web.HttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HttpMethodFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>InvalidUriFilter</filter-name>
+		<filter-class>com.cnnic.whois.web.InvalidUriFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>InvalidUriFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>CharacterEncoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 	<filter>
 		<filter-name>WhoisFilter</filter-name>
 		<filter-class>com.cnnic.whois.web.WhoisFilter</filter-class>
@@ -31,69 +58,20 @@
 	<filter-mapping>
 		<filter-name>WhoisFilter</filter-name>
 		<url-pattern>/.well-known/rdap/*</url-pattern>
-		<!-- 
-		<url-pattern>/ip/*</url-pattern>
-		<url-pattern>/domain/*</url-pattern>
-		<url-pattern>/entity/*</url-pattern>
-		<url-pattern>/autnum/*</url-pattern>
-		<url-pattern>/links/*</url-pattern>
-		<url-pattern>/phones/*</url-pattern>
-		<url-pattern>/nameserver/*</url-pattern>
-		<url-pattern>/postalAddress/*</url-pattern>
-		<url-pattern>/notices/*</url-pattern>
-		<url-pattern>/registrar/*</url-pattern>
-		<url-pattern>/variants/*</url-pattern>
-		<url-pattern>/events/*</url-pattern>
-		<url-pattern>/remarks/*</url-pattern>
-		<url-pattern>/help/*</url-pattern>
-		<url-pattern>/secureDNS/*</url-pattern>
-		<url-pattern>/dsData/*</url-pattern>
-		<url-pattern>/keyData/*</url-pattern>
-		<url-pattern>/domains</url-pattern>
-		<url-pattern>/nameservers</url-pattern>
-		<url-pattern>/entities</url-pattern>  -->	
 	</filter-mapping>
 	
 	<servlet>
-		<servlet-name>queryServlet</servlet-name>
-		<servlet-class>com.cnnic.whois.controller.QueryServlet</servlet-class>
+		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring/spring-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet-mapping>
-		<servlet-name>queryServlet</servlet-name>
-		<url-pattern>/.well-known/rdap/*</url-pattern>
-<!-- 	<url-pattern>/ip/*</url-pattern>
-		<url-pattern>/domain/*</url-pattern>
-		<url-pattern>/entity/*</url-pattern>
-		<url-pattern>/autnum/*</url-pattern>
-		<url-pattern>/links/*</url-pattern>
-		<url-pattern>/phones/*</url-pattern>
-		<url-pattern>/nameserver/*</url-pattern>
-		<url-pattern>/postalAddress/*</url-pattern>
-		<url-pattern>/notices/*</url-pattern>
-		<url-pattern>/registrar/*</url-pattern>
-		<url-pattern>/variants/*</url-pattern>
-		<url-pattern>/events/*</url-pattern>
-		<url-pattern>/remarks/*</url-pattern>
-		<url-pattern>/help/*</url-pattern>
-		<url-pattern>/secureDNS/*</url-pattern>
-		<url-pattern>/dsData/*</url-pattern>
-		<url-pattern>/keyData/*</url-pattern>
-		<url-pattern>/domains</url-pattern>
-		<url-pattern>/nameservers</url-pattern>
-		<url-pattern>/entities</url-pattern>
-		<url-pattern>/domains/*</url-pattern>
-		<url-pattern>/nameservers/*</url-pattern>
-		<url-pattern>/entities/*</url-pattern>  -->
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>cacheServlet</servlet-name>
-		<servlet-class>com.cnnic.whois.controller.CacheServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>cacheServlet</servlet-name>
-		<url-pattern>/cache/init</url-pattern>
+		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthOpenIDServlet</servlet-name>

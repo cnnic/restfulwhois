@@ -45,6 +45,9 @@
 			}else if(request.getSession().getAttribute("openIdUser") != null){
 				openIdName = "openIdName";
 				username = (String)request.getSession().getAttribute("openIdUser");
+				if(username != null && username.startsWith("http://")){
+					username = username.substring("http://".length());
+				}
 			}
 			
 			request.setAttribute("user", user);
@@ -57,7 +60,9 @@
 			String queryFormat = "";
 			if (request.getAttribute("queryType") != null){
 				queryType = (String)request.getAttribute("queryType");
-				queryPara = (String)request.getAttribute("queryPara");
+				if(null != request.getAttribute("queryPara")){
+					queryPara = (String)request.getAttribute("queryPara");
+				}
 				queryFormat = (String)request.getAttribute("queryFormat");
 			}
 		%>
@@ -98,7 +103,7 @@
 							</dt>
 						</dl>
 					</li>
-					<%} else if( openIdName != null){%>
+					<%} else {%>
 					<li class="six">
 						<dl>
 							<dt>
@@ -111,21 +116,11 @@
 					<li class="five">
 						<dl>
 							<dt>
-								<a href="<c:url value='/'/>">logout</a>
+								<a href="<c:url value='/adv/logout.jsp'/>">logout</a>
 							</dt>
 						</dl>
 					</li>
-					<%} else {%>
-					<li class="three">
-						<dl>
-							<dt>
-								<font>Current User: <big style="color: red"><%=username%></big>
-
-								</font>
-							</dt>
-						</dl>
-					</li>
-					<% }%>
+					<%}%>
 				</ul>
 			</div>
 			<div id="sidebar">
@@ -216,8 +211,7 @@
 		</div>
 		<div id="footer">
 			<p>
-				By using the Restful Whois service, you are agreeing to the
-				<a href="/whois_tou.html" class="footer_link">Whois Terms of Use</a>
+				By using the Restful Whois service, you are agreeing to the Whois Terms of Use
 				<br />
 				&copy; Copyright 2013, CNNIC & ICANN
 			</p>

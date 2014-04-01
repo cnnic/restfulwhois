@@ -1,0 +1,75 @@
+*** Settings ***
+Resource          variables.txt
+Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200,With rdap+json header
+	[Template]		Return 200,With rdap+json header
+	/.well-known/rdap/entity/APNIC
+	/.well-known/rdap/entity/bu1048055833141
+	/.well-known/rdap/entity/s1265874462073
+Return 200,With text header
+	[Template]		Return 200,With text header
+	/.well-known/rdap/entity/APNIC
+	/.well-known/rdap/entity/bu1048055833141
+	/.well-known/rdap/entity/s1265874462073
+Search,Return 200,With rdap+json header
+	[Template]		Search,Return 200,With rdap+json header
+	/.well-known/rdap/entities?fn=*.cn
+	/.well-known/rdap/entities?fn=s*.cn
+	/.well-known/rdap/entities?fn=北京中科三方*
+	/.well-known/rdap/entities?handle=cn*
+	/.well-known/rdap/entities?handle=*cn
+	/.well-known/rdap/entities?fn=北京中科三方*&handle=cn*
+Return 400,with invalid param
+	[Template]		Return 400,With rdap+json header
+	/.well-known/rdap/entity
+	/.well-known/rdap/entity/
+	/.well-known/rdap/entities
+	/.well-known/rdap/entities/
+	/.well-known/rdap/entities/nonexistpath
+	/.well-known/rdap/entities?fn=notUTF8%E6%B8%85%E5%8D*
+	/.well-known/rdap/entities?handle=notUTF8%E6%B8%85%E5%8D*
+Return 404,with empty result
+	[Template]		Return 404,With rdap+json header
+	/.well-known/rdap/entities?fn=nonexist*.nonexist
+Return 422,with UnProcessed param
+	[Template]		Return 422,With rdap+json header
+	/.well-known/rdap/entities?fn=*
+	/.well-known/rdap/entities?handle=*
+	
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     rdapConformance
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     lang
+Return 200,With text header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  text/plain
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${encodeRespContent}     lang
+    Should Contain    ${encodeRespContent}     handle
+Search,Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     rdapConformance
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     lang
+    Should Contain    ${encodeRespContent}     entitySearchResults

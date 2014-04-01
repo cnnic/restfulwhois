@@ -1,0 +1,73 @@
+path,Accept,param,status,mark
+#
+/.well-known/rdap/domains?name=t*.cn,application/json,,200,handle
+/.well-known/rdap/domains,application/json,name=nonExistDomain,404,NOT FOUND
+/.well-known/rdap/domains?name=*t.cn,application/json,,200,domainSearchResults
+/.well-known/rdap/domains?name=清华*.中国,application/json,,200,handle
+/.well-known/rdap/domains?name=清华*,application/json,,200,handle
+/.well-known/rdap/domains?name=%E6%B8%85%E5%8D%8E*,application/json,,200,handle
+#
+/.well-known/rdap/domains,application/json,,400,BAD REQUEST
+/.well-known/rdap/domains/,application/json,,400,BAD REQUEST
+/.well-known/rdap/domains/nonexist,application/json,,400,BAD REQUEST
+/.well-known/rdap/domains?name=t*,application/json,,200,handle
+/.well-known/rdap/domains?name=*cn,application/json,,200,handle
+/.well-known/rdap/domains?name=*.cn,application/json,,200,handle
+/.well-known/rdap/domains?name=binary\x03*,application/json,,400,BAD REQUEST
+/.well-known/rdap/domains?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
+#
+/.well-known/rdap/entities,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/entities/,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/entities/nonexist,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/entities?fn=*.cn,application/json,,200,entitySearchResults
+/.well-known/rdap/entities?fn=s*.cn,application/json,,200,entitySearchResults
+/.well-known/rdap/entities?fn=北京中科三方*,application/json,,200,entitySearchResults
+/.well-known/rdap/entities?handle=cn*,application/json,,200,entitySearchResults
+/.well-known/rdap/entities?handle=*cn,application/json,,200,entitySearchResults
+/.well-known/rdap/entities?fn=北京中科三方*&handle=cn*,application/json,,200,entitySearchResults
+#
+/.well-known/rdap/entities?fn=nonexist*.nonexist,application/json,,404,NOT FOUND
+#
+/.well-known/rdap/nameservers,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameservers/,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameservers/nonexist,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameservers?name=n*.com,application/rdap+json,,200,nameserverSearchResults
+/.well-known/rdap/nameservers?name=清华*.cn,application/rdap+json,,404,NOT FOUND
+/.well-known/rdap/nameservers?name=清华*,application/rdap+json,,404,NOT FOUND
+/.well-known/rdap/nameservers?name=*清华,application/rdap+json,,404,NOT FOUND
+/.well-known/rdap/nameservers?name=n*,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?name=*n,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?name=nonexist*.nonexist,application/rdap+json,,404,NOT FOUND
+#query by puny name. prerequisite: puny name in db/cache
+/.well-known/rdap/domain/xn--faade-csa.com,application/json,,200,handle
+#2014.2.8 new
+/.well-known/rdap/domains,application/rdap+json,name=ｑｑ.cn,200,handle
+#label which are all ascii are lower cased in db,and in cache and in solr.
+#in db: école.example.com, search école.example.com,école.Example.com,école.EXAMPLE.com get result,but éCole.example.com can't. 
+/.well-known/rdap/domains,application/rdap+json,name=école.example.com,200,handle
+/.well-known/rdap/domains,application/rdap+json,name=école.EXAMPLE.com,200,handle
+/.well-known/rdap/domains,application/rdap+json,name=école.Example.com,200,handle
+/.well-known/rdap/domains,application/rdap+json,name=école.eXAmple.com,200,handle
+/.well-known/rdap/domains,application/rdap+json,name=éCole.example.com,404,NOT FOUND
+#UnProcessed search q
+/.well-known/rdap/nameservers?name=*,application/rdap+json,,422,UnProcessed
+/.well-known/rdap/domains,application/rdap+json,name=*,422,UnProcessed
+/.well-known/rdap/entities?fn=*,application/json,,422,UnProcessed
+/.well-known/rdap/entities?handle=*,application/json,,422,UnProcessed
+#non utf8 return 400
+/.well-known/rdap/nameservers,application/json,name=notUTF8%E6%B8%85%E5%8D*,400,BAD REQUEST
+/.well-known/rdap/domains,application/json,name=notUTF8%E6%B8%85%E5%8D*,400,BAD REQUEST
+/.well-known/rdap/entities,application/json,fn=notUTF8%E6%B8%85%E5%8D*,400,BAD REQUEST
+/.well-known/rdap/entities,application/json,handle=notUTF8%E6%B8%85%E5%8D*,400,BAD REQUEST
+#name server search
+/.well-known/rdap/nameservers?ip=1.0.0.0,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=1.0.0.1,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=1.0.0.2,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=1.*,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=2002:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=2001:5a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:*,application/rdap+json,,400,BAD REQUEST
+/.well-known/rdap/nameservers?name=c.cnnic.cn&ip=1.1.1.1,application/rdap+json,,200,handle
+/.well-known/rdap/nameservers?ip=1.1.1.1,application/rdap+json,,404,NOT FOUND
+/.well-known/rdap/nameservers?ip=3002:6a8:0:1:210:4bff:fe4b:4c61,application/rdap+json,,404,NOT FOUND

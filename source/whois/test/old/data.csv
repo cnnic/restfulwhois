@@ -1,0 +1,2 @@
+path,Accept,param,status,mark
+/.well-known/rdap/domain/nonexist.cn,application/rdap+json,unkonwParam=zzz&a=b,404,NOT FOUND

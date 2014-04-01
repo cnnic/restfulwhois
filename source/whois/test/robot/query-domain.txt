@@ -1,0 +1,107 @@
+*** Settings ***
+Resource          variables.txt
+#Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200,With rdap+json header
+	[Template]		Return 200,With rdap+json header
+	/.well-known/rdap/domain/清华大学.中国
+	/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s
+	/.well-known/rdap/domain/192.in-addr.arpa
+	/.well-known/rdap/domain/192.in-addr.arpa?unkonwParam=zzz
+	/.well-known/rdap/domain/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6.%E4%B8%AD%E5%9B%BD
+	/.well-known/rdap/domain/清华大学.中国
+	/.well-known/rdap/domain/z.cn?unkonwParam=zzz
+	/.well-known/rdap/domain/z.cn?unkonwParam=zzz&a=b
+	/.well-known/rdap/domain/z.cn?unkonwParam
+	/.well-known/rdap/domain/xn--faade-csa.com
+Search,Return 200,With rdap+json header
+	[Template]		Search,Return 200,With rdap+json header
+	/.well-known/rdap/domains?name=t*.cn
+	/.well-known/rdap/domains?name=*t.cn
+	/.well-known/rdap/domains?name=清华*.中国
+	/.well-known/rdap/domains?name=清华*
+	/.well-known/rdap/domains?name=%E6%B8%85%E5%8D%8E*
+	/.well-known/rdap/domains?name=t*
+	/.well-known/rdap/domains?name=*cn
+	/.well-known/rdap/domains?name=*.cn
+	/.well-known/rdap/domains?name=ｑｑ.cn
+	/.well-known/rdap/domains?name=école.example.com
+	/.well-known/rdap/domains?name=école.EXAMPLE.com
+	/.well-known/rdap/domains?name=école.Example.com
+	/.well-known/rdap/domains?name=école.eXAmple.com
+Return 200,With text header
+	[Template]		Return 200,With text header
+	/.well-known/rdap/domain/清华大学.中国
+	/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s
+	/.well-known/rdap/domain/192.in-addr.arpa
+	/.well-known/rdap/domain/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6.%E4%B8%AD%E5%9B%BD
+	/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s
+Return 400,with invalid param
+	[Template]		Return 400,With rdap+json header
+	/.well-known/rdap/domains
+	/.well-known/rdap/domains/
+	/.well-known/rdap/domains/nonexistpath
+	/.well-known/rdap/malformedQueries/z.cn
+	/.well-known/rdap/domain/xn--sälen.com
+	/.well-known/rdap/domain/*&^.cn
+	/.well-known/rdap/domain/longlabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabel.cn
+	/.well-known/rdap/domain/longlabel.11111111111111111111.1111111111111111111111111111111111111111111111111111111111111111111111111111.11111111111111111111111111111111111111111111111111111111111111111111111111111111111111.111111111111111111111111111111111111111111111111111.cn
+	/.well-known/rdap/domains?name=binary\x03*
+	/.well-known/rdap/domains?name=notUTF8%E6%B8%85%E5%8D*
+Return 404,with empty result
+	[Template]		Return 404,With rdap+json header
+	/.well-known/rdap/domain/nonexist.cn
+	/.well-known/rdap/domains?name=nonexist*
+	/.well-known/rdap/domains?name=nonexist*.nonexist
+	/.well-known/rdap/domain/nonexist.cn?unkonwParam=zzz&a=b
+	/.well-known/rdap/domains?name=éCole.example.com
+Return 422,with UnProcessed param
+	[Template]		Return 422,With rdap+json header
+	/.well-known/rdap/domains?name=*
+#Return 301
+#	[Template]		Return 301,With rdap+json header
+#	/.well-known/rdap/domain/z.la
+#Return 429
+	#[Template]		Return 301,With rdap+json header
+	#/.well-known/rdap/domain/z.cn
+	
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     rdapConformance
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     ldhName
+    ${containEntities}		Run Keyword And Return Status		Should Contain    ${encodeRespContent}     "entities":
+    Run Keyword If		${containEntities}==True		Should Contain		${encodeRespContent}	"entities":[
+    Run Keyword If		${containEntities}==True		Should Not Contain		${encodeRespContent}	"entities":{
+Search,Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     rdapConformance
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     ldhName
+    Should Contain    ${encodeRespContent}     domainSearchResults
+Return 200,With text header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  text/plain
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     ldhName
+    Should Contain    ${encodeRespContent}     lang

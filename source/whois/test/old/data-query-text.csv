@@ -1,0 +1,40 @@
+path,Accept,param,status,mark
+/.well-known/rdap/domain/z.cn,text/plain,,200,handle
+/.well-known/rdap/ip/1.1.1.1,text/plain,,200,handle
+/.well-known/rdap/ip/1.0.0.0/31,text/plain,,200,handle
+/.well-known/rdap/ip/1.0.0.0/32,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/1.0.0.0/33,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/0.0.0.0,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/invalidIpv4,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/1.1.1.1/23\x00,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/1.000.0.0,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/1111,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:,text/plain,,400,Error_Code:400
+/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:fe4b:4c61,text/plain,,200,handle
+/.well-known/rdap/autnum/1223,text/plain,,200,handle
+/.well-known/rdap/autnum/3661,text/plain,,200,handle
+/.well-known/rdap/autnum,text/plain,,400,Error_Code:400
+/.well-known/rdap/autnum/0,text/plain,,400,Error_Code:400
+/.well-known/rdap/autnum/4294967296,text/plain,,400,Error_Code:400
+/.well-known/rdap/autnum/03661,text/plain,,400,Error_Code:400
+/.well-known/rdap/autnum/&*,text/plain,,400,Error_Code:400
+#
+/.well-known/rdap/domain/清华大学.中国,text/plain,,200,handle
+/.well-known/rdap/domain/192.in-addr.arpa,text/plain,,200,handle
+/.well-known/rdap/autnum/2569,text/plain,,200,handle
+/.well-known/rdap/domain/xn--xkry9kk1bz66a.xn--fiqs8s,text/plain,,200,handle
+/.well-known/rdap/malformedQueries/z.cn,text/plain,,400,BAD REQUEST
+/.well-known/rdap/domain/nonexist.cn,text/plain,,404,NOT FOUND
+/.well-known/rdap/domain/xn--sälen.com,text/plain,,400,BAD REQUEST
+/.well-known/rdap/domain/*&^.cn,text/plain,,400,BAD REQUEST
+/.well-known/rdap/domain/longlabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabellonglabel.cn,text/plain,,400,BAD REQUEST
+/.well-known/rdap/domain/longlabel.11111111111111111111.1111111111111111111111111111111111111111111111111111111111111111111111111111.11111111111111111111111111111111111111111111111111111111111111111111111111111111111111.111111111111111111111111111111111111111111111111111.cn,text/plain,,400,BAD REQUEST
+/.well-known/rdap/nameserver/ns1.ee28.cn,text/plain,,200,handle
+/.well-known/rdap/nameserver/ns2.sina.com.cn,text/plain,,200,handle
+/.well-known/rdap/nameserver/,text/plain,,400,BAD REQUEST
+/.well-known/rdap/nameserver/@#$,text/plain,,400,BAD REQUEST
+/.well-known/rdap/entity/APNIC,text/plain,,200,handle
+/.well-known/rdap/entity/s1265874462073,text/plain,,200,handle
+/.well-known/rdap/entity,text/plain,,400,BAD REQUEST
+/.well-known/rdap/entity/,text/plain,,400,BAD REQUEST
+/.well-known/rdap/help,text/plain,,200,

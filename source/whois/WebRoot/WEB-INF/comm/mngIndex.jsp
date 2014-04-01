@@ -134,8 +134,7 @@
 		</div>
 		<div id="footer">
 			<p>
-				By using the Restful Whois service, you are agreeing to the
-				<a href="/whois_tou.html" class="footer_link">Whois Terms of Use</a>
+				By using the Restful Whois service, you are agreeing to the Whois Terms of Use
 				<br />
 				&copy; Copyright 2013, CNNIC & ICANN
 			</p>

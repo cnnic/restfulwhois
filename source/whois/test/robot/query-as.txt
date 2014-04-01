@@ -1,0 +1,53 @@
+*** Settings ***
+Resource          variables.txt
+#Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200,With rdap+json header
+	[Template]		Return 200,With rdap+json header
+	/.well-known/rdap/autnum/1223
+	/.well-known/rdap/autnum/2569
+	/.well-known/rdap/autnum/3661
+Return 200,With text header
+	[Template]		Return 200,With text header
+	/.well-known/rdap/autnum/1223
+	/.well-known/rdap/autnum/2569
+	/.well-known/rdap/autnum/3661
+Return 400,with invalid param
+	[Template]		Return 400,With rdap+json header
+	/.well-known/rdap/autnum
+	/.well-known/rdap/autnum/
+	/.well-known/rdap/autnum/0
+	/.well-known/rdap/autnum/4294967296
+	/.well-known/rdap/autnum/03661
+	/.well-known/rdap/autnum/&*
+Return 404,with empty result
+	[Template]		Return 404,With rdap+json header
+	/.well-known/rdap/autnum/300
+#Return 301,with UnProcessed param
+#	[Template]		Return 301,With rdap+json header
+#	/.well-known/rdap/autnum/1916
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     rdapConformance
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     name
+Return 200,With text header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  text/plain
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     startAutnum
+    Should Contain    ${resp.content}     endAutnum
+    Should Contain    ${resp.content}     name

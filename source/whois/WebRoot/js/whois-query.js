@@ -288,7 +288,6 @@ function isFuzzyQuery(){
 	var formatType = $('input:radio[name="showType"]:checked').val();
 	var matchStr =  "*";
 	if(queryInfo.indexOf(matchStr) != -1){
-		console.log("contains");
 		return true;
 	}
 	return false;
@@ -314,8 +313,7 @@ function processQuery() {
 	var queryInfo = $.trim($("#queryInfo").val());
 	var queryType = $('input:radio[name="optionType"]:checked').val();
 	var formatType = $('input:radio[name="showType"]:checked').val();
-	var matchStr =  /^(\*)?(\w+)|([\u0391-\uFFE5]+)([\w\-\.]*)$/g;
-	
+	var matchStr =  /^[\u0391-\uFFE5a-zA-Z\d\*]{1}([\u0391-\uFFE5\w\-\.\_\*]*)$/g;
 	if (queryInfo == "") {
 		alert("Please enter a query data");
 		return false;

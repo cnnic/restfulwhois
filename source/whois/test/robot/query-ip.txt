@@ -1,0 +1,75 @@
+*** Settings ***
+Resource          variables.txt
+Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200,With rdap+json header
+	[Template]		Return 200,With rdap+json header
+	/.well-known/rdap/ip/1.1.1.1
+	/.well-known/rdap/ip/1.0.0.0/31
+	/.well-known/rdap/ip/1.0.0.0/32
+	/.well-known/rdap/ip/1.0.0.0/23
+	/.well-known/rdap/ip/1.255.255.255
+	/.well-known/rdap/ip/1.0.0.0/8
+	/.well-known/rdap/ip/39.1.2.3/8
+	/.well-known/rdap/ip/2.40.20.0/24
+	/.well-known/rdap/ip/2.40.0.0/24
+	/.well-known/rdap/ip/2.0.0.0/24
+	/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:fe4b:4c61
+Return 200,With text header
+	[Template]		Return 200,With text header
+	/.well-known/rdap/ip/1.1.1.1
+	/.well-known/rdap/ip/1.0.0.0/31
+	/.well-known/rdap/ip/1.0.0.0/32
+	/.well-known/rdap/ip/1.0.0.0/23
+	/.well-known/rdap/ip/1.255.255.255
+	/.well-known/rdap/ip/1.0.0.0/8
+	/.well-known/rdap/ip/39.1.2.3/8
+	/.well-known/rdap/ip/2.40.20.0/24
+	/.well-known/rdap/ip/2.40.0.0/24
+	/.well-known/rdap/ip/2.0.0.0/24
+	/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:fe4b:4c61
+Return 400,with invalid param
+	[Template]		Return 400,With rdap+json header
+	/.well-known/rdap/ip
+	/.well-known/rdap/ip/0.0.0.0
+#	/.well-known/rdap/ip/1.1.1.1/23\x00
+	/.well-known/rdap/ip/1.0.0.0/33
+	/.well-known/rdap/ip/invalidIpv4
+	/.well-known/rdap/ip/invalid.1.1.1
+	/.well-known/rdap/ip/ip/1.000.0.0
+	/.well-known/rdap/ip/1111
+	/.well-known/rdap/ip/2001:6a8:0:1:210:4bff:
+Return 404,with empty result
+	[Template]		Return 404,With rdap+json header
+	/.well-known/rdap/autnum/300
+#Return 301,with UnProcessed param
+#	[Template]		Return 301,With rdap+json header
+#	/.well-known/rdap/ip/192.168.0.2
+#	/.well-known/rdap/ip/192.168.0.2
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     rdapConformance
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     startAddress
+    Should Contain    ${resp.content}     endAddress
+    #Should Contain    ${resp.content}     notices":[{
+Return 200,With text header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  text/plain
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     startAddress
+    Should Contain    ${resp.content}     endAddress
+    #Should Contain    ${resp.content}     notices:

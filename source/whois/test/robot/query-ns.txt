@@ -1,0 +1,79 @@
+*** Settings ***
+Resource          variables.txt
+Test Template     Return 200,With rdap+json header
+Resource          keywords.txt
+Library           Collections
+Library           RequestsLibrary
+Library           UrlEncode
+Test Setup      	Create Session	rdap     ${HOST}
+*** Testcases ***     uri
+Return 200,With rdap+json header
+	[Template]		Return 200,With rdap+json header
+	/.well-known/rdap/nameserver/ns1.ee28.cn
+	/.well-known/rdap/nameserver/ns2.sina.com.cn
+Return 200,With text header
+	[Template]		Return 200,With text header
+	/.well-known/rdap/nameserver/ns1.ee28.cn
+	/.well-known/rdap/nameserver/ns2.sina.com.cn
+Search,Return 200,With rdap+json header
+	[Template]		Search,Return 200,With rdap+json header
+	/.well-known/rdap/nameservers?name=n*.com
+	/.well-known/rdap/nameservers?name=n*
+	/.well-known/rdap/nameservers?name=*n
+	/.well-known/rdap/nameservers?ip=1.0.0.0
+	/.well-known/rdap/nameservers?ip=1.0.0.1
+	/.well-known/rdap/nameservers?ip=1.0.0.2
+	/.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:4c61
+	/.well-known/rdap/nameservers?ip=2002:6a8:0:1:210:4bff:fe4b:4c61
+	/.well-known/rdap/nameservers?ip=2001:5a8:0:1:210:4bff:fe4b:4c61
+	/.well-known/rdap/nameservers?name=c.cnnic.cn&ip=1.1.1.1
+Return 400,with invalid param
+	[Template]		Return 400,With rdap+json header
+	/.well-known/rdap/nameserver
+	/.well-known/rdap/nameserver/
+	/.well-known/rdap/nameservers
+	/.well-known/rdap/nameservers/
+	/.well-known/rdap/nameservers/nonexist
+	/.well-known/rdap/nameservers?name=notUTF8%E6%B8%85%E5%8D*
+	/.well-known/rdap/nameservers?ip=1.*
+	/.well-known/rdap/nameservers?ip=2001:6a8:0:1:210:4bff:fe4b:*
+Return 404,with empty result
+	[Template]		Return 404,With rdap+json header
+	/.well-known/rdap/nameserver/@#$
+	/.well-known/rdap/nameservers?name=清华*.cn
+	/.well-known/rdap/nameservers?name=清华*
+	/.well-known/rdap/nameservers?name=*清华
+	/.well-known/rdap/nameservers?name=nonexist*.nonexist
+	/.well-known/rdap/nameservers?ip=1.1.1.1
+	/.well-known/rdap/nameservers?ip=3002:6a8:0:1:210:4bff:fe4b:4c61
+*** Keywords ***
+Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     rdapConformance
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     ldhName
+    Should Contain    ${resp.content}     ipAddresses
+Return 200,With text header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  text/plain
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    Should Contain    ${resp.content}     handle
+    Should Contain    ${resp.content}     ldhName
+    Should Contain    ${resp.content}     ipAddresses
+Search,Return 200,With rdap+json header
+    [Arguments]    ${uri}
+    ${encodeUri}		Encode Url		${uri}
+    ${headers}          Create Dictionary       Accept  application/rdap+json
+    ${resp}=            Get             rdap    ${encodeUri}          headers=${headers}
+    Should Be Equal As Strings      ${resp.status_code}        200
+    ${encodeRespContent}		Decode Data		${resp.content}
+    Should Contain    ${encodeRespContent}     rdapConformance
+    Should Contain    ${encodeRespContent}     handle
+    Should Contain    ${encodeRespContent}     lang
+    Should Contain    ${encodeRespContent}     nameserverSearchResults

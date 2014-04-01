@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+		   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+	default-autowire="byName" default-lazy-init="false">
+	<bean id="searchDomainQueryDao" class="com.cnnic.whois.dao.query.search.DomainQueryDao">
+		<constructor-arg value="${solr.url}/domain" />
+	</bean>
+	<bean id="searchEntityQueryDao" class="com.cnnic.whois.dao.query.search.EntityQueryDao">
+		<constructor-arg value="${solr.url}/entity" />
+	</bean>
+	<bean id="searchNsQueryDao" class="com.cnnic.whois.dao.query.search.NsQueryDao">
+		<constructor-arg value="${solr.url}/nameserver" />
+	</bean>
+	<bean id="whoisProperties" class="com.cnnic.whois.util.WhoisProperties">
+	    <property name="anonymousExpireTime" value="${anonymous_expire_time}" />
+        <property name="authenticatedExpireTime" value="${authenticated_expire_time}" />
+        <property name="rootExpireTime" value="${root_expire_time}" />
+        <property name="expireTime" value="${expire_time}" />
+        <property name="solrUrl" value="${solr.url}" />
+        <property name="maxFuzzyQuery" value="${maxsize.fuzzyquery}" />
+        <property name="rdapUrl" value="${well.known}" />
+        <property name="serverurl" value="${serverurl}" />
+     
+	</bean>     
+	<bean id="cacheQueryDaos" name="cacheQueryDaos" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="cacheAsQueryDao" />
+				<ref bean="cacheDnrDomainQueryDao" />
+				<ref bean="cacheDsDataQueryDao" />
+				<ref bean="cacheEntityQueryDao" />
+				<ref bean="cacheErrorMsgQueryDao" />
+				<ref bean="cacheEventsQueryDao" />
+				<ref bean="cache.searchDomainQueryDao" />
+				<ref bean="cache.searchEntityQueryDao" />
+				<ref bean="cache.searchNsQueryDao" />
+				<ref bean="cacheHelpQueryDao" />
+				<ref bean="cacheIpQueryDao" />
+				<ref bean="cacheIpRedirectionQueryDao" />
+				<ref bean="cacheKeyDataQueryDao" />
+				<ref bean="cacheLinksQueryDao" />
+				<ref bean="cacheNoticesQueryDao" />
+				<ref bean="cacheNsQueryDao" />
+				<ref bean="cachePhonesQueryDao" />
+				<ref bean="cachePostalAddressQueryDao" />
+				<ref bean="cacheRedirectionQueryDao" />
+				<ref bean="cacheRemarksQueryDao" />
+				<ref bean="cacheRirDomainQueryDao" />
+				<ref bean="cacheSecureDnsQueryDao" />
+				<ref bean="cacheVariantsQueryDao" />
+			</list>
+		</constructor-arg>
+	</bean>
+	<bean id="dbQueryDaos" name="dbQueryDaos" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="asQueryDao" />
+				<ref bean="dnrDomainQueryDao" />
+				<ref bean="rirDomainQueryDao" />
+				<ref bean="dnrEntityQueryDao" />
+				<ref bean="dsDataQueryDao" />
+				<ref bean="entityQueryDao" />
+				<ref bean="errorMsgQueryDao" />
+				<ref bean="eventsQueryDao" />
+				<ref bean="db.searchDomainQueryDao" />
+				<ref bean="db.searchEntityQueryDao" />
+				<ref bean="db.searchNsQueryDao" />
+				<ref bean="helpQueryDao" />
+				<ref bean="ipQueryDao" />
+				<ref bean="ipRedirectionQueryDao" />
+				<ref bean="keyDataQueryDao" />
+				<ref bean="linksQueryDao" />
+				<ref bean="noticesQueryDao" />
+				<ref bean="nsQueryDao" />
+				<ref bean="phonesQueryDao" />
+				<ref bean="postalAddressQueryDao" />
+				<ref bean="publicIdsQueryDao" />
+				<ref bean="redirectionQueryDao" />
+				<ref bean="remarksQueryDao" />
+				<ref bean="rirEntityQueryDao" />
+				<ref bean="secureDnsQueryDao" />
+				<ref bean="variantsQueryDao" />
+			</list>
+		</constructor-arg>
+	</bean>
+	<bean id="searchQueryDaos" name="searchQueryDaos" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="searchDomainQueryDao" />
+				<ref bean="searchEntityQueryDao" />
+				<ref bean="searchNsQueryDao" />
+			</list>
+		</constructor-arg>
+	</bean>
+	<bean id="responseWriters" name="responseWriters" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="jsonResponseWriter" />
+				<ref bean="htmlResponseWriter" />
+				<ref bean="xmlResponseWriter" />
+				<ref bean="textResponseWriter" />
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<import resource="spring-oauth.xml" />
+	
+</beans>
