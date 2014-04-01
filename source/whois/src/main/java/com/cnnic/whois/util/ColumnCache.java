@@ -11,6 +11,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * 
+ * column for displaying 
+ *
+ */
 @Component
 public class ColumnCache {
 	@Autowired
@@ -45,6 +50,9 @@ public class ColumnCache {
 	 */
 	private ColumnCache() { }
 	
+	/**
+	 * initialization for filters
+	 */
 	@PostConstruct
 	private void postInit() {
 		IPKeyFileds = getKeyList(WhoisUtil.IP);

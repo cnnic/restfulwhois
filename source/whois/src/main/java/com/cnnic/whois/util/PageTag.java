@@ -20,6 +20,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cnnic.whois.bean.PageBean;
 
+/***
+ * 
+ * util for page tag
+ *
+ */
 public class PageTag extends TagSupport {
 	private static final long serialVersionUID = -2230112545469172831L;
 	private static final String PAGINATION_INFO = "total<b> %s </b>page,<b> %s </b>records";
@@ -40,6 +45,11 @@ public class PageTag extends TagSupport {
 	private int[] dashboardRecordConfigureNums = { 5, 20, 50 };
 	private int[] maxDashboardRecordConfigureNums = { 20, 80, 200 };
 
+	/**
+	 * display the tag for pages
+	 * 
+	 * @return 0 success
+	 */
 	public int doStartTag() throws JspException {
 		PageBean pageBean = null;
 
@@ -247,15 +257,30 @@ public class PageTag extends TagSupport {
 		return 0;
 	}
 
+
+	/**
+	 * need multiple views  
+	 * @param maxRecords
+	 * @param recordCount
+	 * @return boolean
+	 */
 	private boolean needViewAllShow(String maxRecords, Integer recordCount) {
 		return (maxRecords != null)
 				&& (Integer.parseInt(maxRecords) < recordCount.intValue());
 	}
-
+	/**
+	 * get view string
+	 * @return string
+	 */
 	private String getViewAll() {
 		return "maxRecords";
 	}
 
+	/**
+	 * print jsp
+	 * @param out
+	 * @throws IOException
+	 */
 	private void printJs(JspWriter out) throws IOException {
 		out.print("<script type=\"text/javascript\">");
 		out.print("$().ready(function(){");
@@ -273,49 +298,96 @@ public class PageTag extends TagSupport {
 		out.print("</script>");
 	}
 
+	/**
+	 * deprecated
+	 */
 	public void release() {
 	}
 
+	/**
+	 * set onclick
+	 * @param onClick
+	 */
 	public void setOnClick(String onClick) {
 		this.onClick = onClick;
 	}
 
+	/**
+	 * set max pages
+	 * @param maxShow
+	 */
 	public void setMaxShowPage(int maxShow) {
 		this.maxShowPage = maxShow;
 	}
 
+	/**
+	 * set href
+	 * @param href
+	 */
 	public void setHref(String href) {
 		this.href = href;
 	}
 
+	/**
+	 * set scope
+	 * @param scope
+	 */
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
 
+	/**
+	 * set page bean name
+	 * @param pageBeanName
+	 */
 	public void setPageBeanName(String pageBeanName) {
 		this.pageBeanName = pageBeanName;
 	}
 
+	/**
+	 * getOnClick
+	 * @return String
+	 */
 	public String getOnClick() {
 		return this.onClick;
 	}
 
+	/**
+	 * getMaxShowPage
+	 * @return int
+	 */
 	public int getMaxShowPage() {
 		return this.maxShowPage;
 	}
 
+	/**
+	 * getHref
+	 * @return string
+	 */
 	public String getHref() {
 		return this.href;
 	}
 
+	/**
+	 * getScope
+	 * @return string
+	 */
 	public String getScope() {
 		return this.scope;
 	}
 
+	/**
+	 * getPageBeanName
+	 * @return string
+	 */
 	public String getPageBeanName() {
 		return this.pageBeanName;
 	}
 
+	/**
+	 * getPageName
+	 * @return string
+	 */
 	public String getPageName() {
 		if (this.pageName == null) {
 			this.pageName = "currentPage";
@@ -324,58 +396,114 @@ public class PageTag extends TagSupport {
 		return this.pageName;
 	}
 
+	/**
+	 * setPageName
+	 * @param pageName
+	 */
 	public void setPageName(String pageName) {
 		this.pageName = pageName;
 	}
 
+	/**
+	 * isViewAll
+	 * @return boolean
+	 */
 	public boolean isViewAll() {
 		return this.viewAll;
 	}
 
+	/**
+	 * setViewAll
+	 * @param viewAll
+	 */
 	public void setViewAll(boolean viewAll) {
 		this.viewAll = viewAll;
 	}
 
+	/**
+	 * isMaxRecordConfigurable
+	 * @return boolean
+	 */
 	public boolean isMaxRecordConfigurable() {
 		return this.maxRecordConfigurable;
 	}
 
+	/**
+	 * setMaxRecordConfigurable
+	 * @param recordCountConfigurable
+	 */
 	public void setMaxRecordConfigurable(boolean recordCountConfigurable) {
 		this.maxRecordConfigurable = recordCountConfigurable;
 	}
 
+	/**
+	 * getId
+	 */
 	public String getId() {
 		return this.id;
 	}
 
+	/**
+	 * setId
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * getOnChange
+	 * @return
+	 */
 	public String getOnChange() {
 		return this.onChange;
 	}
 
+	/**
+	 * setOnChange
+	 * @param onChange
+	 */
 	public void setOnChange(String onChange) {
 		this.onChange = onChange;
 	}
 
+	/**
+	 * isDashBoardShow
+	 * @return boolean
+	 */
 	public boolean isDashboardShow() {
 		return this.dashboardShow;
 	}
 
+	/**
+	 * setDashboardShow
+	 * @param dashboardShow
+	 */
 	public void setDashboardShow(boolean dashboardShow) {
 		this.dashboardShow = dashboardShow;
 	}
 
+	/**
+	 * isMaxShow
+	 * @return
+	 */
 	public boolean isMaxShow() {
 		return this.maxShow;
 	}
 
+	/**
+	 * setMaxShow
+	 * @param maxShow
+	 */
 	public void setMaxShow(boolean maxShow) {
 		this.maxShow = maxShow;
 	}
 
+	/**
+	 * getParamtersUrlPatten
+	 * @param parameterMap
+	 * @param href
+	 * @return string
+	 */
 	public static String getParamtersUrlPatten(Map parameterMap, String href) {
 		if (parameterMap == null) {
 			return "";
@@ -425,9 +553,7 @@ public class PageTag extends TagSupport {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-
 			}
-
 		}
 
 		if (ret.length() > 0) {

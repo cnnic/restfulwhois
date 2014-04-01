@@ -3,13 +3,18 @@ package com.cnnic.whois.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * Cache for time out
+ *
+ */
 public class TimeCache {
 	private static final Map<String, String> queryRemoteIPMap = new HashMap<String, String>();
 
 	/**
 	 * Get queryRemoteIPMap
 	 * 
-	 * @return Map
+	 * @return Map<String, String>
 	 */
 	public static Map<String, String> getQueryremoteipmap() {
 		return queryRemoteIPMap;
@@ -22,7 +27,7 @@ public class TimeCache {
 	 * @param currentTime
 	 * @param accessTime
 	 * @param role
-	 * @return true
+	 * @return boolean
 	 */
 	public boolean queryControl(String key, long currentTime, long accessTime,
 			String role) {

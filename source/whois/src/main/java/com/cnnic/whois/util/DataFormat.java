@@ -1,15 +1,16 @@
 package com.cnnic.whois.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
+
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/***
+ * 
+ * Json Format
+ *
+ */
 public class DataFormat {
 	/**
 	 * Map collection converted to JSON object
@@ -20,9 +21,19 @@ public class DataFormat {
 	public static JSONObject getJsonObject(Map<String, Object> responMap) {
 		return JSONObject.fromObject(responMap);
 	}
+	/**
+	 * Map convert to JSON array
+	 * @param responMap
+	 * @return JSONArray
+	 */
 	public static JSONArray getJsonArray(Object responMap) {
 		return JSONArray.fromObject(responMap);
 	}
+	/**
+	 * String convert to JSON object
+	 * @param json
+	 * @return JSONObject
+	 */
 	public static JSONObject fromObject(String json) {
 		return JSONObject.fromObject(json);
 	}

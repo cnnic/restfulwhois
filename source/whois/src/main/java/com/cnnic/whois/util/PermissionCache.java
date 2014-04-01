@@ -17,6 +17,11 @@ import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.bean.index.EntityIndex;
 import com.cnnic.whois.bean.index.NameServerIndex;
 
+/**
+ * 
+ * Cache for filter 
+ *
+ */
 @Component
 public class PermissionCache {
 	@Autowired
@@ -551,58 +556,76 @@ public class PermissionCache {
 		}
 
 	}
+	
 	@Deprecated
 	public List<String> getKeyFiledsByClass(Object o, String role) {
-		 if ((o instanceof DomainIndex)) {
-		      if (((DomainIndex)o).isDnrDomain()) {
-		        return getDNRDomainKeyFileds(role);
-		      }
-		      return getRIRDomainKeyFileds(role);
-		    }
+		if ((o instanceof DomainIndex)) {
+			if (((DomainIndex) o).isDnrDomain()) {
+				return getDNRDomainKeyFileds(role);
+			}
+			return getRIRDomainKeyFileds(role);
+		}
 
-		    if ((o instanceof NameServerIndex)) {
-		      return getNameServerKeyFileds(role);
-		    }
-		    if ((o instanceof EntityIndex)) {
-		      if (((EntityIndex)o).isDnrEntity()) {
-		        return getDNREntityKeyFileds(role);
-		      }
-		      return getRIREntityKeyFileds(role);
-		    }
+		if ((o instanceof NameServerIndex)) {
+			return getNameServerKeyFileds(role);
+		}
+		if ((o instanceof EntityIndex)) {
+			if (((EntityIndex) o).isDnrEntity()) {
+				return getDNREntityKeyFileds(role);
+			}
+			return getRIREntityKeyFileds(role);
+		}
 
-		    return new ArrayList();
-		  }
+		return new ArrayList();
+	}
 	
+	/**
+	 * getKeyFieldsByClass
+	 * @param Object
+	 * @return List<String>
+	 */
 	public List<String> getKeyFiledsByClass(Object o) {
-		 if ((o instanceof DomainIndex)) {
-		      if (((DomainIndex)o).isDnrDomain()) {
-		        return this.columnCache.getDNRDomainKeyFileds();
-		      }
-		      return this.columnCache.getRIRDomainKeyFileds();
-		    }
+		if ((o instanceof DomainIndex)) {
+			if (((DomainIndex) o).isDnrDomain()) {
+				return this.columnCache.getDNRDomainKeyFileds();
+			}
+			return this.columnCache.getRIRDomainKeyFileds();
+		}
 
-		    if ((o instanceof NameServerIndex)) {
-		      return this.columnCache.getNameServerKeyFileds();
-		    }
-		    if ((o instanceof EntityIndex)) {
-		      if (((EntityIndex)o).isDnrEntity()) {
-		        return this.columnCache.getDNREntityKeyFileds();
-		      }
-		      return this.columnCache.getRIREntityKeyFileds();
-		    }
+		if ((o instanceof NameServerIndex)) {
+			return this.columnCache.getNameServerKeyFileds();
+		}
+		if ((o instanceof EntityIndex)) {
+			if (((EntityIndex) o).isDnrEntity()) {
+				return this.columnCache.getDNREntityKeyFileds();
+			}
+			return this.columnCache.getRIREntityKeyFileds();
+		}
 
-		    return new ArrayList();
-		  }
+		return new ArrayList();
+	}
 
+	/**
+	 * getHelpKeyfileds
+	 * @param role
+	 * @return List<String>
+	 */
 	public List<String> getHelpKeyFileds(String role) {
 		return helpMap.get(role);
 	}
 	
+	/**
+	 * setHelpMap
+	 */
 	public void setHelpMap() {
 		this.helpMap = getKeyMap(WhoisUtil.HELP,
 				columnCache.getHelpKeyFields());
 	}
 	
+	/**
+	 * setColumnCache
+	 * @param columnCache
+	 */
 	@Autowired
 	public void setColumnCache(ColumnCache columnCache) {
 		this.columnCache = columnCache;

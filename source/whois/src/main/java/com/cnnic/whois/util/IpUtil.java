@@ -1,5 +1,10 @@
 package com.cnnic.whois.util;
 
+/***
+ * 
+ * Util For IP address
+ *
+ */
 public class IpUtil {
 	public static long[] IPV4Array = { 0x80000000l, // 1000 0000 0000 0000 0000
 			// 0000 0000 0000,//1
@@ -101,6 +106,13 @@ public class IpUtil {
 			0xFFFFFFFFFFFFFFFEl, // 63
 			0xFFFFFFFFFFFFFFFFl // 64
 	};
+	
+	/**
+	 * parse a IPv4/v6 string to long[]
+	 * @param ipInfo
+	 * @param ipLength
+	 * @return long[] for a IPv4/v6 address
+	 */
 	public static long[] parsingIp(String ipInfo, int ipLength) {
 		long startHighAddr = 0, endHighAddr = 0, startLowAddr = 0, endLowAddr = 0;
 		long[] ipInfoLong = iptolong(ipInfo);
@@ -143,7 +155,15 @@ public class IpUtil {
 		long[] iplongs = { startHighAddr, endHighAddr, startLowAddr, endLowAddr };
 		return iplongs;
 	}
-
+	
+	/**
+	 * parse two IPv4/v6 strings to long[]
+	 * @param startAddress
+	 * @param endAddress
+	 * @param startIpLength
+	 * @param endIpLength
+	 * @return long[] for a IPv4/v6 address
+	 */
 	public static long[] parsingIp(String startAddress, String endAddress,
 			int startIpLength, int endIpLength) {
 		long startHighAddr = 0, endHighAddr = 0, startLowAddr = 0, endLowAddr = 0;
@@ -318,6 +338,11 @@ public class IpUtil {
 		return ipLongArr;
 	}
 
+	/**
+	 * string of IpV6 converted to long
+	 * @param longip
+	 * @return long[]
+	 */
 	public static long[] Ipv6ToLong(String longip) {
 		String[] strings = expandShortNotation(longip).split(":");
 		long[] longs = new long[strings.length];

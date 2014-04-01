@@ -27,6 +27,11 @@ import com.cnnic.whois.bean.QueryParam;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.QueryService;
 
+/***
+ * 
+ * Whois Util
+ *
+ */
 public class WhoisUtil {
 	public static final String QUERY_TYPE = "queryType";
 	public static final String QUERY_JOIN_TYPE = "queryJoinType";
@@ -957,15 +962,30 @@ public class WhoisUtil {
 		return map;
 	}
 
+	/**
+	 * isNotEntityField
+	 * @param name
+	 * @return boolean
+	 */
 	private static boolean isNotEntityField(String name) {
 		return QUERY_JOIN_TYPE.equals(name) || QUERY_TYPE.equals(name)
 				|| name.endsWith("Id");
 	}
 
+	/**
+	 * is an object String[] or JSONArray
+	 * @param object
+	 * @return boolean
+	 */
 	private static boolean isArray(Object object) {
 		return object instanceof String[] || object instanceof JSONArray;
 	}
 
+	/**
+	 * parseStringArray to String[]
+	 * @param object
+	 * @return String[]
+	 */
 	private static String[] parseStringArray(Object object) {
 		if (object instanceof JSONArray) {
 			JSONArray jsonArray = (JSONArray) object;
@@ -980,10 +1000,20 @@ public class WhoisUtil {
 		throw new IllegalArgumentException("param is not an array");
 	}
 
+	/**
+	 * getDisplayKeyName
+	 * @param name
+	 * @return String
+	 */
 	public static String getDisplayKeyName(String name) {
 		return name;
 	}
 
+	/**
+	 * clearFormatCookie
+	 * @param request
+	 * @param response
+	 */
 	public static void clearFormatCookie(HttpServletRequest request,
 			HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
@@ -1030,6 +1060,12 @@ public class WhoisUtil {
 		return ErrorMessageMap;
 	}
 
+	/**
+	 * decode a iso8859 string to utf-8
+	 * @param iso8859Str
+	 * @return String
+	 * @throws UnsupportedEncodingException
+	 */
 	private static String decodeFromUTF8(String iso8859Str)
 			throws UnsupportedEncodingException {
 		if (StringUtils.isBlank(iso8859Str)) {
@@ -1039,6 +1075,12 @@ public class WhoisUtil {
 		return new String(nameBytes, "UTF-8");
 	}
 
+	/**
+	 * is a iso8859 string  Valid UTF8
+	 * @param iso8859Str
+	 * @return boolean
+	 * @throws UnsupportedEncodingException
+	 */
 	private static boolean isValidUTF8(String iso8859Str)
 			throws UnsupportedEncodingException {
 		if (StringUtils.isBlank(iso8859Str)) {
@@ -1054,6 +1096,11 @@ public class WhoisUtil {
 		}
 	}
 
+	/**
+	 * getLowerCaseByLabel
+	 * @param str
+	 * @return String
+	 */
 	public static String getLowerCaseByLabel(String str){
 		if (StringUtils.isBlank(str)) {
 			return str;
@@ -1076,6 +1123,11 @@ public class WhoisUtil {
 		return resultStr;
 	}
 	
+	/**
+	 * getLowerCase If asc string
+	 * @param str
+	 * @return String
+	 */
 	public static String getLowerCaseIfAllAscii(String str){
 		if(isAllASCII(str)){
 			return StringUtils.lowerCase(str);
@@ -1083,6 +1135,11 @@ public class WhoisUtil {
 		return str;
 	}
 
+	/**
+	 * string is of all asc 
+	 * @param input
+	 * @return boolean
+	 */
 	private static boolean isAllASCII(String input) {
 		if (StringUtils.isBlank(input)) {
 			return false;
@@ -1098,12 +1155,24 @@ public class WhoisUtil {
 		return isASCII;
 	}
 	
+	/**
+	 * encoded url UTF-8
+	 * @param str
+	 * @return String
+	 * @throws UnsupportedEncodingException
+	 */
 	public static String urlDecode(String str) throws UnsupportedEncodingException{
 		if(StringUtils.isBlank(str)){
 			return str;
 		}
 		return URLDecoder.decode(str, "UTF-8");
 	}
+	
+	/**
+	 * escape "\\*" from queryString
+	 * @param q
+	 * @return String
+	 */
 	public static String escapeQueryChars(String q){
 		if(StringUtils.isBlank(q)){
 			return q;

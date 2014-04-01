@@ -11,6 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+/***
+ * 
+ * JDBC utils
+ *
+ */
 @Component
 public class JdbcUtils implements ApplicationContextAware {
 
@@ -18,6 +24,10 @@ public class JdbcUtils implements ApplicationContextAware {
 	
 	private JdbcUtils() { }
 
+	/**
+	 * get a DB connection
+	 * @return Connection
+	 */
 	public Connection getConnection() {
 		Connection conn = null;
 		BasicDataSource dataSource = null;
@@ -31,6 +41,12 @@ public class JdbcUtils implements ApplicationContextAware {
 		return conn;
 	}
 
+	/**
+	 * free a DB connection
+	 * @param rs
+	 * @param stmt
+	 * @param conn
+	 */
 	public static void free(ResultSet rs, Statement stmt, Connection conn) {
 		try {
 			if (rs != null)
@@ -54,12 +70,20 @@ public class JdbcUtils implements ApplicationContextAware {
 		}
 	}
 	
+	/**
+	 * setApplicationContext
+	 * @param applicationContext
+	 */
 	@Autowired
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/**
+	 * getApplicationContext
+	 * @return ApplicationContext
+	 */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

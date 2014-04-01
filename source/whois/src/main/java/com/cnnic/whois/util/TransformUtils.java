@@ -1,7 +1,16 @@
 package com.cnnic.whois.util;
-
+/**
+ * 
+ * Transform Utils
+ *
+ */
 public class TransformUtils {
 
+	/**
+	 * is Network mask
+	 * @param ipInfo
+	 * @return String[]
+	 */
 	public static String[] isIPMaskNetWork(String ipInfo) {
 		String[] infoArray = new String[2];
 		if (ipInfo.indexOf(WhoisUtil.PRX) >= 0) {

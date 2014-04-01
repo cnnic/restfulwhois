@@ -7,13 +7,16 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Utils for reflection
+ */
 public abstract class ReflectionUtils {
 
 	/**
-	 * 
+	 * getPropertyValue
 	 * @param bean
 	 * @param propertyName
-	 * @return
+	 * @return Object
 	 */
 	public static Object getPropertyValue(Object bean, String propertyName) {
 		PropertyDescriptor descriptor = getPropertyDescriptor(bean.getClass(),
@@ -35,11 +38,11 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
-	 * 
+	 * invokeMethod
 	 * @param bean
 	 * @param method
 	 * @param arguments
-	 * @return
+	 * @return Object
 	 */
 	public static Object invokeMethod(Object bean, Method method,
 			Object... arguments) {
@@ -55,9 +58,9 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
-	 * 
+	 * getPropertyDescriptors
 	 * @param beanClass
-	 * @return
+	 * @return PropertyDescriptor[]
 	 */
 	public static PropertyDescriptor[] getPropertyDescriptors(Class<?> beanClass) {
 		if (beanClass == null) {
@@ -75,10 +78,10 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
-	 * 
+	 * getPropertyDescriptor
 	 * @param beanClass
 	 * @param propertyName
-	 * @return
+	 * @return PropertyDescriptor
 	 */
 	public static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass,
 			String propertyName) {
