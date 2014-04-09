@@ -64,11 +64,11 @@ public class QueryService {
 			throws QueryException, RedirectExecption {
 		String autnum = queryParam.getQ();
 		Map<String, Object> resultMap = null;
-		if (!autnum.matches("^[1-9][0-9]{0,9}$")){
+		if (!autnum.equals(String.valueOf(MIN_AS_NUM)) && !autnum.matches("^[1-9][0-9]{0,9}$")){
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		}
 		Long longValue = Long.valueOf(autnum);
-		if (longValue <= MIN_AS_NUM || longValue >= MAX_AS_NUM) {
+		if (longValue < MIN_AS_NUM || longValue > MAX_AS_NUM) {
 			return WhoisUtil.processError(WhoisUtil.COMMENDRRORCODE,queryParam);
 		}
 		resultMap = queryEngine.query(QueryType.AUTNUM, queryParam);

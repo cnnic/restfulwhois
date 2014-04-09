@@ -7,16 +7,20 @@ import com.cnnic.whois.bean.QueryType;
 import com.cnnic.whois.bean.index.DomainIndex;
 import com.cnnic.whois.execption.QueryException;
 import com.cnnic.whois.service.index.SearchResult;
+import com.cnnic.whois.util.validate.ValidateUtils;
 /**
  * domain search dao
+ * 
  * @author nic
- *
+ * 
  */
 public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 
 	/**
 	 * construction
-	 * @param url:solr core url
+	 * 
+	 * @param url
+	 *            :solr core url
 	 */
 	public DomainQueryDao(String url) {
 		super(url);
@@ -41,10 +45,10 @@ public class DomainQueryDao extends AbstractSearchQueryDao<DomainIndex> {
 		q = escapeSolrChar(q);
 		String domainPuny = domainQueryParam.getDomainPuny();
 		domainPuny = escapeSolrChar(domainPuny);
-		String queryStr = 
-//				"ldhName:" + domainPuny
-//				+ " OR " + 
-				"unicodeName:" + q;
+		String queryStr = "unicodeName:" + q;
+		if (q.startsWith(ValidateUtils.ACE_PREFIX) || q.contains(ValidateUtils.ACE_PREFIX_INSIDE)) {
+			queryStr = "ldhName:" + domainPuny + " OR " + queryStr;
+		}
 		SearchResult<DomainIndex> result = query(queryStr, page);
 		return result;
 	}
