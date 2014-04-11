@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cnnic.whois.util.IdnaUtil;
 import com.cnnic.whois.util.IpUtil;
+import com.google.common.net.InetAddresses;
 
 /***
  * Utils for domain and IP validation 
@@ -16,8 +17,24 @@ public class ValidateUtils {
 	public static final String ACE_PREFIX_INSIDE = ".xn--";
 	public static final String ASTERISK = "*";
 	private static final String VALID_IDNA_CHAR = "a";
-	public static final int MAX_DOMAIN_LENGTH = 255;
+	public static final int MAX_DOMAIN_LENGTH_WITHOUT_LAST_DOT = 253;
+	public static final int MIN_DOMAIN_LENGTH_WITHOUT_LAST_DOT = 3;
 	
+	/**
+	 * validate domain lenth,length is without last dot
+	 * @param domainWithoutLastDot:domain without last dot
+	 * @return true if valid,false if not
+	 */
+	private static boolean validateDomainLenth(String domainWithoutLastDot){
+		if(StringUtils.isBlank(domainWithoutLastDot)){
+			return false;
+		}
+		if(domainWithoutLastDot.length() < MIN_DOMAIN_LENGTH_WITHOUT_LAST_DOT
+				|| domainWithoutLastDot.length() > MAX_DOMAIN_LENGTH_WITHOUT_LAST_DOT){
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * validate domain puny name is valid idna
@@ -31,23 +48,13 @@ public class ValidateUtils {
 		if(!domainName.startsWith(ACE_PREFIX) && isLdh(domainName)){
 			return true;
 		}
-		domainName = ValidateUtils.deleteLastPoint(domainName);
-		return IdnaUtil.isValidIdn(domainName);
-	}
-	
-	/**
-	 * validate domain puny name is valid idna,first replace * with valid idna char 'a'.for fuzzy search.
-	 * @param domainPunyName :may with Asterisk
-	 * @return true if is valid idna,false if not
-	 */
-	public static boolean validateDomainPunyNameWithAsteriskIsValidIdna(String domainPunyName){
-		if(StringUtils.isBlank(domainPunyName)){
+		domainName = deleteLastPoint(domainName);
+		if(!validateDomainLenth(domainName)){
 			return false;
 		}
-		String domainPunyNameWithoutAsterisk = domainPunyName.replaceAll("\\*", VALID_IDNA_CHAR);
-		return IdnaUtil.isValidIdn(domainPunyNameWithoutAsterisk);
+		return IdnaUtil.isValidIdn(domainName);
 	}
-	
+
 	/**
 	 * Verifying the String parameters
 	 * 
@@ -76,10 +83,8 @@ public class ValidateUtils {
 		if(StringUtils.isBlank(domain)){
 			return false;
 		}
-		if(domain.length()>MAX_DOMAIN_LENGTH){
-			return false;
-		}
-		if(domain.contains("**")){
+		domain = deleteLastPoint(domain);
+		if(!validateDomainLenth(domain)){
 			return false;
 		}
 		String ldhReg = "^(?!-)(?!.*?-$)([0-9a-zA-Z][0-9a-zA-Z-\\*]{0,62})(\\.[0-9a-zA-Z-\\*]{1,63})*$";
@@ -98,7 +103,8 @@ public class ValidateUtils {
 		if(StringUtils.isBlank(domain)){
 			return false;
 		}
-		if(domain.length()>MAX_DOMAIN_LENGTH){
+		domain = deleteLastPoint(domain);
+		if(!validateDomainLenth(domain)){
 			return false;
 		}
 		String ldhReg = "^(?!-)(?!.*?-$)([0-9a-zA-Z][0-9a-zA-Z-]{0,62}\\.)+([0-9a-zA-Z][0-9a-zA-Z-]{0,62})?$";
@@ -119,7 +125,11 @@ public class ValidateUtils {
 		if(StringUtils.isBlank(domain)){
 			return false;
 		}
-		if(domain.length()>MAX_DOMAIN_LENGTH){
+		domain = deleteLastPoint(domain);
+		if(!validateDomainLenth(domain)){
+			return false;
+		}
+		if(domain.contains("**")){
 			return false;
 		}
 		if(isFuzzyLdh(domain)){
@@ -160,6 +170,9 @@ public class ValidateUtils {
 	 * @return The correct ipstr returns true, failure to return false
 	 */
 	public static boolean verifyIP(String ipStr, String ipLengthStr) {
+		if(!InetAddresses.isInetAddress(ipStr)){
+			return false;
+		}
 		boolean isIpV4 = isIpv4(ipStr);
 		boolean isIpV6 = isIPv6(ipStr);
 		if(!isIpV4 && ! isIpV6){
