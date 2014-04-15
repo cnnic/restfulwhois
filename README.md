@@ -65,6 +65,10 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 		In secode line ,'docBase' set to :"$WORK_DIR/restfulwhois/deployment/apache-tomcat-solr/solr/solr-4.5.0.war"
 		In third line ,'value' set to :"$WORK_DIR/restfulwhois/deployment/apache-tomcat-solr/solr"
 		note: both '$WORK_DIR'  must replaced by the existing real file path .
+	update following 3 configure file, line 106 change 'D:/java/apache-tomcat-solr' to: '$WORK_DIR/restfulwhois/deployment/apache-tomcat-solr' , '$WORK_DIR'  must replaced by the existing real file path .
+		file:apache-tomcat-solr/solr/domain/conf/solrconfig.xml
+		file:apache-tomcat-solr/solr/domain/conf/solrconfig.xml
+		file:apache-tomcat-solr/solr/domain/conf/solrconfig.xml
 	startup solr:  
 		./apache-tomcat-solr/bin/startup.sh 
 	```
@@ -120,7 +124,7 @@ RESTful Whois is written in JAVA and needs a database which MySQL is selected. Y
 		curl rdap.restfulwhois.org/autnum/1223
 		curl rdap.restfulwhois.org/nameserver/ns2.ee28.cn
 	```
-13. test for port43 whois
+13. test for port43 whois 
 
 	```
 	whois -h rdap.restfulwhois.org 1.0.0.0
