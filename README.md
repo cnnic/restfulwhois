@@ -4,7 +4,7 @@
 
 
   <head>
-  <h4>This is old, NEW is here: http://github.com/cnnic/rdap</h4>
+  <h1>This is obsolete, NEW is here: http://github.com/cnnic/rdap</h1>
     <title>
       UserGuide – Restful Whois
     </title>
