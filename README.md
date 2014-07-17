@@ -4,10 +4,11 @@
 
 
   <head>
+  <h4>This is old, NEW is here: http://github.com/cnnic/rdap</h4>
     <title>
       UserGuide – Restful Whois
     </title>
-    <h4>This is old,new is here: http://github.com/cnnic/rdap</h4>
+    
     
 <p>
 RESTful Whois is written in JAVA and needs a database which MySQL is selected. You can find all the required system software <a class="wiki" href="/trac/RestfulWhois/wiki/Requirements">here</a>. All the source code and deployment files are posted. You can access the <a class="ext-link" href="http://restfulwhois.org/trac/RestfulWhois/browser"><span class="icon">​</span>Browse Source</a> or visit the  <a class="ext-link" href="https://github.com/cnnic/restfulwhois"><span class="icon">​</span>github project</a>.
